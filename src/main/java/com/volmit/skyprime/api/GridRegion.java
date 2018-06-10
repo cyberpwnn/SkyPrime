@@ -21,6 +21,11 @@ public class GridRegion
 		this.min = min;
 	}
 
+	public boolean contains(SkyChunk sc)
+	{
+		return skyChunks.contains(sc);
+	}
+
 	public Cuboid getRegion()
 	{
 		return new Cuboid(min.getLower4D(), max.getUpper4D());

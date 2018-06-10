@@ -9,6 +9,9 @@ public class CommandSkyPrime extends PawnCommand
 	@Command
 	private CommandReload reload;
 
+	@Command
+	private CommandCreate create;
+
 	public CommandSkyPrime()
 	{
 		super("skyprime", "sky", "sp", "sprime");

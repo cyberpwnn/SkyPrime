@@ -1,5 +1,6 @@
 package com.volmit.skyprime.api;
 
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.volmit.volume.bukkit.pawn.IPawn;
@@ -11,6 +12,12 @@ public interface SkyWorld extends IPawn
 	public SkyWorldConfig getConfig();
 
 	public SkyWorldData getData();
+
+	public GridRegion getSpawnGrid();
+
+	public Location getSpawn();
+
+	public void setSpawn(Location spawn);
 
 	public void save();
 
