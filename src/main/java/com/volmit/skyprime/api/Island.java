@@ -15,6 +15,10 @@ public interface Island
 
 	public boolean hasOwners();
 
+	public IslandDifficulty getDifficulty();
+
+	public void setDifficulty(IslandDifficulty difficulty);
+
 	public void addMember(SkyPlayer player, IslandRole role);
 
 	public boolean isRole(SkyPlayer player, IslandRole role);

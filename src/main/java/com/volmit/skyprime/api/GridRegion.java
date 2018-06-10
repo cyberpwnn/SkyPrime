@@ -90,4 +90,9 @@ public class GridRegion
 
 		return e;
 	}
+
+	public SkyChunk getCenterChunk()
+	{
+		return min.getWorld().getChunk(max.getX() - (min.getX() / 2), max.getZ() - (min.getZ() / 2));
+	}
 }
