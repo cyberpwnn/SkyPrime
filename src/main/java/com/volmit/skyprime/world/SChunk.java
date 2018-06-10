@@ -2,6 +2,7 @@ package com.volmit.skyprime.world;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -98,5 +99,29 @@ public class SChunk implements SkyChunk
 	public int getGridSize()
 	{
 		return getWorld().getGridSize();
+	}
+
+	@Override
+	public GList<Chunk> getChunks()
+	{
+		return new GList<Chunk>(getRegion().getChunks());
+	}
+
+	@Override
+	public boolean contains(Location l)
+	{
+		return getRegion().contains(l);
+	}
+
+	@Override
+	public boolean contains(Entity e)
+	{
+		return contains(e.getLocation());
+	}
+
+	@Override
+	public boolean contains(Block b)
+	{
+		return contains(b.getLocation());
 	}
 }

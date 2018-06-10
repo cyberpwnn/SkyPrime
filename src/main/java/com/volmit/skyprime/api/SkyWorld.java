@@ -17,4 +17,6 @@ public interface SkyWorld extends IPawn
 	public void load();
 
 	public int getGridSize();
+
+	public SkyChunk getChunk(int x, int z);
 }
