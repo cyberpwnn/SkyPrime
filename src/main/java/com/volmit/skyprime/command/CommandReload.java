@@ -1,23 +1,19 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.volume.bukkit.command.Command;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
 
-public class CommandSkyPrime extends PawnCommand
+public class CommandReload extends PawnCommand
 {
-	@Command
-	private CommandReload reload;
-
-	public CommandSkyPrime()
+	public CommandReload()
 	{
-		super("skyprime", "sky", "sp", "sprime");
+		super("reload", "rld");
 	}
 
 	@Override
 	public boolean handle(VolumeSender sender, String[] args)
 	{
-		sender.sendMessage("Hello");
+		sender.sendMessage("Reloaded. JK.");
 		return true;
 	}
 }
