@@ -1,0 +1,6 @@
+name: ${project.name}
+main: com.volmit.skyprime.SkyPrime
+version: 1.0
+commands:
+  skyprime: 
+    aliases: [sky, sp, sprime]
