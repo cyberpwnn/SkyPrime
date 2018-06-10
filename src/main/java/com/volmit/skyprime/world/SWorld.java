@@ -2,17 +2,17 @@ package com.volmit.skyprime.world;
 
 import org.bukkit.World;
 
-import com.volmit.skyprime.api.ISkyWorld;
+import com.volmit.skyprime.api.SkyWorld;
 import com.volmit.skyprime.api.SkyWorldConfig;
 import com.volmit.skyprime.api.SkyWorldData;
 
-public class SkyWorld implements ISkyWorld
+public class SWorld implements SkyWorld
 {
 	private World world;
 	private SkyWorldConfig config;
 	private SkyWorldData data;
 	
-	public SkyWorld(World world)
+	public SWorld(World world)
 	{
 		// find / create configs and data
 	}

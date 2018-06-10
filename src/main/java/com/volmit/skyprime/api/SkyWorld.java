@@ -4,7 +4,7 @@ import org.bukkit.World;
 
 import com.volmit.volume.bukkit.pawn.IPawn;
 
-public interface ISkyWorld extends IPawn
+public interface SkyWorld extends IPawn
 {
 	public World getWorld();
 
