@@ -12,6 +12,9 @@ public class CommandSkyPrime extends PawnCommand
 	@Command
 	private CommandCreate create;
 
+	@Command
+	private CommandGen gen;
+
 	public CommandSkyPrime()
 	{
 		super("skyprime", "sky", "sp", "sprime");
