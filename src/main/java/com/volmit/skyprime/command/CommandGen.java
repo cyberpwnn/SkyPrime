@@ -3,8 +3,10 @@ package com.volmit.skyprime.command;
 import com.volmit.skyprime.world.gen.IslandGenerator;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
+import com.volmit.volume.bukkit.task.SR;
 import com.volmit.volume.bukkit.util.text.C;
 import com.volmit.volume.lang.collections.Callback;
+import com.volmit.volume.lang.collections.FinalInteger;
 import com.volmit.volume.lang.format.F;
 import com.volmit.volume.math.Profiler;
 
@@ -64,7 +66,7 @@ public class CommandGen extends PawnCommand
 					g.setSquashTop(Double.valueOf(i.split(":")[1]));
 				}
 
-				if(i.startsWith("ab:"))
+				if(i.startsWith("sb:"))
 				{
 					g.setSquashBottom(Double.valueOf(i.split(":")[1]));
 				}
@@ -72,11 +74,32 @@ public class CommandGen extends PawnCommand
 
 			Profiler pr = new Profiler();
 			pr.begin();
+			FinalInteger vi = new FinalInteger(0);
+			new SR()
+			{
+				@Override
+				public void run()
+				{
+					if(vi.get() == 0)
+					{
+						sender.player().sendTitle("", C.AQUA + "" + C.BOLD + g.setStatus() + ": " + C.RESET + C.GRAY + F.pc(g.getProgress(), 0), 0, 5, 20);
+					}
+
+					else
+					{
+						sender.player().sendTitle("", C.AQUA + "" + C.BOLD + "Done", 0, 5, 20);
+
+						cancel();
+					}
+				}
+			};
+
 			g.generate(new Callback<Integer>()
 			{
 				@Override
 				public void run()
 				{
+					vi.set(1);
 					pr.end();
 					sender.sendMessage("Generated Island in " + C.WHITE + F.time(pr.getMilliseconds(), 1));
 				}
