@@ -15,6 +15,7 @@ import com.volmit.volume.bukkit.nms.NMSSVC;
 import com.volmit.volume.bukkit.nms.adapter.AbstractChunk;
 import com.volmit.volume.bukkit.task.A;
 import com.volmit.volume.bukkit.task.S;
+import com.volmit.volume.bukkit.util.world.Direction;
 import com.volmit.volume.bukkit.util.world.MaterialBlock;
 import com.volmit.volume.lang.collections.Callback;
 import com.volmit.volume.lang.collections.GList;
@@ -39,6 +40,8 @@ public class IslandGenerator
 	private double squashBottom;
 	private double total;
 	private double at;
+	private double steps;
+	private double tsteps;
 	private String status;
 
 	public IslandGenerator(Location center, long seed)
@@ -56,12 +59,24 @@ public class IslandGenerator
 		squashBottom = 17;
 		total = 0;
 		at = 0;
+		steps = 0;
+		tsteps = 8;
 		status = "Idle";
 	}
 
 	public double getProgress()
 	{
-		return at / total;
+		if(at > total)
+		{
+			total = at;
+		}
+
+		if(total == 0)
+		{
+			total = 1;
+		}
+
+		return ((at / total) + (7 * (steps / tsteps))) / 8;
 	}
 
 	public IslandGenerator(Location center)
@@ -81,7 +96,7 @@ public class IslandGenerator
 				rset("Dialating");
 				vv = dialate(vv);
 				rset("Squashing");
-				vv = flatten(vv, 1);
+				vv = flatten(vv);
 				rset("Rounding");
 				vv = round(vv);
 				rset("Realizing");
@@ -139,6 +154,7 @@ public class IslandGenerator
 		at = 0;
 		total = 0;
 		status = string;
+		steps++;
 	}
 
 	public GList<Vector> reorder(GList<Vector> k)
@@ -176,16 +192,17 @@ public class IslandGenerator
 	{
 		GMap<Vector, MaterialBlock> mat = new GMap<Vector, MaterialBlock>();
 		GMap<Vector, Integer> heightmap = getHeightmap(v);
-		total += v.size();
+		total += v.size() * 2;
 		boolean treeyet = false;
 
-		Average ax = new Average(v.size());
-		Average az = new Average(v.size());
+		Average ax = new Average(32);
+		Average az = new Average(32);
 
 		for(Vector i : v)
 		{
 			ax.put(i.getX());
 			az.put(i.getZ());
+			at++;
 		}
 
 		for(Vector i : v)
@@ -241,10 +258,12 @@ public class IslandGenerator
 					}
 
 					GSet<Vector> vl = warpSphereTree(4);
-					vl = flatten(vl, 1);
+					total += vl.size() * 3;
+					vl = flatten(vl);
 
 					for(Vector j : vl)
 					{
+						at++;
 						Vector jj = j.clone().add(i).add(new Vector(0, h, 0));
 						if(!mat.containsKey(jj))
 						{
@@ -332,23 +351,16 @@ public class IslandGenerator
 		for(Vector i : v)
 		{
 			at++;
-			vv.addAll(generateSphere(i.getBlockX(), i.getBlockY(), i.getBlockZ(), 2));
+
+			for(Direction j : Direction.udnews())
+			{
+				vv.add(i.clone().add(new Vector(j.x(), j.y(), j.z())));
+			}
+
+			vv.add(i);
 		}
 
 		return vv;
-	}
-
-	public GSet<Vector> flatten(GSet<Vector> v, int factor)
-	{
-		GSet<Vector> roll = new GSet<Vector>();
-		roll.addAll(v);
-
-		for(int i = 0; i < factor; i++)
-		{
-			roll = flatten(roll);
-		}
-
-		return roll;
 	}
 
 	public GSet<Vector> round(GSet<Vector> v)
@@ -366,15 +378,16 @@ public class IslandGenerator
 
 	public GSet<Vector> flatten(GSet<Vector> v)
 	{
+		rset("Squashing");
 		GSet<Vector> vv = new GSet<Vector>();
-		Average a = new Average(v.size());
-
+		Average a = new Average(32);
+		total += v.size() * 2;
 		for(Vector i : v)
 		{
+			at++;
 			a.put(i.getBlockY());
 		}
 
-		total += v.size();
 		for(Vector i : v)
 		{
 			at++;
