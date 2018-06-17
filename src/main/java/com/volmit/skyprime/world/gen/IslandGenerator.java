@@ -12,7 +12,6 @@ import org.bukkit.util.Vector;
 
 import com.volmit.volume.bukkit.U;
 import com.volmit.volume.bukkit.nms.NMSSVC;
-import com.volmit.volume.bukkit.nms.adapter.AbstractChunk;
 import com.volmit.volume.bukkit.task.A;
 import com.volmit.volume.bukkit.task.S;
 import com.volmit.volume.bukkit.util.world.Direction;
@@ -50,12 +49,12 @@ public class IslandGenerator
 		this.seed = seed;
 		divisor = 100D;
 		noise = 5D;
-		radiusBlocks = 7;
+		radiusBlocks = 8;
 		dimension = 0.5;
 		amplifier = 0.5;
 		frequency = 0.5;
 		octaves = 4;
-		squashTop = 2.5;
+		squashTop = 1.7;
 		squashBottom = 17;
 		total = 0;
 		at = 0;
@@ -120,27 +119,16 @@ public class IslandGenerator
 					}
 				}
 
+				for(Chunk i : chk)
+				{
+					U.getService(NMSSVC.class).queueChunkUpdate(i);
+				}
+
 				new S()
 				{
 					@Override
 					public void run()
 					{
-						int ii = 0;
-
-						for(Chunk i : chk)
-						{
-							new S(ii / 4)
-							{
-								@Override
-								public void run()
-								{
-									U.getService(NMSSVC.class).sendChunkMap(new AbstractChunk(i), i);
-								}
-							};
-
-							ii++;
-						}
-
 						cb.run(mv.size());
 					}
 				};
@@ -195,8 +183,8 @@ public class IslandGenerator
 		total += v.size() * 2;
 		boolean treeyet = false;
 
-		Average ax = new Average(32);
-		Average az = new Average(32);
+		Average ax = new Average(8);
+		Average az = new Average(8);
 
 		for(Vector i : v)
 		{
@@ -380,7 +368,7 @@ public class IslandGenerator
 	{
 		rset("Squashing");
 		GSet<Vector> vv = new GSet<Vector>();
-		Average a = new Average(32);
+		Average a = new Average(8);
 		total += v.size() * 2;
 		for(Vector i : v)
 		{

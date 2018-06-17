@@ -39,7 +39,7 @@
 					<relocations>
 						<relocation>
 							<pattern>com.volmit.volume</pattern>
-							<shadedPattern>com.volmit.combattant.volume</shadedPattern>
+							<shadedPattern>com.volmit.skyprime.volume</shadedPattern>
 						</relocation>
 					</relocations>
 				</configuration>
