@@ -1,6 +1,5 @@
 package com.volmit.skyprime.world.gen;
 
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
@@ -12,6 +11,7 @@ import org.bukkit.util.Vector;
 
 import com.volmit.volume.bukkit.U;
 import com.volmit.volume.bukkit.nms.NMSSVC;
+import com.volmit.volume.bukkit.nms.adapter.ChunkTracker;
 import com.volmit.volume.bukkit.task.A;
 import com.volmit.volume.bukkit.task.S;
 import com.volmit.volume.bukkit.util.world.Direction;
@@ -100,7 +100,7 @@ public class IslandGenerator
 				vv = round(vv);
 				rset("Realizing");
 				GMap<Vector, MaterialBlock> mv = materialize(vv);
-				GSet<Chunk> chk = new GSet<Chunk>();
+				ChunkTracker ct = new ChunkTracker();
 				rset("Building");
 				total += mv.size();
 
@@ -109,7 +109,7 @@ public class IslandGenerator
 					try
 					{
 						at++;
-						chk.add(center.clone().add(i).getChunk());
+						ct.hit(center.clone().add(i));
 						U.getService(NMSSVC.class).setBlock(center.clone().add(i), mv.get(i));
 					}
 
@@ -119,10 +119,7 @@ public class IslandGenerator
 					}
 				}
 
-				for(Chunk i : chk)
-				{
-					U.getService(NMSSVC.class).queueChunkUpdate(i);
-				}
+				ct.flush();
 
 				new S()
 				{
