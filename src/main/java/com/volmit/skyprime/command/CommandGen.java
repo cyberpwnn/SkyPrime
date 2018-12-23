@@ -1,6 +1,6 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.skyprime.world.gen.IslandGenerator;
+import com.volmit.skyprime.gen.IslandGenerator;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
 import com.volmit.volume.bukkit.task.SR;
@@ -20,6 +20,11 @@ public class CommandGen extends PawnCommand
 	@Override
 	public boolean handle(VolumeSender sender, String[] args)
 	{
+		if(!sender.hasPermission("sky.gentest"))
+		{
+			return true;
+		}
+
 		if(args.length > 0)
 		{
 			IslandGenerator g = new IslandGenerator(sender.player().getLocation().clone().subtract(20, 20, 20));
@@ -97,7 +102,7 @@ public class CommandGen extends PawnCommand
 			g.generate(new Callback<Integer>()
 			{
 				@Override
-				public void run()
+				public void run(Integer t)
 				{
 					vi.set(1);
 					pr.end();

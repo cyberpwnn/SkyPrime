@@ -135,7 +135,12 @@
 		<dependency>
 			<groupId>com.volmit</groupId>
 			<artifactId>VolumePlugin</artifactId>
-			<version>latest</version>
+			<version>1.11</version>
+		</dependency>
+		<dependency>
+			<groupId>com.volmit</groupId>
+			<artifactId>VolumeNMS</artifactId>
+			<version>1.11</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -1,4 +1,4 @@
-package com.volmit.skyprime.world.gen;
+package com.volmit.skyprime.gen;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -42,6 +42,7 @@ public class IslandGenerator
 	private double steps;
 	private double tsteps;
 	private String status;
+	private Location spawn;
 
 	public IslandGenerator(Location center, long seed)
 	{
@@ -110,7 +111,13 @@ public class IslandGenerator
 					{
 						at++;
 						ct.hit(center.clone().add(i));
-						U.getService(NMSSVC.class).setBlock(center.clone().add(i), mv.get(i));
+						Location lxx = center.clone().add(i);
+						U.getService(NMSSVC.class).setBlock(lxx, mv.get(i));
+
+						if(mv.get(i).getMaterial().equals(Material.GRASS) && M.r(0.25))
+						{
+							spawn = lxx.clone();
+						}
 					}
 
 					catch(Throwable e)
@@ -132,6 +139,11 @@ public class IslandGenerator
 			}
 
 		};
+	}
+
+	public Location getSpawn()
+	{
+		return spawn;
 	}
 
 	private void rset(String string)

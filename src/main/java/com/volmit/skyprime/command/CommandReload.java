@@ -13,6 +13,11 @@ public class CommandReload extends PawnCommand
 	@Override
 	public boolean handle(VolumeSender sender, String[] args)
 	{
+		if(!sender.hasPermission("sky.reload"))
+		{
+			return true;
+		}
+
 		sender.sendMessage("Reloaded. JK.");
 		return true;
 	}
