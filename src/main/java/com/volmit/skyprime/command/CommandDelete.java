@@ -18,7 +18,7 @@ public class CommandDelete extends PawnCommand
 	{
 		UUID island = sender.player().getUniqueId();
 
-		if(!SkyMaster.hasIsland(island))
+		if(!SkyMaster.hasPersonalIsland(island))
 		{
 			sender.sendMessage("You cant destroy an island you dont have. Use /sky create");
 			return true;

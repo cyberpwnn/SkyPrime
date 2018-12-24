@@ -52,7 +52,7 @@
           </execution>
         </executions>
         <configuration>
-          <executable>${project.basedir}/scripts/dev.bat</executable>
+          <executable>${project.basedir}/scripts/dan.bat</executable>
           <arguments>${project.basedir}\target\SkyPrime-${project.version}.jar</arguments>
         </configuration>
       </plugin>

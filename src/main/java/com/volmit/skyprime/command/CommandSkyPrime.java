@@ -14,9 +14,6 @@ public class CommandSkyPrime extends PawnCommand
 	private CommandReload reload;
 
 	@Command
-	private CommandRecreate recreate;
-
-	@Command
 	private CommandDelete delete;
 
 	@Command
@@ -37,17 +34,19 @@ public class CommandSkyPrime extends PawnCommand
 		{
 			UUID island = sender.player().getUniqueId();
 
-			if(SkyMaster.hasIsland(island))
+			if(SkyMaster.hasPersonalIsland(island))
 			{
-				if(!SkyMaster.isIslandLoaded(island))
+				UUID is = SkyMaster.getIsland(island).getId();
+				
+				if(!SkyMaster.isIslandLoaded(is))
 				{
 					sender.sendMessage("Loading your island!");
-					SkyMaster.loadIsland(island);
+					SkyMaster.loadIsland(is);
 				}
 
-				if(!SkyMaster.getWorld(island).equals(sender.player().getWorld()))
+				if(!SkyMaster.getWorld(is).equals(sender.player().getWorld()))
 				{
-					sender.player().teleport(SkyMaster.getWorld(island).getSpawnLocation());
+					sender.player().teleport(SkyMaster.getWorld(is).getSpawnLocation());
 
 					new S(20)
 					{

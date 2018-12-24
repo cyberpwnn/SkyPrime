@@ -13,7 +13,8 @@ import org.bukkit.entity.Player;
 
 import com.volmit.skyprime.gen.IslandGenerator;
 import com.volmit.skyprime.gen.SkyGen;
-import com.volmit.volume.bukkit.task.S;
+import com.volmit.skyprime.storage.Island;
+import com.volmit.skyprime.storage.StorageEngine;
 import com.volmit.volume.bukkit.task.SR;
 import com.volmit.volume.bukkit.util.text.C;
 import com.volmit.volume.lang.collections.Callback;
@@ -26,15 +27,52 @@ import com.volmit.volume.math.Profiler;
 public class SkyMaster
 {
 	public static GMap<UUID, World> worlds = new GMap<>();
+	private static StorageEngine engine;
+	
+	public static void setStorageEngine(StorageEngine e)
+	{
+		engine = e;
+	}
+	
+	public static void deleteMarkedWorlds()
+	{
+		File f = new File("delete");
+		
+		if(f.exists())
+		{
+			for(File i : f.listFiles())
+			{
+				File x = new File(worldName(UUID.fromString(i.getName())));
+				VIO.delete(x);
+			}
+		}
+		
+		VIO.delete(f);
+	}
 
+	public static void markForDeletion(UUID island)
+	{
+		new File(new File("delete"), island.toString()).mkdirs();
+	}
+	
 	public static String worldName(UUID island)
 	{
 		return "sky-" + island;
 	}
-
-	public static IslandBuilder builder(UUID island)
+	
+	public static boolean hasPersonalIsland(UUID p)
 	{
-		return new IslandBuilder(island);
+		return engine.hasPersonalIsland(p);
+	}
+
+	public static Island getIsland(UUID p)
+	{
+		return engine.getPersonalIsland(p);
+	}
+	
+	public static IslandBuilder builder()
+	{
+		return new IslandBuilder();
 	}
 
 	public static boolean isIslandLoaded(UUID id)
@@ -47,31 +85,16 @@ public class SkyMaster
 		return new File(worldName(id));
 	}
 
-	public static void deleteIsland(UUID id, Runnable onDeleted)
+	public static void deleteIsland(UUID player, Runnable onDeleted)
 	{
-		if(isIslandLoaded(id))
+		if(isIslandLoaded(engine.getPersonalIsland(player).getId()))
 		{
-			unloadIsland(id, false);
+			unloadIsland(engine.getPersonalIsland(player).getId(), false);
 		}
 
-		VIO.delete(islandFolder(id));
-
-		if(islandFolder(id).exists())
-		{
-			new S(5)
-			{
-				@Override
-				public void run()
-				{
-					deleteIsland(id, onDeleted);
-				}
-			};
-		}
-
-		else
-		{
-			onDeleted.run();
-		}
+		markForDeletion(engine.getPersonalIsland(player).getId());
+		engine.removePersonalIsland(player);
+		onDeleted.run();
 	}
 
 	public static void unloadIsland(UUID id)
@@ -153,10 +176,10 @@ public class SkyMaster
 		private Player stream;
 		private int size;
 
-		public IslandBuilder(UUID island)
+		public IslandBuilder()
 		{
 			size = 7;
-			this.island = island;
+			this.island = UUID.randomUUID();
 
 			if(hasIsland(island))
 			{
@@ -229,6 +252,8 @@ public class SkyMaster
 
 					if(r != null)
 					{
+						Island i = new Island(island, stream.getUniqueId());
+						engine.setPersonalIsland(stream.getUniqueId(), i);
 						r.run(spawn);
 					}
 				}

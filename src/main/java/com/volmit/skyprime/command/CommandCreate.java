@@ -1,7 +1,5 @@
 package com.volmit.skyprime.command;
 
-import java.util.UUID;
-
 import org.bukkit.Location;
 
 import com.volmit.skyprime.SkyMaster;
@@ -20,16 +18,14 @@ public class CommandCreate extends PawnCommand
 	@Override
 	public boolean handle(VolumeSender sender, String[] args)
 	{
-		UUID island = sender.player().getUniqueId();
-
-		if(SkyMaster.hasIsland(island))
+		if(SkyMaster.hasPersonalIsland(sender.player().getUniqueId()))
 		{
 			sender.sendMessage("You already have an island! Use /sky");
 			return true;
 		}
 
 		sender.sendMessage("Creating a new Island for you!");
-		SkyMaster.builder(island).streamProgress(sender.player()).onComplete(new Callback<Location>()
+		SkyMaster.builder().streamProgress(sender.player()).onComplete(new Callback<Location>()
 		{
 			@Override
 			public void run(Location t)

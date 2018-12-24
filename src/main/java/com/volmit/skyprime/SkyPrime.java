@@ -1,6 +1,7 @@
 package com.volmit.skyprime;
 
 import com.volmit.skyprime.command.CommandSkyPrime;
+import com.volmit.skyprime.storage.FileStorageEngine;
 import com.volmit.volume.bukkit.VolumePlugin;
 import com.volmit.volume.bukkit.command.Command;
 import com.volmit.volume.bukkit.command.CommandTag;
@@ -16,7 +17,8 @@ public class SkyPrime extends VolumePlugin
 	@Start
 	public void start()
 	{
-
+		SkyMaster.setStorageEngine(new FileStorageEngine(getDataFolder("data")));
+		SkyMaster.deleteMarkedWorlds();
 	}
 
 	@Stop
