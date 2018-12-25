@@ -4,11 +4,17 @@ import java.util.UUID;
 
 public interface StorageEngine
 {
-	public Island getPersonalIsland(UUID player);
-	
-	public boolean hasPersonalIsland(UUID player);
-	
-	public void setPersonalIsland(UUID player, Island island);
-	
-	public void removePersonalIsland(UUID player);
+	public Island getIslandByOwner(UUID player);
+
+	public Island getIslandById(UUID id);
+
+	public UUID getIslandIdByOwner(UUID player);
+
+	public boolean hasIslandByOwner(UUID player);
+
+	public boolean hasIslandById(UUID id);
+
+	public void setIsland(Island island);
+
+	public void removeIsland(Island island);
 }

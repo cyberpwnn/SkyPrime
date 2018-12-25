@@ -1,12 +1,12 @@
 package com.volmit.skyprime.command;
 
-import java.util.UUID;
-
 import com.volmit.skyprime.SkyMaster;
+import com.volmit.skyprime.VirtualIsland;
 import com.volmit.volume.bukkit.command.Command;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
 import com.volmit.volume.bukkit.task.S;
+import com.volmit.volume.bukkit.util.text.C;
 
 public class CommandSkyPrime extends PawnCommand
 {
@@ -14,10 +14,34 @@ public class CommandSkyPrime extends PawnCommand
 	private CommandReload reload;
 
 	@Command
+	private CommandSetSpawn setspawn;
+
+	@Command
+	private CommandSpawn spawn;
+
+	@Command
+	private CommandVoltage voltage;
+
+	@Command
+	private CommandValue value;
+
+	@Command
+	private CommandSave save;
+
+	@Command
+	private CommandReboot reboot;
+
+	@Command
+	private CommandConfig config;
+
+	@Command
 	private CommandDelete delete;
 
 	@Command
 	private CommandCreate create;
+
+	@Command
+	private CommandRecreate recreate;
 
 	@Command
 	private CommandGen gen;
@@ -32,35 +56,36 @@ public class CommandSkyPrime extends PawnCommand
 	{
 		if(sender.isPlayer())
 		{
-			UUID island = sender.player().getUniqueId();
-
-			if(SkyMaster.hasPersonalIsland(island))
+			if(SkyMaster.hasIsland(sender.player()))
 			{
-				UUID is = SkyMaster.getIsland(island).getId();
-				
-				if(!SkyMaster.isIslandLoaded(is))
-				{
-					sender.sendMessage("Loading your island!");
-					SkyMaster.loadIsland(is);
-				}
+				SkyMaster.ensureIslandLoaded(sender.player());
+				VirtualIsland is = SkyMaster.getIsland(sender.player());
 
-				if(!SkyMaster.getWorld(is).equals(sender.player().getWorld()))
+				if(!is.getWorld().equals(sender.player().getWorld()))
 				{
-					sender.player().teleport(SkyMaster.getWorld(is).getSpawnLocation());
+					SkyMaster.getIsland(sender.player()).spawn(sender.player());
 
 					new S(20)
 					{
 						@Override
 						public void run()
 						{
-							sender.sendMessage("Welcome back to your new island!");
+							sender.sendMessage("Welcome back to your island!");
 						}
 					};
 				}
 
 				else
 				{
-					// TODO SHOW HELP
+					sender.sendMessage("/sky value - Check your island value");
+					sender.sendMessage("/sky voltage - Check your island voltage");
+					sender.sendMessage("/sky config - Configure your island");
+					sender.sendMessage("/sky save - Save your island");
+					sender.sendMessage("/sky setspawn - Set your island spawn");
+					sender.sendMessage("/sky spawn - Teleport to island spawn");
+					sender.sendMessage(C.YELLOW + "/sky reboot - Reboot your island");
+					sender.sendMessage(C.RED + "/sky delete - Delete your island");
+					sender.sendMessage(C.RED + "/sky recreate - Delete and create a new island");
 				}
 			}
 

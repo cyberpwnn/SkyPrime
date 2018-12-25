@@ -1,9 +1,12 @@
 package com.volmit.skyprime.gen;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.TreeSpecies;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Leaves;
 import org.bukkit.material.Stairs;
 import org.bukkit.material.Wood;
@@ -43,6 +46,8 @@ public class IslandGenerator
 	private double tsteps;
 	private String status;
 	private Location spawn;
+	private ChunkTracker ct;
+	private Location chestAt;
 
 	public IslandGenerator(Location center, long seed)
 	{
@@ -54,7 +59,7 @@ public class IslandGenerator
 		dimension = 0.5;
 		amplifier = 0.5;
 		frequency = 0.5;
-		octaves = 4;
+		octaves = 6;
 		squashTop = 1.7;
 		squashBottom = 17;
 		total = 0;
@@ -101,44 +106,114 @@ public class IslandGenerator
 				vv = round(vv);
 				rset("Realizing");
 				GMap<Vector, MaterialBlock> mv = materialize(vv);
-				ChunkTracker ct = new ChunkTracker();
+				ct = new ChunkTracker();
 				rset("Building");
 				total += mv.size();
+				GSet<Location> gc = new GSet<Location>();
+				boolean chested = false;
 
 				for(Vector i : mv.k())
 				{
-					try
-					{
-						at++;
-						ct.hit(center.clone().add(i));
-						Location lxx = center.clone().add(i);
-						U.getService(NMSSVC.class).setBlock(lxx, mv.get(i));
-
-						if(mv.get(i).getMaterial().equals(Material.GRASS) && M.r(0.25))
-						{
-							spawn = lxx.clone();
-						}
-					}
-
-					catch(Throwable e)
-					{
-						e.printStackTrace();
-					}
+					gc.add(center.clone().add(i));
 				}
-
-				ct.flush();
 
 				new S()
 				{
 					@Override
 					public void run()
 					{
-						cb.run(mv.size());
+						GSet<Chunk> c = new GSet<Chunk>();
+
+						for(Location i : gc)
+						{
+							c.add(i.getChunk());
+						}
+
+						for(Chunk i : c)
+						{
+							i.load();
+						}
+
+						new A()
+						{
+							@Override
+							public void run()
+							{
+								for(Vector i : mv.k())
+								{
+									try
+									{
+										at++;
+										ct.hit(center.clone().add(i));
+										Location lxx = center.clone().add(i);
+										U.getService(NMSSVC.class).setBlock(lxx, mv.get(i));
+
+										if(mv.get(i).getMaterial().equals(Material.GRASS) && M.r(0.25))
+										{
+											spawn = lxx.clone();
+										}
+
+										if(!chested && mv.get(i).getMaterial().equals(Material.LOG) || mv.get(i).getMaterial().equals(Material.LOG_2))
+										{
+											chestAt = lxx;
+										}
+									}
+
+									catch(Throwable e)
+									{
+										e.printStackTrace();
+									}
+								}
+
+								new S()
+								{
+									@Override
+									public void run()
+									{
+										try
+										{
+											chestAt.getBlock().setType(Material.CHEST);
+											Chest c = (Chest) chestAt.getBlock().getState();
+											c.getInventory().addItem(new ItemStack(Material.WATER_BUCKET));
+											c.getInventory().addItem(new ItemStack(Material.WATER_BUCKET));
+											c.getInventory().addItem(new ItemStack(Material.LAVA_BUCKET));
+
+											if(M.r(0.35))
+											{
+												c.getInventory().addItem(new ItemStack(Material.BEETROOT_SEEDS));
+											}
+
+											else
+											{
+												c.getInventory().addItem(new ItemStack(Material.SEEDS));
+											}
+
+										}
+
+										catch(Throwable e)
+										{
+
+										}
+
+										spawn = spawn.getBlock().getLocation().clone().add(0.5, 0.5, 0.5);
+										System.out.println("Spawn is " + spawn);
+										cb.run(mv.size());
+									}
+								};
+							}
+						};
+
+						ct.flush();
 					}
 				};
 			}
 
 		};
+	}
+
+	public ChunkTracker getCt()
+	{
+		return ct;
 	}
 
 	public Location getSpawn()
@@ -191,6 +266,7 @@ public class IslandGenerator
 		GMap<Vector, Integer> heightmap = getHeightmap(v);
 		total += v.size() * 2;
 		boolean treeyet = false;
+		int shrubs = (int) (((radiusBlocks * 0.75) * Math.random()) + 1);
 
 		Average ax = new Average(8);
 		Average az = new Average(8);
@@ -207,11 +283,23 @@ public class IslandGenerator
 			at++;
 
 			Vector cursor = new Vector(i.getBlockX(), 0, i.getBlockZ());
-			int shift = (int) ((int) (Math.abs(i.getX() - ax.getAverage())) + Math.abs(i.getZ() - az.getAverage()));
 
 			if(heightmap.get(cursor) == (int) i.getBlockY())
 			{
-				mat.put(i, new MaterialBlock(Material.GRASS));
+				if(M.r(0.75))
+				{
+					mat.put(i, new MaterialBlock(Material.GRASS));
+				}
+
+				else if(M.r(0.75))
+				{
+					mat.put(i, new MaterialBlock(Material.DIRT, (byte) (M.r(0.45) ? 2 : 1)));
+				}
+
+				else
+				{
+					mat.put(i, new MaterialBlock(Material.SAND, (byte) (M.r(0.45) ? 0 : 1)));
+				}
 
 				if(M.r(0.17) && !v.contains(i.clone().add(new Vector(0, 1, 0))))
 				{
@@ -231,7 +319,7 @@ public class IslandGenerator
 					}
 				}
 
-				else if(!treeyet && shift < 5 && !v.contains(i.clone().add(new Vector(0, 1, 0))))
+				else if(!treeyet && M.r(0.06) && !v.contains(i.clone().add(new Vector(0, 1, 0))))
 				{
 					treeyet = true;
 					Wood w = new Wood();
@@ -249,14 +337,65 @@ public class IslandGenerator
 
 					int h = 8;
 
+					GSet<Vector> vl = warpSphereTree(4);
+					total += vl.size() * 3;
+					vl = flatten(vl);
+
 					for(int j = 0; j < h; j++)
 					{
 						mat.put(i.clone().add(new Vector(0, j, 0)), new MaterialBlock(w.getItemType(), (byte) w.getData()));
 					}
 
-					GSet<Vector> vl = warpSphereTree(4);
+					for(Vector j : vl)
+					{
+						at++;
+						Vector jj = j.clone().add(i).add(new Vector(0, h, 0));
+						if(!mat.containsKey(jj))
+						{
+							Leaves l = new Leaves();
+							TreeSpecies tt = TreeSpecies.values()[M.rand(0, TreeSpecies.values().length - 1)];
+
+							try
+							{
+								l = new Leaves(Material.LEAVES, tt);
+							}
+
+							catch(IllegalArgumentException e)
+							{
+								l = new Leaves(Material.LEAVES_2, tt);
+							}
+
+							mat.put(jj, new MaterialBlock(l.getItemType(), l.getData()));
+						}
+					}
+				}
+
+				else if(shrubs > 0 && M.r(0.015) && !v.contains(i.clone().add(new Vector(0, 1, 0))))
+				{
+					shrubs--;
+					Wood w = new Wood();
+					TreeSpecies ttx = TreeSpecies.values()[M.rand(0, TreeSpecies.values().length - 1)];
+
+					try
+					{
+						w = new Wood(Material.LOG, ttx);
+					}
+
+					catch(IllegalArgumentException e)
+					{
+						w = new Wood(Material.LOG_2, ttx);
+					}
+
+					int h = 5;
+
+					GSet<Vector> vl = warpSphereTree(2);
 					total += vl.size() * 3;
 					vl = flatten(vl);
+
+					for(int j = 0; j < h; j++)
+					{
+						mat.put(i.clone().add(new Vector(0, j, 0)), new MaterialBlock(w.getItemType(), (byte) w.getData()));
+					}
 
 					for(Vector j : vl)
 					{
@@ -285,7 +424,7 @@ public class IslandGenerator
 
 			else if(heightmap.get(cursor) != (int) i.getBlockY() && heightmap.get(cursor) - (int) i.getBlockY() <= 2)
 			{
-				mat.put(i, new MaterialBlock(Material.DIRT, (byte) (M.r(0.35) ? 1 : 0)));
+				mat.put(i, new MaterialBlock(Material.DIRT, (byte) (M.r(0.5) ? 1 : M.r(0.25) ? 2 : 0)));
 			}
 
 			else if(heightmap.get(cursor) > (int) i.getBlockY() && !v.contains(i.clone().add(new Vector(0, 1, 0))))
@@ -311,7 +450,7 @@ public class IslandGenerator
 
 			else
 			{
-				mat.put(i, new MaterialBlock(M.r(0.15) ? Material.MOSSY_COBBLESTONE : M.r(0.35) ? Material.COBBLESTONE : Material.STONE));
+				mat.put(i, new MaterialBlock(M.r(0.009) ? Material.COAL_ORE : M.r(0.003) ? Material.IRON_ORE : M.r(0.004) ? Material.BONE_BLOCK : M.r(0.15) ? Material.MOSSY_COBBLESTONE : M.r(0.35) ? Material.COBBLESTONE : Material.STONE));
 			}
 		}
 

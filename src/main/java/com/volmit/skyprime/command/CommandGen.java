@@ -27,7 +27,7 @@ public class CommandGen extends PawnCommand
 
 		if(args.length > 0)
 		{
-			IslandGenerator g = new IslandGenerator(sender.player().getLocation().clone().subtract(20, 20, 20));
+			IslandGenerator g = new IslandGenerator(sender.player().getLocation().clone().subtract(0, 20, 0));
 
 			for(String i : args)
 			{
@@ -107,6 +107,7 @@ public class CommandGen extends PawnCommand
 					vi.set(1);
 					pr.end();
 					sender.sendMessage("Generated Island in " + C.WHITE + F.time(pr.getMilliseconds(), 1));
+					g.getCt().flush();
 				}
 			});
 		}

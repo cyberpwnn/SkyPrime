@@ -1,7 +1,5 @@
 package com.volmit.skyprime.command;
 
-import java.util.UUID;
-
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
@@ -16,23 +14,23 @@ public class CommandDelete extends PawnCommand
 	@Override
 	public boolean handle(VolumeSender sender, String[] args)
 	{
-		UUID island = sender.player().getUniqueId();
-
-		if(!SkyMaster.hasPersonalIsland(island))
+		if(!SkyMaster.hasIsland(sender.player()))
 		{
 			sender.sendMessage("You cant destroy an island you dont have. Use /sky create");
 			return true;
 		}
 
-		sender.sendMessage("Deleting your island. Please Wait...");
-		SkyMaster.deleteIsland(island, new Runnable()
+		if(SkyMaster.hasIslandLoaded(sender.player()))
 		{
-			@Override
-			public void run()
-			{
-				sender.sendMessage("Island Deleted!");
-			}
-		});
+			SkyMaster.getIsland(sender.player()).delete();
+		}
+
+		else
+		{
+			SkyMaster.coldDelete(sender.player());
+		}
+
+		sender.sendMessage("Island Deleted!");
 
 		return true;
 	}

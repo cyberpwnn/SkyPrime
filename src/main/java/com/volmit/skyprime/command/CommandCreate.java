@@ -1,11 +1,11 @@
 package com.volmit.skyprime.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.task.S;
 import com.volmit.volume.lang.collections.Callback;
 
 public class CommandCreate extends PawnCommand
@@ -18,7 +18,7 @@ public class CommandCreate extends PawnCommand
 	@Override
 	public boolean handle(VolumeSender sender, String[] args)
 	{
-		if(SkyMaster.hasPersonalIsland(sender.player().getUniqueId()))
+		if(SkyMaster.hasIsland(sender.player()))
 		{
 			sender.sendMessage("You already have an island! Use /sky");
 			return true;
@@ -31,17 +31,9 @@ public class CommandCreate extends PawnCommand
 			public void run(Location t)
 			{
 				t.getWorld().setSpawnLocation(t);
-				t.getWorld().save();
+				sender.sendMessage("Teleporting to " + t.getWorld().getName());
 				sender.player().teleport(t);
-
-				new S(20)
-				{
-					@Override
-					public void run()
-					{
-						sender.sendMessage("Welcome to your new island!");
-					}
-				};
+				Bukkit.dispatchCommand(sender.player(), "sky");
 			}
 		}).create();
 

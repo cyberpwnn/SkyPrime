@@ -1,6 +1,8 @@
 package com.volmit.skyprime;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -9,6 +11,8 @@ import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import com.volmit.skyprime.gen.IslandGenerator;
@@ -26,147 +30,173 @@ import com.volmit.volume.math.Profiler;
 
 public class SkyMaster
 {
-	public static GMap<UUID, World> worlds = new GMap<>();
+	public static int maxSize = 256;
 	private static StorageEngine engine;
-	
+	private static GMap<Island, VirtualIsland> virtualIslands = new GMap<>();
+	private static FileConfiguration fc;
+
 	public static void setStorageEngine(StorageEngine e)
 	{
 		engine = e;
+		File f = SkyPrime.vpi.getDataFile("worth.yml");
+
+		try
+		{
+			if(!f.exists())
+			{
+				f.getParentFile().mkdirs();
+				InputStream in = SkyPrime.class.getResourceAsStream("/worth.yml");
+				FileOutputStream fos = new FileOutputStream(f);
+				VIO.fullTransfer(in, fos, 8192);
+				in.close();
+				fos.close();
+			}
+
+			fc = new YamlConfiguration();
+			fc.load(f);
+		}
+
+		catch(Throwable ex)
+		{
+			ex.printStackTrace();
+		}
 	}
-	
-	public static void deleteMarkedWorlds()
+
+	public static void tick()
 	{
-		File f = new File("delete");
-		
+		for(VirtualIsland i : virtualIslands.v())
+		{
+			i.tick();
+		}
+	}
+
+	public static void deleteIslands()
+	{
+		File f = new File("skydata/deletions");
+
 		if(f.exists())
 		{
 			for(File i : f.listFiles())
 			{
-				File x = new File(worldName(UUID.fromString(i.getName())));
-				VIO.delete(x);
+				try
+				{
+					UUID id = UUID.fromString(i.getName());
+					File ff = new File(worldName(id));
+					VIO.delete(ff);
+
+					if(!ff.exists())
+					{
+						i.delete();
+					}
+				}
+
+				catch(Throwable e)
+				{
+
+				}
 			}
 		}
-		
-		VIO.delete(f);
-	}
-
-	public static void markForDeletion(UUID island)
-	{
-		new File(new File("delete"), island.toString()).mkdirs();
-	}
-	
-	public static String worldName(UUID island)
-	{
-		return "sky-" + island;
-	}
-	
-	public static boolean hasPersonalIsland(UUID p)
-	{
-		return engine.hasPersonalIsland(p);
-	}
-
-	public static Island getIsland(UUID p)
-	{
-		return engine.getPersonalIsland(p);
-	}
-	
-	public static IslandBuilder builder()
-	{
-		return new IslandBuilder();
-	}
-
-	public static boolean isIslandLoaded(UUID id)
-	{
-		return worlds.containsKey(id);
-	}
-
-	public static File islandFolder(UUID id)
-	{
-		return new File(worldName(id));
-	}
-
-	public static void deleteIsland(UUID player, Runnable onDeleted)
-	{
-		if(isIslandLoaded(engine.getPersonalIsland(player).getId()))
-		{
-			unloadIsland(engine.getPersonalIsland(player).getId(), false);
-		}
-
-		markForDeletion(engine.getPersonalIsland(player).getId());
-		engine.removePersonalIsland(player);
-		onDeleted.run();
-	}
-
-	public static void unloadIsland(UUID id)
-	{
-		unloadIsland(id, true);
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void unloadIsland(UUID id, boolean save)
+	public static void unloadWorld(World world, boolean save)
 	{
-		if(worlds.containsKey(id))
+		World safe = Bukkit.getWorld("world");
+
+		if(world == null || safe == null)
 		{
-			try
-			{
-				World w = worlds.get(id);
-				for(Player i : w.getPlayers())
-				{
-					i.sendMessage("You are being teleported off this world. It's crumbling!");
-					i.teleport(Bukkit.getWorld("world").getSpawnLocation());
-				}
+			System.out.println("Cannot unload a null world (or safe world 'world' is null)");
+			return;
+		}
 
-				for(Chunk i : w.getLoadedChunks())
-				{
-					i.unload(false, false);
-				}
+		for(Player i : world.getPlayers())
+		{
+			i.sendMessage("We have teleported you to saftey. The dimension you were in was colapsing!");
+			i.teleport(safe.getSpawnLocation());
+		}
 
-				if(Bukkit.unloadWorld(w, save))
-				{
-					worlds.remove(id);
-				}
+		for(Chunk i : world.getLoadedChunks())
+		{
+			i.unload(true, true);
+		}
 
-				System.gc();
-			}
+		System.out.println("Unloading Dimension: " + world.getName());
+		Bukkit.unloadWorld(world, true);
+	}
 
-			catch(Throwable e)
-			{
-				e.printStackTrace();
-			}
+	private static void loadWorld(Island is)
+	{
+		System.out.println("world " + worldName(is.getId()));
+		WorldCreator ww = new WorldCreator(worldName(is.getId()));
+		ww.generator(new SkyGen());
+		World w = Bukkit.createWorld(ww);
+
+		if(w != null)
+		{
+			System.out.println("Loaded Dimension: " + w.getName());
+			virtualIslands.put(is, new VirtualIsland(w, is));
+		}
+
+		else
+		{
+			System.out.println("Null world");
 		}
 	}
 
-	public static World getWorld(UUID id)
+	public static boolean hasIsland(Player p)
 	{
-		if(!isIslandLoaded(id))
-		{
-			loadIsland(id);
-		}
-
-		return worlds.get(id);
+		return engine.hasIslandByOwner(p.getUniqueId());
 	}
 
-	public static void loadIsland(UUID id)
+	public static boolean hasIslandLoaded(Player p)
 	{
-		if(!worlds.containsKey(id))
-		{
-			try
-			{
-				worlds.put(id, Bukkit.getWorld(worldName(id)));
-			}
-
-			catch(Throwable e)
-			{
-				e.printStackTrace();
-			}
-		}
+		return getIsland(p) != null;
 	}
 
-	public static boolean hasIsland(UUID id)
+	public static boolean hasIsland(UUID p)
 	{
-		System.out.println(islandFolder(id).getAbsolutePath());
+		return engine.hasIslandById(p);
+	}
 
-		return islandFolder(id).exists();
+	public static Island getIslandConfig(Player p)
+	{
+		return engine.getIslandByOwner(p.getUniqueId());
+	}
+
+	public static Island getIslandConfig(UUID id)
+	{
+		return engine.getIslandById(id);
+	}
+
+	public static VirtualIsland getIsland(Player s)
+	{
+		for(Island i : virtualIslands.k())
+		{
+			if(i.getOwner().equals(s.getUniqueId()))
+			{
+				return virtualIslands.get(i);
+			}
+		}
+
+		return null;
+	}
+
+	public static VirtualIsland getIsland(UUID id)
+	{
+		for(Island i : virtualIslands.k())
+		{
+			if(i.getId().equals(id))
+			{
+				return virtualIslands.get(i);
+			}
+		}
+
+		return null;
+	}
+
+	public static IslandBuilder builder()
+	{
+		return new IslandBuilder();
 	}
 
 	public static class IslandBuilder
@@ -178,10 +208,10 @@ public class SkyMaster
 
 		public IslandBuilder()
 		{
-			size = 7;
+			size = 8;
 			this.island = UUID.randomUUID();
 
-			if(hasIsland(island))
+			if(engine.hasIslandById(island))
 			{
 				throw new RuntimeException("World already exists");
 			}
@@ -196,8 +226,9 @@ public class SkyMaster
 
 		public World create()
 		{
-			stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0, 0), 0, 500, 20);
+			stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0.07, 0), 0, 500, 20);
 			WorldCreator wc = new WorldCreator(worldName(island));
+			Island is = new Island(island, stream.getUniqueId());
 			wc.generator(new SkyGen());
 			World w = wc.createWorld();
 			w.setKeepSpawnInMemory(false);
@@ -207,9 +238,23 @@ public class SkyMaster
 			w.setWaterAnimalSpawnLimit(0);
 			w.setPVP(false);
 			w.setTime(0);
+			w.setGameRuleValue("announceAdvancements", "false");
+			w.setGameRuleValue("commandBlocksEnabled", "false");
+			w.setGameRuleValue("commandBlockOutput", "false");
+			w.setGameRuleValue("disableElytraMovementCheck", "false");
+			w.setGameRuleValue("doDaylightCycle", "true");
+			w.setGameRuleValue("maxEntityCramming", "3");
+			w.setGameRuleValue("randomTickSpeed", "2");
+			w.setGameRuleValue("showDeathMessages", "false");
+			w.setGameRuleValue("spawnRadius", "1");
+			w.setGameRuleValue("spectatorsGenerateChunks", "false");
+			Location ll = new Location(w, 0, 100, 0);
+			w.getWorldBorder().setCenter(ll);
+			w.getWorldBorder().setDamageAmount(2);
+			w.getWorldBorder().setSize(29);
 			stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0.11, 0), 0, 100, 20);
-			worlds.put(island, w);
-			Location ll = new Location(w, 0, size * 2, 0);
+			virtualIslands.put(is, new VirtualIsland(w, is));
+			engine.setIsland(is);
 			ll.getChunk().load();
 			IslandGenerator gen = new IslandGenerator(ll, (long) ((long) (Math.random() * 8423472229940949494l) + (Math.random() * 1999911123999444444L)));
 			gen.setRadiusBlocks(size);
@@ -229,7 +274,6 @@ public class SkyMaster
 					else
 					{
 						stream.sendTitle("", C.AQUA + "" + C.BOLD + "Done", 0, 5, 20);
-
 						cancel();
 					}
 				}
@@ -237,6 +281,7 @@ public class SkyMaster
 
 			gen.generate(new Callback<Integer>()
 			{
+				@SuppressWarnings("deprecation")
 				@Override
 				public void run(Integer t)
 				{
@@ -250,10 +295,16 @@ public class SkyMaster
 
 					Location spawn = gen.getSpawn();
 
+					for(Chunk i : w.getLoadedChunks())
+					{
+						i.unload(true, true);
+					}
+
+					w.save();
+
 					if(r != null)
 					{
-						Island i = new Island(island, stream.getUniqueId());
-						engine.setPersonalIsland(stream.getUniqueId(), i);
+						gen.getCt().flush();
 						r.run(spawn);
 					}
 				}
@@ -275,5 +326,61 @@ public class SkyMaster
 
 			return this;
 		}
+	}
+
+	public static String worldName(UUID island)
+	{
+		return "skydata/dimensions/" + island;
+	}
+
+	public static void saveAllWorlds()
+	{
+		for(VirtualIsland i : virtualIslands.v())
+		{
+			i.saveAll();
+			i.unload();
+		}
+	}
+
+	public static double getIslandsCount()
+	{
+		return virtualIslands.size();
+	}
+
+	public static void remove(Island island)
+	{
+		for(Island i : virtualIslands.k())
+		{
+			if(i.getId().equals(island.getId()))
+			{
+				virtualIslands.remove(i);
+			}
+		}
+	}
+
+	public static StorageEngine getStorageEngine()
+	{
+		return engine;
+	}
+
+	public static FileConfiguration getWorthConfig()
+	{
+		return fc;
+	}
+
+	public static void ensureIslandLoaded(Player player)
+	{
+		if(!hasIslandLoaded(player))
+		{
+			loadWorld(getIslandConfig(player));
+		}
+	}
+
+	public static void coldDelete(Player player)
+	{
+		Island island = getIslandConfig(player);
+		new File("skydata/deletions/" + island.getId().toString()).mkdirs();
+		SkyMaster.getStorageEngine().removeIsland(island);
+		VIO.delete(new File(SkyMaster.worldName(island.getId())));
 	}
 }

@@ -11,55 +11,86 @@ import com.volmit.volume.lang.json.JSONObject;
 public class FileStorageEngine implements StorageEngine
 {
 	private File base;
-	
+
 	public FileStorageEngine(File base)
 	{
 		this.base = base;
 		base.mkdirs();
 	}
-	
+
 	@Override
-	public Island getPersonalIsland(UUID player)
+	public Island getIslandByOwner(UUID player)
 	{
-		if(hasPersonalIsland(player))
+		return getIslandById(getIslandIdByOwner(player));
+	}
+
+	@Override
+	public Island getIslandById(UUID id)
+	{
+		try
 		{
-			try
-			{
-				return new Island(new JSONObject(VIO.readAll(new File(base, player + ".json"))));
-			}
-			
-			catch(JSONException | IOException e)
-			{
-				e.printStackTrace();
-			}
+			return new Island(new JSONObject(VIO.readAll(new File(base, "data-" + id.toString()))));
 		}
-		
+
+		catch(JSONException | IOException e)
+		{
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 
 	@Override
-	public boolean hasPersonalIsland(UUID player)
+	public boolean hasIslandByOwner(UUID player)
 	{
-		return new File(base, player + ".json").exists();
+		return new File(base, "owner-" + player.toString()).exists();
 	}
 
 	@Override
-	public void setPersonalIsland(UUID player, Island island)
+	public boolean hasIslandById(UUID id)
 	{
+		return new File(base, "data-" + id.toString()).exists();
+	}
+
+	@Override
+	public void setIsland(Island island)
+	{
+		File fa = new File(base, "data-" + island.getId().toString());
+		File fb = new File(base, "owner-" + island.getOwner().toString());
+
 		try
 		{
-			VIO.writeAll(new File(base, player + ".json"), island.toJSON().toString(4));
+			fa.getParentFile().mkdirs();
+			VIO.writeAll(fa, island.toJSON().toString(4));
+			VIO.writeAll(fb, island.getId().toString());
 		}
-		
-		catch(JSONException | IOException e)
+
+		catch(IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void removePersonalIsland(UUID player)
+	public void removeIsland(Island island)
 	{
-		new File(base, player + ".json").delete();
+		new File(base, "data-" + island.getId().toString()).delete();
+		new File(base, "owner-" + island.getOwner().toString()).delete();
+	}
+
+	@Override
+	public UUID getIslandIdByOwner(UUID player)
+	{
+		try
+		{
+			return UUID.fromString(VIO.readAll(new File(base, "owner-" + player.toString())).trim());
+		}
+
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 }
