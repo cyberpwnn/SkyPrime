@@ -2,6 +2,7 @@ package com.volmit.skyprime.command;
 
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
+import com.volmit.skyprime.storage.Visibility;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
 
@@ -31,6 +32,7 @@ public class CommandConfig extends PawnCommand
 
 		if(args.length == 0)
 		{
+			sender.sendMessage("public = " + is.getVisibility().equals(Visibility.PUBLIC));
 			sender.sendMessage("despawn.arrow = " + is.getcDespawnArrow());
 			sender.sendMessage("despawn.item = " + is.getcDespawnItem());
 			sender.sendMessage("merge.xp = " + is.getcMergeXp());
@@ -78,6 +80,11 @@ public class CommandConfig extends PawnCommand
 				else if(args[0].equalsIgnoreCase("hopper.amount"))
 				{
 					is.setcHopperAmount(Integer.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public"))
+				{
+					is.setVisibility(Boolean.valueOf(args[1]) ? Visibility.PUBLIC : Visibility.PRIVATE);
 				}
 
 				else

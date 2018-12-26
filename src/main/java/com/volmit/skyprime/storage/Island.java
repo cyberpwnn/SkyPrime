@@ -41,6 +41,8 @@ public class Island
 
 	public Island(UUID id, UUID owner)
 	{
+		spawny = -10;
+		warpy = -10;
 		cDespawnArrow = 20;
 		cDespawnItem = 1200;
 		cMergeItem = 1.5;
@@ -79,6 +81,17 @@ public class Island
 		cMergeXp = o.has("config-merge-xp") ? o.getInt("config-merge-xp") : 2.5;
 		visibility = o.has("visibility") ? Visibility.values()[o.getInt("visibility")] : Visibility.PRIVATE;
 		maxSize = o.has("maxsize") ? o.getInt("maxsize") : SkyMaster.maxSize;
+		spawnx = o.has("sx") ? o.getDouble("sx") : 0;
+		spawny = o.has("sy") ? o.getDouble("sy") : -10;
+		spawnz = o.has("sz") ? o.getDouble("sz") : 0;
+		spawnyy = o.has("syy") ? o.getDouble("syy") : 0;
+		spawnpp = o.has("spp") ? o.getDouble("spp") : 0;
+		warpx = o.has("wx") ? o.getDouble("wx") : 0;
+		warpy = o.has("wy") ? o.getDouble("wy") : -10;
+		warpz = o.has("wz") ? o.getDouble("wz") : 0;
+		warpyy = o.has("wyy") ? o.getDouble("wyy") : 0;
+		warppp = o.has("wpp") ? o.getDouble("wpp") : 0;
+
 	}
 
 	public JSONObject toJSON()
@@ -102,6 +115,16 @@ public class Island
 		j.put("last-save", lastSave);
 		j.put("visibility", visibility.ordinal());
 		j.put("maxsize", maxSize);
+		j.put("sx", spawnx);
+		j.put("sy", spawny);
+		j.put("sz", spawnz);
+		j.put("syy", spawnyy);
+		j.put("spp", spawnpp);
+		j.put("wx", warpx);
+		j.put("wy", warpy);
+		j.put("wz", warpz);
+		j.put("wyy", warpyy);
+		j.put("wpp", warppp);
 
 		return j;
 	}
@@ -218,9 +241,23 @@ public class Island
 
 	public Location getWarp(World w)
 	{
-		return new Location(w, spawnx, spawny, spawnz, (float) spawnyy, (float) spawnpp);
+		if(warpy <= 0)
+		{
+			return w.getSpawnLocation();
+		}
+
+		return new Location(w, warpx, warpy, warpz, (float) warpyy, (float) warppp);
 	}
 
+	public Location getSpawn(World w)
+	{
+		if(spawny <= 0)
+		{
+			return w.getSpawnLocation();
+		}
+
+		return new Location(w, spawnx, spawny, spawnz, (float) spawnyy, (float) spawnpp);
+	}
 
 	public void setSpawn(Location l)
 	{

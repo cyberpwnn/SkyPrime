@@ -35,9 +35,11 @@ import com.volmit.skyprime.nms.NMSX;
 import com.volmit.skyprime.nms.SpecializedTickLimiter;
 import com.volmit.skyprime.nms.TicklistTrimmer;
 import com.volmit.skyprime.storage.Island;
+import com.volmit.skyprime.storage.Visibility;
 import com.volmit.volume.bukkit.command.VolumeSender;
 import com.volmit.volume.bukkit.task.A;
 import com.volmit.volume.bukkit.task.S;
+import com.volmit.volume.bukkit.util.particle.ParticleEffect;
 import com.volmit.volume.bukkit.util.world.Cuboid;
 import com.volmit.volume.bukkit.util.world.Cuboid.CuboidDirection;
 import com.volmit.volume.bukkit.util.world.W;
@@ -104,6 +106,7 @@ public class VirtualIsland implements Listener
 				updateValue();
 				updateSize();
 				updateVoltages();
+				updateVisitors();
 			}
 		}
 
@@ -124,6 +127,29 @@ public class VirtualIsland implements Listener
 
 		trimmer.tick();
 		ticks++;
+	}
+
+	private void updateVisitors()
+	{
+		if(island.getVisibility().equals(Visibility.PRIVATE))
+		{
+			World safe = Bukkit.getWorld("world");
+
+			if(safe == null)
+			{
+				System.out.println("Cannot unload a null world (or safe world 'world' is null)");
+				return;
+			}
+
+			for(Player i : world.getPlayers())
+			{
+				if(!i.getUniqueId().equals(island.getOwner()))
+				{
+					i.sendMessage("The island you were in is private.");
+					i.teleport(safe.getSpawnLocation());
+				}
+			}
+		}
 	}
 
 	public double getPhysicsSpeed()
@@ -148,7 +174,28 @@ public class VirtualIsland implements Listener
 			return;
 		}
 
+		if(!canBuild(e.getPlayer()))
+		{
+			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
+			e.setCancelled(true);
+		}
+
 		modified();
+	}
+
+	private boolean canBuild(Player player)
+	{
+		if(player.getUniqueId().equals(island.getOwner()) || player.hasPermission("sky.bypass"))
+		{
+			return true;
+		}
+
+		return true;
+	}
+
+	private void denyBuild(Location add)
+	{
+		ParticleEffect.SWEEP_ATTACK.display(1f, 1, add, 32);
 	}
 
 	@EventHandler
@@ -168,6 +215,12 @@ public class VirtualIsland implements Listener
 		if(!e.getBlock().getWorld().equals(world))
 		{
 			return;
+		}
+
+		if(!canBuild(e.getPlayer()))
+		{
+			e.setCancelled(true);
+			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
 		}
 
 		drawPower("physics", 1D);
@@ -204,6 +257,8 @@ public class VirtualIsland implements Listener
 
 			if(w && l)
 			{
+				e.setDropItems(false);
+
 				if(e.getExpToDrop() > 0)
 				{
 					e.getPlayer().giveExp(e.getExpToDrop());
@@ -219,6 +274,11 @@ public class VirtualIsland implements Listener
 						e.getBlock().setType(generatesCobble());
 					}
 				};
+
+				for(ItemStack i : e.getBlock().getDrops(e.getPlayer().getItemInHand() != null ? e.getPlayer().getItemInHand() : new ItemStack(Material.AIR)))
+				{
+					world.dropItemNaturally(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5), i).setPickupDelay(0);
+				}
 			}
 		}
 	}
@@ -371,7 +431,7 @@ public class VirtualIsland implements Listener
 
 	public void spawn(Player p)
 	{
-		p.teleport(world.getSpawnLocation());
+		p.teleport(island.getSpawn(world));
 
 		if(island.getOwner().equals(p.getUniqueId()))
 		{
@@ -384,9 +444,22 @@ public class VirtualIsland implements Listener
 		}
 	}
 
+	public void warp(Player p)
+	{
+		p.teleport(island.getWarp(world));
+	}
+
 	public void setSpawn(Player p)
 	{
+		island.setSpawn(p.getLocation());
 		world.setSpawnLocation(p.getLocation());
+		saveAll();
+	}
+
+	public void setWarp(Player p)
+	{
+		island.setWarp(p.getLocation());
+		saveAll();
 	}
 
 	public void saveConfig(VolumeSender s)

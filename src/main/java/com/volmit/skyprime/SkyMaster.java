@@ -209,6 +209,11 @@ public class SkyMaster
 		}
 	}
 
+	private static boolean hasIslandLoaded(UUID uuid)
+	{
+		return getIsland(uuid) != null;
+	}
+
 	public static boolean hasIsland(Player p)
 	{
 		return engine.hasIslandByOwner(p.getUniqueId());
@@ -432,6 +437,14 @@ public class SkyMaster
 	public static FileConfiguration getWorthConfig()
 	{
 		return fc;
+	}
+
+	public static void ensureIslandLoaded(UUID uuid)
+	{
+		if(!hasIslandLoaded(uuid))
+		{
+			loadWorld(getIslandConfig(uuid));
+		}
 	}
 
 	public static void ensureIslandLoaded(Player player)

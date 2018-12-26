@@ -20,6 +20,12 @@ public class CommandSkyPrime extends PawnCommand
 	private CommandSpawn spawn;
 
 	@Command
+	private CommandWarp warp;
+
+	@Command
+	private CommandSetWarp setwarp;
+
+	@Command
 	private CommandVoltage voltage;
 
 	@Command
@@ -42,6 +48,9 @@ public class CommandSkyPrime extends PawnCommand
 
 	@Command
 	private CommandRecreate recreate;
+
+	@Command
+	private CommandVisit visit;
 
 	@Command
 	private CommandGen gen;
@@ -81,8 +90,10 @@ public class CommandSkyPrime extends PawnCommand
 					sender.sendMessage("/sky voltage - Check your island voltage");
 					sender.sendMessage("/sky config - Configure your island");
 					sender.sendMessage("/sky save - Save your island");
-					sender.sendMessage("/sky setspawn - Set your island spawn");
+					sender.sendMessage("/sky warp - Teleport to public warp");
+					sender.sendMessage("/sky setwarp - Set your island public warp");
 					sender.sendMessage("/sky spawn - Teleport to island spawn");
+					sender.sendMessage("/sky setspawn - Set your island spawn");
 					sender.sendMessage(C.YELLOW + "/sky reboot - Reboot your island");
 					sender.sendMessage(C.RED + "/sky delete - Delete your island");
 					sender.sendMessage(C.RED + "/sky recreate - Delete and create a new island");

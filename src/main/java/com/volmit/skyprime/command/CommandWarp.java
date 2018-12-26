@@ -6,11 +6,11 @@ import com.volmit.skyprime.SkyMaster;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
 
-public class CommandSpawn extends PawnCommand
+public class CommandWarp extends PawnCommand
 {
-	public CommandSpawn()
+	public CommandWarp()
 	{
-		super("spawn", "sp");
+		super("warp", "sp");
 	}
 
 	@Override
@@ -18,7 +18,7 @@ public class CommandSpawn extends PawnCommand
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{
-			sender.sendMessage("You cant spawn on an island you dont have. Use /sky create");
+			sender.sendMessage("You cant warp on an island you dont have. Use /sky create");
 			return true;
 		}
 
@@ -30,7 +30,7 @@ public class CommandSpawn extends PawnCommand
 		else
 		{
 			sender.sendMessage("Poof!");
-			SkyMaster.getIsland(sender.player()).spawn(sender.player());
+			SkyMaster.getIsland(sender.player()).warp(sender.player());
 		}
 
 		return true;
