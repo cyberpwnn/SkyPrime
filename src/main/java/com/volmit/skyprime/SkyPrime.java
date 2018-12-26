@@ -23,7 +23,7 @@ public class SkyPrime extends VolumePlugin
 		SkyMaster.setStorageEngine(new FileStorageEngine(new File("skydata/islands")));
 		SkyMaster.deleteIslands();
 
-		new SR(20)
+		new SR(0)
 		{
 			@Override
 			public void run()

@@ -10,15 +10,19 @@ import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
@@ -29,14 +33,17 @@ import org.spigotmc.TickLimiter;
 
 import com.volmit.skyprime.nms.NMSX;
 import com.volmit.skyprime.nms.SpecializedTickLimiter;
+import com.volmit.skyprime.nms.TicklistTrimmer;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.volume.bukkit.command.VolumeSender;
 import com.volmit.volume.bukkit.task.A;
 import com.volmit.volume.bukkit.task.S;
 import com.volmit.volume.bukkit.util.world.Cuboid;
 import com.volmit.volume.bukkit.util.world.Cuboid.CuboidDirection;
+import com.volmit.volume.bukkit.util.world.W;
 import com.volmit.volume.lang.collections.FinalDouble;
 import com.volmit.volume.lang.collections.GList;
+import com.volmit.volume.lang.collections.GMap;
 import com.volmit.volume.lang.format.F;
 import com.volmit.volume.lang.io.VIO;
 import com.volmit.volume.math.M;
@@ -47,13 +54,90 @@ public class VirtualIsland implements Listener
 	private World world;
 	private SpecializedTickLimiter eTick;
 	private SpecializedTickLimiter tTick;
+	private TicklistTrimmer trimmer;
 	private Island island;
+	private GMap<String, Double> draw;
+	private double lastUse;
+	private double voltageForEntities;
+	private double voltageForTiles;
+	private long ticks;
 
 	public VirtualIsland(World world, Island island)
 	{
 		this.world = world;
+		ticks = 0;
+		draw = new GMap<>();
 		this.island = island;
+		drawPower("startup", 100D);
+		voltageForEntities = 1;
+		voltageForTiles = 1;
+		lastUse = 0;
 		inject();
+	}
+
+	public void preUnload()
+	{
+		trimmer.dumpTicklist();
+		trimmer.setDelay(0);
+	}
+
+	public void tick()
+	{
+		if(ticks % 5 == 0)
+		{
+			if(world.getPlayers().isEmpty())
+			{
+				preUnload();
+
+				new S(1)
+				{
+					@Override
+					public void run()
+					{
+						unload();
+					}
+				};
+			}
+
+			else
+			{
+				updateValue();
+				updateSize();
+				updateVoltages();
+			}
+		}
+
+		if(ticks % 4 == 0)
+		{
+			if(draw.containsKey("physics") && draw.get("physics") > getTotalVolts() * 0.75)
+			{
+				trimmer.setDelay(trimmer.getDelay() + 1);
+			}
+
+			else
+			{
+				trimmer.setDelay(trimmer.getDelay() - 1);
+			}
+
+			trimmer.setDelay(trimmer.getDelay() < 0 ? 0 : trimmer.getDelay() > 35 ? 35 : trimmer.getDelay());
+		}
+
+		trimmer.tick();
+		ticks++;
+	}
+
+	public double getPhysicsSpeed()
+	{
+		return 1D - ((double) trimmer.getDelay() / 36D);
+	}
+
+	@EventHandler
+	public void on(BlockFormEvent e)
+	{
+		if(e.getBlock().getWorld().equals(world) && e.getNewState().getType().equals(Material.COBBLESTONE))
+		{
+			e.getNewState().setType(generatesCobble());
+		}
 	}
 
 	@EventHandler
@@ -68,6 +152,17 @@ public class VirtualIsland implements Listener
 	}
 
 	@EventHandler
+	public void on(BlockPhysicsEvent e)
+	{
+		if(!e.getBlock().getWorld().equals(world))
+		{
+			return;
+		}
+
+		drawPower("physics", 0.005D);
+	}
+
+	@EventHandler
 	public void on(BlockPlaceEvent e)
 	{
 		if(!e.getBlock().getWorld().equals(world))
@@ -75,7 +170,57 @@ public class VirtualIsland implements Listener
 			return;
 		}
 
+		drawPower("physics", 1D);
 		modified();
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onlp(BlockBreakEvent e)
+	{
+		if(!e.getBlock().getWorld().equals(world))
+		{
+			return;
+		}
+
+		drawPower("physics", 1D);
+
+		if((e.getBlock().getType().equals(Material.STONE) || e.getBlock().getType().equals(Material.DIAMOND_ORE) || e.getBlock().getType().equals(Material.COAL_ORE) || e.getBlock().getType().equals(Material.IRON_ORE) || e.getBlock().getType().equals(Material.EMERALD_ORE) || e.getBlock().getType().equals(Material.LAPIS_ORE) || e.getBlock().getType().equals(Material.REDSTONE_ORE) || e.getBlock().getType().equals(Material.GLOWING_REDSTONE_ORE) || e.getBlock().getType().equals(Material.GOLD_ORE) || e.getBlock().getType().equals(Material.QUARTZ_ORE)))
+		{
+			boolean w = false;
+			boolean l = false;
+
+			for(Block i : W.blockFaces(e.getBlock()))
+			{
+				if(i.getType().equals(Material.LAVA) || i.getType().equals(Material.STATIONARY_LAVA))
+				{
+					l = true;
+				}
+
+				if(i.getType().equals(Material.WATER) || i.getType().equals(Material.STATIONARY_WATER))
+				{
+					w = true;
+				}
+			}
+
+			if(w && l)
+			{
+				if(e.getExpToDrop() > 0)
+				{
+					e.getPlayer().giveExp(e.getExpToDrop());
+					e.setExpToDrop(0);
+					e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.3f, 1.54f);
+				}
+
+				new S(0)
+				{
+					@Override
+					public void run()
+					{
+						e.getBlock().setType(generatesCobble());
+					}
+				};
+			}
+		}
 	}
 
 	@EventHandler
@@ -90,6 +235,54 @@ public class VirtualIsland implements Listener
 
 			modified();
 		}
+	}
+
+	private Material generatesCobble()
+	{
+		double div = 470;
+		drawPower("physics", 3D);
+
+		if(M.r(0.82D / div))
+		{
+			return Material.DIAMOND_ORE;
+		}
+
+		else if(M.r(0.89D / div))
+		{
+			return Material.GOLD_ORE;
+		}
+
+		else if(M.r(0.74D / div))
+		{
+			return Material.EMERALD_ORE;
+		}
+
+		else if(M.r(4.59D / div))
+		{
+			return Material.IRON_ORE;
+		}
+
+		else if(M.r(1.02D / div))
+		{
+			return Material.LAPIS_ORE;
+		}
+
+		else if(M.r(2.32D / div))
+		{
+			return Material.QUARTZ_ORE;
+		}
+
+		else if(M.r(6.28D / div))
+		{
+			return Material.REDSTONE_ORE;
+		}
+
+		else if(M.r(8.99D / div))
+		{
+			return Material.COAL_ORE;
+		}
+
+		return Material.STONE;
 	}
 
 	public double getTotalVolts()
@@ -109,7 +302,7 @@ public class VirtualIsland implements Listener
 
 	public double getUsedVolts()
 	{
-		return getUsedEntityVolts() + getUsedTileVolts();
+		return getUsedEntityVolts() + getUsedTileVolts() + lastUse;
 	}
 
 	public double getUsedEntityVolts()
@@ -142,29 +335,30 @@ public class VirtualIsland implements Listener
 		this.island = island;
 	}
 
-	public void tick()
+	private void updateValue()
 	{
-		if(world.getPlayers().isEmpty())
+		if(M.ms() - island.getLastValueCalculation() > TimeUnit.SECONDS.toMillis(30) && M.r(0.25) && island.isNeedsRescan())
 		{
-			unload();
+			island.setLastValueCalculation(M.ms());
+			island.setNeedsRescan(false);
+			calculateValue();
 		}
+	}
 
-		else
-		{
-			long timeAlive = M.ms() - island.getStarted();
-			double ib = island.getValue() / 27.7D;
-			double bonus = (((double) Math.pow((double) timeAlive, 0.65)) / (10000D)) + ib;
-			world.getWorldBorder().setSize(Math.min(27 + bonus, SkyMaster.maxSize));
+	private int getMaxIslandSize()
+	{
+		return island.getMaxSize();
+	}
 
-			if(M.ms() - island.getLastValueCalculation() > TimeUnit.SECONDS.toMillis(37) && M.r(0.25) && island.isNeedsRescan())
-			{
-				island.setLastValueCalculation(M.ms());
-				island.setNeedsRescan(false);
-				calculateValue();
-			}
-
-			updateVoltages();
-		}
+	private void updateSize()
+	{
+		double ib = Math.pow(island.getValue(), 0.65) / 20 / 3.5D;
+		double bonus = ib;
+		world.getWorldBorder().setCenter(0, 0);
+		world.getWorldBorder().setWarningDistance(10);
+		world.getWorldBorder().setWarningTime(30);
+		world.getWorldBorder().setDamageAmount(0.5);
+		world.getWorldBorder().setSize(Math.min(26 + bonus, getMaxIslandSize()), 3);
 	}
 
 	public void delete()
@@ -178,6 +372,16 @@ public class VirtualIsland implements Listener
 	public void spawn(Player p)
 	{
 		p.teleport(world.getSpawnLocation());
+
+		if(island.getOwner().equals(p.getUniqueId()))
+		{
+			int s = SkyMaster.getSizeFor(p);
+			if(island.getMaxSize() != s)
+			{
+				island.setMaxSize(s);
+				saveIsland();
+			}
+		}
 	}
 
 	public void setSpawn(Player p)
@@ -212,10 +416,10 @@ public class VirtualIsland implements Listener
 			s.sendMessage("merge.xp increased to 0");
 		}
 
-		if(is.getcHopperAmount() > 32)
+		if(is.getcHopperAmount() > 16)
 		{
-			is.setcHopperAmount(32);
-			s.sendMessage("hopper.amount reduced to 32");
+			is.setcHopperAmount(16);
+			s.sendMessage("hopper.amount reduced to 16");
 		}
 
 		if(is.getcHopperAmount() < 1)
@@ -230,10 +434,10 @@ public class VirtualIsland implements Listener
 			s.sendMessage("hopper.rate reduced to 100");
 		}
 
-		if(is.getcHopperRate() < 1)
+		if(is.getcHopperRate() < 5)
 		{
-			is.setcHopperRate(1);
-			s.sendMessage("hopper.rate increased to 1");
+			is.setcHopperRate(5);
+			s.sendMessage("hopper.rate increased to 5");
 		}
 
 		if(is.getcDespawnArrow() < 1)
@@ -254,6 +458,7 @@ public class VirtualIsland implements Listener
 	public void save()
 	{
 		world.save();
+		drawPower("save", 700D);
 	}
 
 	public void unload()
@@ -272,13 +477,52 @@ public class VirtualIsland implements Listener
 		SkyMaster.remove(island);
 	}
 
+	public void drawPower(String reason, double volts)
+	{
+		if(draw.containsKey(reason))
+		{
+			draw.put(reason, volts + draw.get(reason));
+		}
+
+		else
+		{
+			draw.put(reason, volts);
+		}
+	}
+
+	public GMap<String, Double> getDraw()
+	{
+		return draw;
+	}
+
 	private void updateVoltages()
 	{
 		double totalAllowedVoltage = Voltage.getTotalIslandVoltage(island.getValue());
-		double voltageForEntities = island.getPercentEntities() * totalAllowedVoltage;
-		double voltageForTiles = island.getPercentTiles() * totalAllowedVoltage;
+		double consumedVoltage = computeConsumedVoltage(totalAllowedVoltage);
+		totalAllowedVoltage -= consumedVoltage;
+		lastUse = consumedVoltage;
+		voltageForEntities = island.getPercentEntities() * totalAllowedVoltage;
+		voltageForTiles = island.getPercentTiles() * totalAllowedVoltage;
 		eTick.setrMaxTime(Math.max(0.01, Voltage.getMilliseconds(voltageForEntities)));
 		tTick.setrMaxTime(Math.max(0.01, Voltage.getMilliseconds(voltageForTiles)));
+	}
+
+	private double computeConsumedVoltage(double max)
+	{
+		double use = 0;
+
+		for(String i : draw.k())
+		{
+			use += draw.get(i);
+			draw.put(i, draw.get(i) / 1.45D);
+
+			if(draw.get(i) < 1)
+			{
+				draw.remove(i);
+			}
+		}
+
+		return Math.min(use, max);
 	}
 
 	private void calculateValue()
@@ -308,6 +552,7 @@ public class VirtualIsland implements Listener
 				public void run()
 				{
 					snaps.add(i.getChunkSnapshot(false, false, false));
+					drawPower("value-calculation", 50D);
 				}
 			};
 		}
@@ -508,14 +753,12 @@ public class VirtualIsland implements Listener
 
 	public double getAllowedEntityVoltage()
 	{
-		double totalAllowedVoltage = Voltage.getTotalIslandVoltage(island.getValue());
-		return island.getPercentEntities() * totalAllowedVoltage;
+		return voltageForEntities;
 	}
 
 	public double getAllowedTileVoltage()
 	{
-		double totalAllowedVoltage = Voltage.getTotalIslandVoltage(island.getValue());
-		return island.getPercentTiles() * totalAllowedVoltage;
+		return voltageForTiles;
 	}
 
 	public void inject()
@@ -523,6 +766,8 @@ public class VirtualIsland implements Listener
 		try
 		{
 			tweakIsland(island, world);
+			trimmer = new TicklistTrimmer(world);
+			trimmer.setDelay(5);
 		}
 
 		catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e)

@@ -2,6 +2,7 @@ package com.volmit.skyprime;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -23,6 +25,7 @@ import com.volmit.volume.bukkit.task.SR;
 import com.volmit.volume.bukkit.util.text.C;
 import com.volmit.volume.lang.collections.Callback;
 import com.volmit.volume.lang.collections.FinalInteger;
+import com.volmit.volume.lang.collections.GList;
 import com.volmit.volume.lang.collections.GMap;
 import com.volmit.volume.lang.format.F;
 import com.volmit.volume.lang.io.VIO;
@@ -30,15 +33,78 @@ import com.volmit.volume.math.Profiler;
 
 public class SkyMaster
 {
-	public static int maxSize = 256;
+	public static int maxSize = 80;
 	private static StorageEngine engine;
 	private static GMap<Island, VirtualIsland> virtualIslands = new GMap<>();
 	private static FileConfiguration fc;
+	private static GMap<String, Integer> sizemap = new GMap<>();
+
+	public static void loadConfig()
+	{
+		File f = SkyPrime.vpi.getDataFile("config.yml");
+
+		if(!f.exists())
+		{
+			f.getParentFile().mkdirs();
+			FileConfiguration fc = new YamlConfiguration();
+			fc.set("sizes.default", 80);
+			fc.set("sizes.ranks", new GList<String>().qadd("a=128").qadd("b=192").qadd("c=256").qadd("d=320").qadd("e=384"));
+			try
+			{
+				fc.save(f);
+			}
+
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
+		FileConfiguration fc = new YamlConfiguration();
+
+		try
+		{
+			fc.load(f);
+			maxSize = fc.getInt("sizes.default");
+			sizemap.clear();
+
+			for(String i : fc.getStringList("sizes.ranks"))
+			{
+				if(i.contains("="))
+				{
+					String m = i.split("=")[0].trim();
+					int v = Integer.valueOf(i.split("=")[1].trim());
+					sizemap.put(m, v);
+				}
+			}
+		}
+
+		catch(IOException | InvalidConfigurationException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	public static int getSizeFor(Player p)
+	{
+		int max = maxSize;
+
+		for(String i : sizemap.k())
+		{
+			if(p.hasPermission("sky.size." + i.toLowerCase()) && sizemap.get(i) > max)
+			{
+				max = sizemap.get(i);
+			}
+		}
+
+		return max;
+	}
 
 	public static void setStorageEngine(StorageEngine e)
 	{
 		engine = e;
 		File f = SkyPrime.vpi.getDataFile("worth.yml");
+		loadConfig();
 
 		try
 		{
@@ -251,7 +317,7 @@ public class SkyMaster
 			Location ll = new Location(w, 0, 100, 0);
 			w.getWorldBorder().setCenter(ll);
 			w.getWorldBorder().setDamageAmount(2);
-			w.getWorldBorder().setSize(29);
+			w.getWorldBorder().setSize(299);
 			stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0.11, 0), 0, 100, 20);
 			virtualIslands.put(is, new VirtualIsland(w, is));
 			engine.setIsland(is);

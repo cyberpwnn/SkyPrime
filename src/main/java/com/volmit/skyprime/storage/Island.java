@@ -2,6 +2,10 @@ package com.volmit.skyprime.storage;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
+import org.bukkit.World;
+
+import com.volmit.skyprime.SkyMaster;
 import com.volmit.volume.lang.json.JSONObject;
 import com.volmit.volume.math.M;
 
@@ -22,6 +26,39 @@ public class Island
 	private int cHopperRate;
 	private int cHopperAmount;
 	private long lastSave;
+	private Visibility visibility;
+	private double warpx;
+	private double warpy;
+	private double warpz;
+	private double warpyy;
+	private double warppp;
+	private double spawnx;
+	private double spawny;
+	private double spawnz;
+	private double spawnyy;
+	private double spawnpp;
+	private int maxSize;
+
+	public Island(UUID id, UUID owner)
+	{
+		cDespawnArrow = 20;
+		cDespawnItem = 1200;
+		cMergeItem = 1.5;
+		cMergeXp = 2.5;
+		cHopperAmount = 16;
+		visibility = Visibility.PRIVATE;
+		cHopperRate = 5;
+		this.owner = owner;
+		this.id = id;
+		started = M.ms();
+		value = 0D;
+		weightEntities = 55;
+		weightTiles = 45;
+		needsRescan = true;
+		lastValueCalculation = M.ms();
+		lastSave = M.ms();
+		maxSize = SkyMaster.maxSize;
+	}
 
 	public Island(JSONObject o)
 	{
@@ -40,25 +77,177 @@ public class Island
 		cDespawnItem = o.has("config-despawn-item") ? o.getInt("config-despawn-item") : 1200;
 		cMergeItem = o.has("config-merge-item") ? o.getInt("config-merge-item") : 1.5;
 		cMergeXp = o.has("config-merge-xp") ? o.getInt("config-merge-xp") : 2.5;
+		visibility = o.has("visibility") ? Visibility.values()[o.getInt("visibility")] : Visibility.PRIVATE;
+		maxSize = o.has("maxsize") ? o.getInt("maxsize") : SkyMaster.maxSize;
 	}
 
-	public Island(UUID id, UUID owner)
+	public JSONObject toJSON()
 	{
-		cDespawnArrow = 20;
-		cDespawnItem = 1200;
-		cMergeItem = 1.5;
-		cMergeXp = 2.5;
-		cHopperAmount = 4;
-		cHopperRate = 5;
-		this.owner = owner;
-		this.id = id;
-		started = M.ms();
-		value = 0D;
-		weightEntities = 55;
-		weightTiles = 45;
-		needsRescan = true;
-		lastValueCalculation = M.ms();
-		lastSave = M.ms();
+		JSONObject j = new JSONObject();
+
+		j.put("id", getId().toString());
+		j.put("owner", getOwner().toString());
+		j.put("value", value);
+		j.put("started", started);
+		j.put("needs-rescan", needsRescan);
+		j.put("last-value", lastValueCalculation);
+		j.put("weight-entities", weightEntities);
+		j.put("weight-tiles", weightTiles);
+		j.put("config-hopper-rate", cHopperRate);
+		j.put("config-hopper-amount", cHopperAmount);
+		j.put("config-despawn-arrow", cDespawnArrow);
+		j.put("config-despawn-item", cDespawnItem);
+		j.put("config-merge-item", cMergeItem);
+		j.put("config-merge-xp", cMergeXp);
+		j.put("last-save", lastSave);
+		j.put("visibility", visibility.ordinal());
+		j.put("maxsize", maxSize);
+
+		return j;
+	}
+
+	public double getWarpx()
+	{
+		return warpx;
+	}
+
+	public void setWarpx(double warpx)
+	{
+		this.warpx = warpx;
+	}
+
+	public double getWarpy()
+	{
+		return warpy;
+	}
+
+	public void setWarpy(double warpy)
+	{
+		this.warpy = warpy;
+	}
+
+	public double getWarpz()
+	{
+		return warpz;
+	}
+
+	public void setWarpz(double warpz)
+	{
+		this.warpz = warpz;
+	}
+
+	public double getWarpyy()
+	{
+		return warpyy;
+	}
+
+	public void setWarpyy(double warpyy)
+	{
+		this.warpyy = warpyy;
+	}
+
+	public double getWarppp()
+	{
+		return warppp;
+	}
+
+	public void setWarppp(double warppp)
+	{
+		this.warppp = warppp;
+	}
+
+	public double getSpawnx()
+	{
+		return spawnx;
+	}
+
+	public void setSpawnx(double spawnx)
+	{
+		this.spawnx = spawnx;
+	}
+
+	public double getSpawny()
+	{
+		return spawny;
+	}
+
+	public void setSpawny(double spawny)
+	{
+		this.spawny = spawny;
+	}
+
+	public double getSpawnz()
+	{
+		return spawnz;
+	}
+
+	public void setSpawnz(double spawnz)
+	{
+		this.spawnz = spawnz;
+	}
+
+	public double getSpawnyy()
+	{
+		return spawnyy;
+	}
+
+	public void setSpawnyy(double spawnyy)
+	{
+		this.spawnyy = spawnyy;
+	}
+
+	public double getSpawnpp()
+	{
+		return spawnpp;
+	}
+
+	public void setSpawnpp(double spawnpp)
+	{
+		this.spawnpp = spawnpp;
+	}
+
+	public int getMaxSize()
+	{
+		return Math.max(SkyMaster.maxSize, maxSize);
+	}
+
+	public void setMaxSize(int maxSize)
+	{
+		this.maxSize = maxSize;
+	}
+
+	public Location getWarp(World w)
+	{
+		return new Location(w, spawnx, spawny, spawnz, (float) spawnyy, (float) spawnpp);
+	}
+
+
+	public void setSpawn(Location l)
+	{
+		spawnx = l.getX();
+		spawny = l.getY();
+		spawnz = l.getZ();
+		spawnyy = l.getYaw();
+		spawnpp = l.getPitch();
+	}
+
+	public void setWarp(Location l)
+	{
+		warpx = l.getX();
+		warpy = l.getY();
+		warpz = l.getZ();
+		warpyy = l.getYaw();
+		warppp = l.getPitch();
+	}
+
+	public Visibility getVisibility()
+	{
+		return visibility;
+	}
+
+	public void setVisibility(Visibility visibility)
+	{
+		this.visibility = visibility;
 	}
 
 	public long getLastValueCalculation()
@@ -149,29 +338,6 @@ public class Island
 	public void setWeightTiles(double weightTiles)
 	{
 		this.weightTiles = weightTiles;
-	}
-
-	public JSONObject toJSON()
-	{
-		JSONObject j = new JSONObject();
-
-		j.put("id", getId().toString());
-		j.put("owner", getOwner().toString());
-		j.put("value", value);
-		j.put("started", started);
-		j.put("needs-rescan", needsRescan);
-		j.put("last-value", lastValueCalculation);
-		j.put("weight-entities", weightEntities);
-		j.put("weight-tiles", weightTiles);
-		j.put("config-hopper-rate", cHopperRate);
-		j.put("config-hopper-amount", cHopperAmount);
-		j.put("config-despawn-arrow", cDespawnArrow);
-		j.put("config-despawn-item", cDespawnItem);
-		j.put("config-merge-item", cMergeItem);
-		j.put("config-merge-xp", cMergeXp);
-		j.put("last-save", lastSave);
-
-		return j;
 	}
 
 	public long getLastSave()

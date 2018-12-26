@@ -1,5 +1,6 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.skyprime.SkyMaster;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
 
@@ -18,7 +19,8 @@ public class CommandReload extends PawnCommand
 			return true;
 		}
 
-		sender.sendMessage("Reloaded. JK.");
+		sender.sendMessage("Reloaded Configs.");
+		SkyMaster.loadConfig();
 		return true;
 	}
 }

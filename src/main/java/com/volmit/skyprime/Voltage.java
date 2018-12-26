@@ -3,15 +3,15 @@ package com.volmit.skyprime;
 public class Voltage
 {
 	public static double maxMilliseconds = 45D;
-	public static double maxMillisecondsPerIsland = 2D;
+	public static double maxMillisecondsPerIsland = 1.5D;
 	public static double voltsPerMillisecond = 50D;
-	public static double baseVoltage = 65D;
+	public static double baseVoltage = 50D;
 	public static double maxValueVoltage = 20000D;
-	public static double baseVoltageMin = 10D;
+	public static double baseVoltageMin = 35D;
 
 	public static double getIslandBaseVoltage(double value)
 	{
-		return baseVoltageMin + ((Math.min(value, maxValueVoltage) / maxValueVoltage) * (baseVoltage - baseVoltageMin));
+		return baseVoltageMin + ((Math.min(value / 100D, maxValueVoltage) / maxValueVoltage) * (baseVoltage - baseVoltageMin));
 	}
 
 	public static double getIslandBaseVoltage()
