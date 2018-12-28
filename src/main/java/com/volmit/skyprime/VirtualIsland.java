@@ -22,8 +22,10 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -32,12 +34,12 @@ import org.spigotmc.SpigotWorldConfig;
 import org.spigotmc.TickLimiter;
 
 import com.volmit.skyprime.nms.NMSX;
+import com.volmit.skyprime.nms.SkyThread;
 import com.volmit.skyprime.nms.SpecializedTickLimiter;
 import com.volmit.skyprime.nms.TicklistTrimmer;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.Visibility;
 import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.task.A;
 import com.volmit.volume.bukkit.task.S;
 import com.volmit.volume.bukkit.util.particle.ParticleEffect;
 import com.volmit.volume.bukkit.util.world.Cuboid;
@@ -54,26 +56,35 @@ import com.volmit.volume.math.Profiler;
 public class VirtualIsland implements Listener
 {
 	private World world;
+	private Boolean readyToFlush;
 	private SpecializedTickLimiter eTick;
 	private SpecializedTickLimiter tTick;
 	private TicklistTrimmer trimmer;
 	private Island island;
+	private SkyThread t;
 	private GMap<String, Double> draw;
 	private double lastUse;
 	private double voltageForEntities;
 	private double voltageForTiles;
 	private long ticks;
+	private int startup;
+	private int idlecount;
 
 	public VirtualIsland(World world, Island island)
 	{
 		this.world = world;
 		ticks = 0;
+		t = new SkyThread(island.getId());
+		t.start();
+		readyToFlush = true;
 		draw = new GMap<>();
 		this.island = island;
-		drawPower("startup", 100D);
+		drawPower("startup", Config.STARTUP_VOLTAGE);
 		voltageForEntities = 1;
 		voltageForTiles = 1;
 		lastUse = 0;
+		idlecount = 0;
+		startup = Config.SPINUP_TIME;
 		inject();
 	}
 
@@ -85,34 +96,73 @@ public class VirtualIsland implements Listener
 
 	public void tick()
 	{
+		if(startup > 0)
+		{
+			startup--;
+		}
+
 		if(ticks % 5 == 0)
 		{
-			if(world.getPlayers().isEmpty())
+			if(startup <= 0 && world.getPlayers().isEmpty())
 			{
-				preUnload();
+				idlecount += 5;
 
-				new S(1)
+				if(idlecount > Config.IDLE_TICKS)
 				{
-					@Override
-					public void run()
+					preUnload();
+
+					new S(1)
 					{
-						unload();
-					}
-				};
+						@Override
+						public void run()
+						{
+							unload();
+
+							Player p = Bukkit.getPlayer(island.getOwner());
+
+							if(p != null)
+							{
+								p.sendMessage("Your island was saved & unloaded.");
+							}
+						}
+					};
+				}
 			}
 
 			else
 			{
+				idlecount -= 5;
 				updateValue();
 				updateSize();
 				updateVoltages();
 				updateVisitors();
 			}
+
+			idlecount = (int) M.clip(idlecount, 0, 10000);
+		}
+
+		if(ticks % 20 == 0)
+		{
+			for(Player i : world.getPlayers())
+			{
+				if(i.getLocation().getY() < 0)
+				{
+					if(i.getUniqueId().equals(island.getOwner()))
+					{
+						spawn(i);
+					}
+
+					else
+					{
+						warp(i);
+					}
+				}
+			}
 		}
 
 		if(ticks % 4 == 0)
 		{
-			if(draw.containsKey("physics") && draw.get("physics") > getTotalVolts() * 0.75)
+			if(draw.containsKey("physics") && draw.get("physics") > getTotalVolts() * Config.PHYSICS_GEAR_RATIO)
 			{
 				trimmer.setDelay(trimmer.getDelay() + 1);
 			}
@@ -122,7 +172,7 @@ public class VirtualIsland implements Listener
 				trimmer.setDelay(trimmer.getDelay() - 1);
 			}
 
-			trimmer.setDelay(trimmer.getDelay() < 0 ? 0 : trimmer.getDelay() > 35 ? 35 : trimmer.getDelay());
+			trimmer.setDelay(trimmer.getDelay() < 0 ? 0 : trimmer.getDelay() > Config.PHYSICS_THROTTLE ? Config.PHYSICS_THROTTLE : trimmer.getDelay());
 		}
 
 		trimmer.tick();
@@ -131,6 +181,23 @@ public class VirtualIsland implements Listener
 
 	private void updateVisitors()
 	{
+		if(startup > 5)
+		{
+			World safe = Bukkit.getWorld("world");
+
+			if(safe == null)
+			{
+				System.out.println("Cannot unload a null world (or safe world 'world' is null)");
+				return;
+			}
+
+			for(Player i : world.getPlayers())
+			{
+				i.sendMessage("Island is still booting up.");
+				i.teleport(safe.getSpawnLocation());
+			}
+		}
+
 		if(island.getVisibility().equals(Visibility.PRIVATE))
 		{
 			World safe = Bukkit.getWorld("world");
@@ -163,6 +230,20 @@ public class VirtualIsland implements Listener
 		if(e.getBlock().getWorld().equals(world) && e.getNewState().getType().equals(Material.COBBLESTONE))
 		{
 			e.getNewState().setType(generatesCobble());
+		}
+	}
+
+	@EventHandler
+	public void on(ItemMergeEvent e)
+	{
+		if(island.getcMergeItem() <= 0)
+		{
+			e.setCancelled(true);
+		}
+
+		if(e.getEntity().getLocation().distanceSquared(e.getTarget().getLocation()) >= Math.pow(island.getcMergeItem(), 2))
+		{
+			e.setCancelled(true);
 		}
 	}
 
@@ -210,6 +291,17 @@ public class VirtualIsland implements Listener
 	}
 
 	@EventHandler
+	public void on(BlockFromToEvent e)
+	{
+		if(!e.getBlock().getWorld().equals(world))
+		{
+			return;
+		}
+
+		drawPower("physics", 0.009D);
+	}
+
+	@EventHandler
 	public void on(BlockPlaceEvent e)
 	{
 		if(!e.getBlock().getWorld().equals(world))
@@ -227,6 +319,7 @@ public class VirtualIsland implements Listener
 		modified();
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onlp(BlockBreakEvent e)
 	{
@@ -412,13 +505,13 @@ public class VirtualIsland implements Listener
 
 	private void updateSize()
 	{
-		double ib = Math.pow(island.getValue(), 0.65) / 20 / 3.5D;
+		double ib = Math.pow(island.getValue(), Config.FRACTAL_VALUE) / 20 / Config.DIVISOR_VALUE;
 		double bonus = ib;
 		world.getWorldBorder().setCenter(0, 0);
 		world.getWorldBorder().setWarningDistance(10);
 		world.getWorldBorder().setWarningTime(30);
 		world.getWorldBorder().setDamageAmount(0.5);
-		world.getWorldBorder().setSize(Math.min(26 + bonus, getMaxIslandSize()), 3);
+		world.getWorldBorder().setSize(Math.min(26 + bonus, getMaxIslandSize()), Config.ANIMATION_SIZE);
 	}
 
 	public void delete()
@@ -431,22 +524,46 @@ public class VirtualIsland implements Listener
 
 	public void spawn(Player p)
 	{
-		p.teleport(island.getSpawn(world));
-
-		if(island.getOwner().equals(p.getUniqueId()))
+		new S(startup + 5)
 		{
-			int s = SkyMaster.getSizeFor(p);
-			if(island.getMaxSize() != s)
+			@Override
+			public void run()
 			{
-				island.setMaxSize(s);
-				saveIsland();
+				p.teleport(island.getSpawn(world));
+				flushTracker();
+				if(island.getOwner().equals(p.getUniqueId()))
+				{
+					int s = SkyMaster.getSizeFor(p);
+					if(island.getMaxSize() != s)
+					{
+						island.setMaxSize(s);
+						saveIsland();
+					}
+				}
 			}
+		};
+	}
+
+	private void flushTracker()
+	{
+		if(readyToFlush)
+		{
+			SkyMaster.flushTracker(world);
+			readyToFlush = false;
 		}
 	}
 
 	public void warp(Player p)
 	{
-		p.teleport(island.getWarp(world));
+		new S(startup + 5)
+		{
+			@Override
+			public void run()
+			{
+				p.teleport(island.getWarp(world));
+				flushTracker();
+			}
+		};
 	}
 
 	public void setSpawn(Player p)
@@ -489,10 +606,10 @@ public class VirtualIsland implements Listener
 			s.sendMessage("merge.xp increased to 0");
 		}
 
-		if(is.getcHopperAmount() > 16)
+		if(is.getcHopperAmount() > Config.HOPPER_MAX_AMT)
 		{
-			is.setcHopperAmount(16);
-			s.sendMessage("hopper.amount reduced to 16");
+			is.setcHopperAmount(Config.HOPPER_MAX_AMT);
+			s.sendMessage("hopper.amount reduced to " + Config.HOPPER_MAX_AMT);
 		}
 
 		if(is.getcHopperAmount() < 1)
@@ -507,10 +624,10 @@ public class VirtualIsland implements Listener
 			s.sendMessage("hopper.rate reduced to 100");
 		}
 
-		if(is.getcHopperRate() < 5)
+		if(is.getcHopperRate() < Config.HOPPER_MIN_INTERVAL)
 		{
-			is.setcHopperRate(5);
-			s.sendMessage("hopper.rate increased to 5");
+			is.setcHopperRate(Config.HOPPER_MIN_INTERVAL);
+			s.sendMessage("hopper.rate increased to " + Config.HOPPER_MIN_INTERVAL);
 		}
 
 		if(is.getcDespawnArrow() < 1)
@@ -548,6 +665,12 @@ public class VirtualIsland implements Listener
 
 		SkyMaster.unloadWorld(world, true);
 		SkyMaster.remove(island);
+		t.interrupt();
+	}
+
+	public void q(Runnable r)
+	{
+		t.q(r);
 	}
 
 	public void drawPower(String reason, double volts)
@@ -636,9 +759,9 @@ public class VirtualIsland implements Listener
 			public void run()
 			{
 				pb.end();
-				new A()
+
+				q(new Runnable()
 				{
-					@SuppressWarnings("deprecation")
 					@Override
 					public void run()
 					{
@@ -652,6 +775,7 @@ public class VirtualIsland implements Listener
 									for(int k = 0; k < 16; k++)
 									{
 										Material m = s.getBlockType(i, j, k);
+										@SuppressWarnings("deprecation")
 										byte b = (byte) s.getBlockData(i, j, k);
 										d.add(getValue(m, b));
 										boolean inv = false;
@@ -735,6 +859,7 @@ public class VirtualIsland implements Listener
 
 							new S(k / 8)
 							{
+								@SuppressWarnings("deprecation")
 								@Override
 								public void run()
 								{
@@ -786,7 +911,7 @@ public class VirtualIsland implements Listener
 							}
 						};
 					}
-				};
+				});
 			}
 		};
 	}
@@ -839,7 +964,7 @@ public class VirtualIsland implements Listener
 		try
 		{
 			tweakIsland(island, world);
-			trimmer = new TicklistTrimmer(world);
+			trimmer = new TicklistTrimmer(this);
 			trimmer.setDelay(5);
 		}
 

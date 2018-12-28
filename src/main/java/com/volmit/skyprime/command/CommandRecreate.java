@@ -23,7 +23,15 @@ public class CommandRecreate extends PawnCommand
 			return true;
 		}
 
-		SkyMaster.getIsland(sender.player()).delete();
+		if(SkyMaster.hasIslandLoaded(sender.player()))
+		{
+			SkyMaster.getIsland(sender.player()).delete();
+		}
+
+		else
+		{
+			SkyMaster.coldDelete(sender.player());
+		}
 
 		new S(5)
 		{

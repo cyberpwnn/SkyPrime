@@ -48,6 +48,7 @@ public class IslandGenerator
 	private Location spawn;
 	private ChunkTracker ct;
 	private Location chestAt;
+	private GList<Location> validSpawns;
 
 	public IslandGenerator(Location center, long seed)
 	{
@@ -67,6 +68,7 @@ public class IslandGenerator
 		steps = 0;
 		tsteps = 8;
 		status = "Idle";
+		validSpawns = new GList<Location>();
 	}
 
 	public double getProgress()
@@ -106,6 +108,7 @@ public class IslandGenerator
 				vv = round(vv);
 				rset("Realizing");
 				GMap<Vector, MaterialBlock> mv = materialize(vv);
+				spawn = validSpawns.pickRandom();
 				ct = new ChunkTracker();
 				rset("Building");
 				total += mv.size();
@@ -147,11 +150,6 @@ public class IslandGenerator
 										ct.hit(center.clone().add(i));
 										Location lxx = center.clone().add(i);
 										U.getService(NMSSVC.class).setBlock(lxx, mv.get(i));
-
-										if(mv.get(i).getMaterial().equals(Material.GRASS) && M.r(0.25))
-										{
-											spawn = lxx.clone();
-										}
 
 										if(!chested && mv.get(i).getMaterial().equals(Material.LOG) || mv.get(i).getMaterial().equals(Material.LOG_2))
 										{
@@ -195,15 +193,11 @@ public class IslandGenerator
 
 										}
 
-										spawn = spawn.getBlock().getLocation().clone().add(0.5, 0.5, 0.5);
-										System.out.println("Spawn is " + spawn);
 										cb.run(mv.size());
 									}
 								};
 							}
 						};
-
-						ct.flush();
 					}
 				};
 			}
@@ -286,6 +280,13 @@ public class IslandGenerator
 
 			if(heightmap.get(cursor) == (int) i.getBlockY())
 			{
+				validSpawns.add(center.clone().add(i));
+
+				if(validSpawns.size() > 16)
+				{
+					validSpawns.popRandom();
+				}
+
 				if(M.r(0.75))
 				{
 					mat.put(i, new MaterialBlock(Material.GRASS));

@@ -5,7 +5,9 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.volmit.skyprime.SkyMaster;
+import com.volmit.skyprime.Config;
+import com.volmit.volume.lang.collections.GList;
+import com.volmit.volume.lang.json.JSONArray;
 import com.volmit.volume.lang.json.JSONObject;
 import com.volmit.volume.math.M;
 
@@ -38,6 +40,8 @@ public class Island
 	private double spawnyy;
 	private double spawnpp;
 	private int maxSize;
+	private GList<UUID> admins;
+	private GList<UUID> members;
 
 	public Island(UUID id, UUID owner)
 	{
@@ -59,7 +63,9 @@ public class Island
 		needsRescan = true;
 		lastValueCalculation = M.ms();
 		lastSave = M.ms();
-		maxSize = SkyMaster.maxSize;
+		maxSize = Config.SIZE_DEFAULT;
+		admins = new GList<>();
+		members = new GList<>();
 	}
 
 	public Island(JSONObject o)
@@ -80,7 +86,7 @@ public class Island
 		cMergeItem = o.has("config-merge-item") ? o.getInt("config-merge-item") : 1.5;
 		cMergeXp = o.has("config-merge-xp") ? o.getInt("config-merge-xp") : 2.5;
 		visibility = o.has("visibility") ? Visibility.values()[o.getInt("visibility")] : Visibility.PRIVATE;
-		maxSize = o.has("maxsize") ? o.getInt("maxsize") : SkyMaster.maxSize;
+		maxSize = o.has("maxsize") ? o.getInt("maxsize") : Config.SIZE_DEFAULT;
 		spawnx = o.has("sx") ? o.getDouble("sx") : 0;
 		spawny = o.has("sy") ? o.getDouble("sy") : -10;
 		spawnz = o.has("sz") ? o.getDouble("sz") : 0;
@@ -91,7 +97,8 @@ public class Island
 		warpz = o.has("wz") ? o.getDouble("wz") : 0;
 		warpyy = o.has("wyy") ? o.getDouble("wyy") : 0;
 		warppp = o.has("wpp") ? o.getDouble("wpp") : 0;
-
+		admins = o.has("admins") ? idf(o.getJSONArray("admins")) : new GList<>();
+		members = o.has("members") ? idf(o.getJSONArray("members")) : new GList<>();
 	}
 
 	public JSONObject toJSON()
@@ -125,8 +132,44 @@ public class Island
 		j.put("wz", warpz);
 		j.put("wyy", warpyy);
 		j.put("wpp", warppp);
+		j.put("members", idx(members));
+		j.put("admins", idx(admins));
 
 		return j;
+	}
+
+	public GList<UUID> getAdmins()
+	{
+		return admins;
+	}
+
+	public GList<UUID> getMembers()
+	{
+		return members;
+	}
+
+	public JSONArray idx(GList<UUID> g)
+	{
+		JSONArray a = new JSONArray();
+
+		for(UUID i : g)
+		{
+			a.put(i.toString());
+		}
+
+		return a;
+	}
+
+	public GList<UUID> idf(JSONArray a)
+	{
+		GList<UUID> v = new GList<>();
+
+		for(String i : GList.from(a))
+		{
+			v.add(UUID.fromString(i));
+		}
+
+		return v;
 	}
 
 	public double getWarpx()
@@ -231,7 +274,7 @@ public class Island
 
 	public int getMaxSize()
 	{
-		return Math.max(SkyMaster.maxSize, maxSize);
+		return Math.max(Config.SIZE_DEFAULT, maxSize);
 	}
 
 	public void setMaxSize(int maxSize)

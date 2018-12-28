@@ -5,7 +5,6 @@ import com.volmit.skyprime.VirtualIsland;
 import com.volmit.volume.bukkit.command.Command;
 import com.volmit.volume.bukkit.command.PawnCommand;
 import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.task.S;
 import com.volmit.volume.bukkit.util.text.C;
 
 public class CommandSkyPrime extends PawnCommand
@@ -72,16 +71,8 @@ public class CommandSkyPrime extends PawnCommand
 
 				if(!is.getWorld().equals(sender.player().getWorld()))
 				{
+					sender.sendMessage("Loading your island.");
 					SkyMaster.getIsland(sender.player()).spawn(sender.player());
-
-					new S(20)
-					{
-						@Override
-						public void run()
-						{
-							sender.sendMessage("Welcome back to your island!");
-						}
-					};
 				}
 
 				else

@@ -2,36 +2,29 @@ package com.volmit.skyprime;
 
 public class Voltage
 {
-	public static double maxMilliseconds = 45D;
-	public static double maxMillisecondsPerIsland = 1.5D;
-	public static double voltsPerMillisecond = 50D;
-	public static double baseVoltage = 50D;
-	public static double maxValueVoltage = 20000D;
-	public static double baseVoltageMin = 35D;
-
 	public static double getIslandBaseVoltage(double value)
 	{
-		return baseVoltageMin + ((Math.min(value / 100D, maxValueVoltage) / maxValueVoltage) * (baseVoltage - baseVoltageMin));
+		return Config.VOLTAGE_BASE_VOLTAGE_MIN + ((Math.min(value / 100D, Config.VOLTAGE_BASE_VOLTAGE_MAX) / Config.VOLTAGE_MAXOUT_VALUE) * (Config.VOLTAGE_BASE_VOLTAGE_MAX - Config.VOLTAGE_BASE_VOLTAGE_MIN));
 	}
 
 	public static double getIslandBaseVoltage()
 	{
-		return baseVoltage;
+		return Config.VOLTAGE_BASE_VOLTAGE_MAX;
 	}
 
 	public static double getMilliseconds(double voltage)
 	{
-		return voltage / voltsPerMillisecond;
+		return voltage / Config.VOLTAGE_VOLTS_PER_MILLISECOND;
 	}
 
 	public static double getVolts(double ms)
 	{
-		return ms * voltsPerMillisecond;
+		return ms * Config.VOLTAGE_VOLTS_PER_MILLISECOND;
 	}
 
 	public static double getIslandBonusVoltage()
 	{
-		return Math.max(0, (getVolts(Math.min(maxMillisecondsPerIsland, maxMilliseconds)) - (getIslandBaseVoltage() * (double) getTotalIslands())) / (double) getTotalIslands());
+		return Math.max(0, (getVolts(Math.min(Config.VOLTAGE_MAX_MILLISECONDS_PER_ISLAND, Config.VOLTAGE_MAX_MILLISECONDS)) - (getIslandBaseVoltage() * (double) getTotalIslands())) / (double) getTotalIslands());
 	}
 
 	private static double getTotalIslands()

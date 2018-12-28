@@ -1,6 +1,5 @@
 package com.volmit.skyprime.command;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import com.volmit.skyprime.SkyMaster;
@@ -30,10 +29,10 @@ public class CommandCreate extends PawnCommand
 			@Override
 			public void run(Location t)
 			{
-				t.getWorld().setSpawnLocation(t);
-				sender.sendMessage("Teleporting to " + t.getWorld().getName());
-				sender.player().teleport(t);
-				Bukkit.dispatchCommand(sender.player(), "sky");
+				Location sp = t.clone();
+				t.getWorld().setSpawnLocation(sp);
+				sender.sendMessage("Loading your island.");
+				SkyMaster.getIsland(sender.player()).spawn(sender.player());
 			}
 		}).create();
 

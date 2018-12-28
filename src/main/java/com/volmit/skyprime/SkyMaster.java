@@ -12,7 +12,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -21,11 +20,11 @@ import com.volmit.skyprime.gen.IslandGenerator;
 import com.volmit.skyprime.gen.SkyGen;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.StorageEngine;
+import com.volmit.volume.bukkit.nms.adapter.ChunkTracker;
 import com.volmit.volume.bukkit.task.SR;
 import com.volmit.volume.bukkit.util.text.C;
 import com.volmit.volume.lang.collections.Callback;
 import com.volmit.volume.lang.collections.FinalInteger;
-import com.volmit.volume.lang.collections.GList;
 import com.volmit.volume.lang.collections.GMap;
 import com.volmit.volume.lang.format.F;
 import com.volmit.volume.lang.io.VIO;
@@ -33,61 +32,15 @@ import com.volmit.volume.math.Profiler;
 
 public class SkyMaster
 {
-	public static int maxSize = 80;
 	private static StorageEngine engine;
 	private static GMap<Island, VirtualIsland> virtualIslands = new GMap<>();
 	private static FileConfiguration fc;
+	private static GMap<World, ChunkTracker> ctx = new GMap<>();
 	private static GMap<String, Integer> sizemap = new GMap<>();
-
-	public static void loadConfig()
-	{
-		File f = SkyPrime.vpi.getDataFile("config.yml");
-
-		if(!f.exists())
-		{
-			f.getParentFile().mkdirs();
-			FileConfiguration fc = new YamlConfiguration();
-			fc.set("sizes.default", 80);
-			fc.set("sizes.ranks", new GList<String>().qadd("a=128").qadd("b=192").qadd("c=256").qadd("d=320").qadd("e=384"));
-			try
-			{
-				fc.save(f);
-			}
-
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		FileConfiguration fc = new YamlConfiguration();
-
-		try
-		{
-			fc.load(f);
-			maxSize = fc.getInt("sizes.default");
-			sizemap.clear();
-
-			for(String i : fc.getStringList("sizes.ranks"))
-			{
-				if(i.contains("="))
-				{
-					String m = i.split("=")[0].trim();
-					int v = Integer.valueOf(i.split("=")[1].trim());
-					sizemap.put(m, v);
-				}
-			}
-		}
-
-		catch(IOException | InvalidConfigurationException e)
-		{
-			e.printStackTrace();
-		}
-	}
 
 	public static int getSizeFor(Player p)
 	{
-		int max = maxSize;
+		int max = Config.SIZE_DEFAULT;
 
 		for(String i : sizemap.k())
 		{
@@ -125,6 +78,19 @@ public class SkyMaster
 		catch(Throwable ex)
 		{
 			ex.printStackTrace();
+		}
+	}
+
+	public static void loadConfig()
+	{
+		try
+		{
+			Config.load();
+		}
+
+		catch(IllegalArgumentException | IllegalAccessException | IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 
@@ -206,6 +172,17 @@ public class SkyMaster
 		else
 		{
 			System.out.println("Null world");
+		}
+	}
+
+	public static void flushTracker(World w)
+	{
+		ChunkTracker c = ctx.get(w);
+
+		if(c != null)
+		{
+			ctx.remove(w);
+			c.flush();
 		}
 	}
 
@@ -375,7 +352,7 @@ public class SkyMaster
 
 					if(r != null)
 					{
-						gen.getCt().flush();
+						SkyMaster.putCT(w, gen.getCt());
 						r.run(spawn);
 					}
 				}
@@ -402,6 +379,11 @@ public class SkyMaster
 	public static String worldName(UUID island)
 	{
 		return "skydata/dimensions/" + island;
+	}
+
+	protected static void putCT(World w, ChunkTracker ct)
+	{
+		ctx.put(w, ct);
 	}
 
 	public static void saveAllWorlds()
