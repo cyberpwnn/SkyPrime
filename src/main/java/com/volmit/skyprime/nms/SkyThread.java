@@ -2,7 +2,7 @@ package com.volmit.skyprime.nms;
 
 import java.util.UUID;
 
-import com.volmit.volume.lang.collections.GList;
+import com.volmit.phantom.lang.GList;
 
 public class SkyThread extends Thread
 {
@@ -46,6 +46,11 @@ public class SkyThread extends Thread
 						e.printStackTrace();
 					}
 				}
+			}
+
+			catch(InterruptedException e)
+			{
+
 			}
 
 			catch(Throwable e)

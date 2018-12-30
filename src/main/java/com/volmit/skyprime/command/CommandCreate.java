@@ -2,12 +2,13 @@ package com.volmit.skyprime.command;
 
 import org.bukkit.Location;
 
+import com.volmit.phantom.lang.Callback;
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
+import com.volmit.skyprime.Config;
 import com.volmit.skyprime.SkyMaster;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.lang.collections.Callback;
 
-public class CommandCreate extends PawnCommand
+public class CommandCreate extends PhantomCommand
 {
 	public CommandCreate()
 	{
@@ -15,7 +16,7 @@ public class CommandCreate extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(SkyMaster.hasIsland(sender.player()))
 		{
@@ -23,8 +24,29 @@ public class CommandCreate extends PawnCommand
 			return true;
 		}
 
+		int size = Config.ISLAND_SIZE;
+
+		if(args.length == 1)
+		{
+			if(args[0].equalsIgnoreCase("small") || args[0].equalsIgnoreCase("tiny") || args[0].equalsIgnoreCase("mini") || args[0].equalsIgnoreCase("little"))
+			{
+				size = Config.ISLAND_SIZE_SMALL;
+			}
+
+			else if(args[0].equalsIgnoreCase("big") || args[0].equalsIgnoreCase("large") || args[0].equalsIgnoreCase("huge") || args[0].equalsIgnoreCase("macro"))
+			{
+				size = Config.ISLAND_SIZE_BIG;
+			}
+
+			else
+			{
+				sender.sendMessage("/sky new [big/small]");
+				sender.sendMessage("No parameter = medium");
+			}
+		}
+
 		sender.sendMessage("Creating a new Island for you!");
-		SkyMaster.builder().streamProgress(sender.player()).onComplete(new Callback<Location>()
+		SkyMaster.builder().size(size).competitive(false).streamProgress(sender.player()).onComplete(new Callback<Location>()
 		{
 			@Override
 			public void run(Location t)

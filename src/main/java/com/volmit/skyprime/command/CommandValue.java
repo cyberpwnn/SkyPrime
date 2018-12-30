@@ -1,12 +1,12 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.phantom.lang.F;
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
+import com.volmit.phantom.text.C;
 import com.volmit.skyprime.SkyMaster;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.util.text.C;
-import com.volmit.volume.lang.format.F;
 
-public class CommandValue extends PawnCommand
+public class CommandValue extends PhantomCommand
 {
 	public CommandValue()
 	{
@@ -14,7 +14,7 @@ public class CommandValue extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{
@@ -26,11 +26,13 @@ public class CommandValue extends PawnCommand
 		{
 			sender.sendMessage("Island Size: " + C.BOLD + C.WHITE + F.f((int) SkyMaster.getIsland(sender.player()).getWorld().getWorldBorder().getSize()) + " of " + F.f((long) SkyMaster.getIsland(sender.player()).getIsland().getMaxSize()));
 			sender.sendMessage("Island Value: " + C.BOLD + C.GREEN + F.f((long) (SkyMaster.getIsland(sender.player()).getIsland().getValue() / 20D)));
+			sender.sendMessage("Island Level: " + C.BOLD + C.AQUA + F.f((long) (SkyMaster.getIsland(sender.player()).getIsland().getLevel() / 20D)));
 		}
 
 		else
 		{
 			sender.sendMessage("Island Value: " + C.BOLD + C.GREEN + F.f((long) (SkyMaster.getIslandConfig(sender.player()).getValue() / 20D)));
+			sender.sendMessage("Island Level: " + C.BOLD + C.AQUA + F.f((long) (SkyMaster.getIslandConfig(sender.player()).getLevel() / 20D)));
 		}
 
 		return true;

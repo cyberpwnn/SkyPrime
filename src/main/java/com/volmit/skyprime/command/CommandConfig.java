@@ -1,12 +1,12 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.Visibility;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
 
-public class CommandConfig extends PawnCommand
+public class CommandConfig extends PhantomCommand
 {
 	public CommandConfig()
 	{
@@ -14,7 +14,7 @@ public class CommandConfig extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{
@@ -39,6 +39,7 @@ public class CommandConfig extends PawnCommand
 			sender.sendMessage("merge.item = " + is.getcMergeItem());
 			sender.sendMessage("hopper.rate = " + is.getcHopperRate());
 			sender.sendMessage("hopper.amount = " + is.getcHopperAmount());
+			sender.sendMessage("public.pickup = " + is.iscPublicPickup());
 		}
 
 		else if(args.length == 1)
@@ -60,6 +61,11 @@ public class CommandConfig extends PawnCommand
 				else if(args[0].equalsIgnoreCase("despawn.item"))
 				{
 					is.setcDespawnItem(Integer.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public.pickup"))
+				{
+					is.setcPublicPickup(Boolean.valueOf(args[1]));
 				}
 
 				else if(args[0].equalsIgnoreCase("merge.xp"))

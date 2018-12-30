@@ -5,14 +5,14 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
+import com.volmit.phantom.plugin.S;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.Visibility;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.task.S;
 
-public class CommandVisit extends PawnCommand
+public class CommandVisit extends PhantomCommand
 {
 	public CommandVisit()
 	{
@@ -20,7 +20,7 @@ public class CommandVisit extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(args.length != 1)
 		{

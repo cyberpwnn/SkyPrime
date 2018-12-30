@@ -11,24 +11,27 @@ import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 
+import com.volmit.phantom.lang.Callback;
+import com.volmit.phantom.lang.D;
+import com.volmit.phantom.lang.F;
+import com.volmit.phantom.lang.FinalInteger;
+import com.volmit.phantom.lang.GMap;
+import com.volmit.phantom.lang.Profiler;
+import com.volmit.phantom.lang.VIO;
+import com.volmit.phantom.nms.ChunkTracker;
+import com.volmit.phantom.plugin.SR;
+import com.volmit.phantom.text.C;
 import com.volmit.skyprime.gen.IslandGenerator;
 import com.volmit.skyprime.gen.SkyGen;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.StorageEngine;
-import com.volmit.volume.bukkit.nms.adapter.ChunkTracker;
-import com.volmit.volume.bukkit.task.SR;
-import com.volmit.volume.bukkit.util.text.C;
-import com.volmit.volume.lang.collections.Callback;
-import com.volmit.volume.lang.collections.FinalInteger;
-import com.volmit.volume.lang.collections.GMap;
-import com.volmit.volume.lang.format.F;
-import com.volmit.volume.lang.io.VIO;
-import com.volmit.volume.math.Profiler;
 
 public class SkyMaster
 {
@@ -40,7 +43,7 @@ public class SkyMaster
 
 	public static int getSizeFor(Player p)
 	{
-		int max = Config.SIZE_DEFAULT;
+		int max = Config.SIZE_DEFAULT_BARRIER;
 
 		for(String i : sizemap.k())
 		{
@@ -56,7 +59,7 @@ public class SkyMaster
 	public static void setStorageEngine(StorageEngine e)
 	{
 		engine = e;
-		File f = SkyPrime.vpi.getDataFile("worth.yml");
+		File f = SkyPrime.instance.getDataFile("worth.yml");
 		loadConfig();
 
 		try
@@ -131,7 +134,7 @@ public class SkyMaster
 	}
 
 	@SuppressWarnings("deprecation")
-	public static void unloadWorld(World world, boolean save)
+	public static void unloadWorldRightFuckingNow(World world, boolean save)
 	{
 		World safe = Bukkit.getWorld("world");
 
@@ -156,11 +159,18 @@ public class SkyMaster
 		Bukkit.unloadWorld(world, true);
 	}
 
+	public static void unloadWorld(World world, boolean save)
+	{
+		unloadWorldRightFuckingNow(world, save);
+	}
+
 	private static void loadWorld(Island is)
 	{
 		System.out.println("world " + worldName(is.getId()));
 		WorldCreator ww = new WorldCreator(worldName(is.getId()));
 		ww.generator(new SkyGen());
+		ww.environment(is.isCompetitive() ? Environment.NETHER : Environment.NORMAL);
+		ww.generateStructures(false);
 		World w = Bukkit.createWorld(ww);
 
 		if(w != null)
@@ -247,17 +257,19 @@ public class SkyMaster
 		return new IslandBuilder();
 	}
 
-	public static class IslandBuilder
+	public static class IslandBuilder implements Listener
 	{
 		private UUID island;
 		private Callback<Location> r;
 		private Player stream;
+		private boolean competitive;
 		private int size;
 
 		public IslandBuilder()
 		{
-			size = 8;
 			this.island = UUID.randomUUID();
+			competitive = false;
+			size = Config.ISLAND_SIZE;
 
 			if(engine.hasIslandById(island))
 			{
@@ -265,10 +277,15 @@ public class SkyMaster
 			}
 		}
 
-		public IslandBuilder size(int s)
+		public IslandBuilder size(int size)
 		{
-			this.size = s;
+			this.size = size;
+			return this;
+		}
 
+		public IslandBuilder competitive(boolean c)
+		{
+			competitive = c;
 			return this;
 		}
 
@@ -277,6 +294,9 @@ public class SkyMaster
 			stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0.07, 0), 0, 500, 20);
 			WorldCreator wc = new WorldCreator(worldName(island));
 			Island is = new Island(island, stream.getUniqueId());
+			is.setCompetitive(competitive);
+			wc.environment(is.isCompetitive() ? Environment.NETHER : Environment.NORMAL);
+			wc.generateStructures(false);
 			wc.generator(new SkyGen());
 			World w = wc.createWorld();
 			w.setKeepSpawnInMemory(false);
@@ -291,7 +311,7 @@ public class SkyMaster
 			w.setGameRuleValue("commandBlockOutput", "false");
 			w.setGameRuleValue("disableElytraMovementCheck", "false");
 			w.setGameRuleValue("doDaylightCycle", "true");
-			w.setGameRuleValue("maxEntityCramming", "3");
+			w.setGameRuleValue("maxEntityCramming", "8");
 			w.setGameRuleValue("randomTickSpeed", "2");
 			w.setGameRuleValue("showDeathMessages", "false");
 			w.setGameRuleValue("spawnRadius", "1");
@@ -299,16 +319,48 @@ public class SkyMaster
 			Location ll = new Location(w, 0, 100, 0);
 			w.getWorldBorder().setCenter(ll);
 			w.getWorldBorder().setDamageAmount(2);
-			w.getWorldBorder().setSize(299);
+			w.getWorldBorder().setSize(is.isCompetitive() ? 10 : 300);
 			stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0.11, 0), 0, 100, 20);
 			virtualIslands.put(is, new VirtualIsland(w, is));
 			engine.setIsland(is);
 			ll.getChunk().load();
-			IslandGenerator gen = new IslandGenerator(ll, (long) ((long) (Math.random() * 8423472229940949494l) + (Math.random() * 1999911123999444444L)));
-			gen.setRadiusBlocks(size);
+			IslandGenerator gen = new IslandGenerator(ll, (long) (is.isCompetitive() ? 1337 : ((long) (Math.random() * 8423472229940949494l) + (Math.random() * 1999911123999444444L))));
+
+			if(is.isCompetitive())
+			{
+				gen.setSquashTop(1.4);
+				gen.setSeed(1337);
+				gen.setRadiusBlocks(Math.max(3, Config.ISLAND_COMP_SIZE));
+			}
+
+			else
+			{
+				gen.setRadiusBlocks(size);
+
+				if(size > 8)
+				{
+					gen.setOctaves(8);
+					gen.setNoise(size / 3);
+					gen.setSquashTop(1.4);
+					gen.setFrequency(0.3);
+					gen.setAmplifier(0.5);
+					gen.setDimension(0.5);
+				}
+			}
+
 			Profiler pr = new Profiler();
 			pr.begin();
 			FinalInteger vi = new FinalInteger(0);
+			System.out.println("Size is " + size);
+			gen.generate(new Callback<Integer>()
+			{
+				@Override
+				public void run(Integer t)
+				{
+					vi.set(10);
+				}
+			});
+
 			new SR()
 			{
 				@Override
@@ -323,40 +375,11 @@ public class SkyMaster
 					{
 						stream.sendTitle("", C.AQUA + "" + C.BOLD + "Done", 0, 5, 20);
 						cancel();
+						r.run(gen.getSpawn());
+						is.setMinsize(gen.getFurthest());
 					}
 				}
 			};
-
-			gen.generate(new Callback<Integer>()
-			{
-				@SuppressWarnings("deprecation")
-				@Override
-				public void run(Integer t)
-				{
-					vi.set(1);
-					pr.end();
-
-					if(stream != null)
-					{
-						stream.sendMessage("Generated Island in " + C.WHITE + F.time(pr.getMilliseconds(), 1));
-					}
-
-					Location spawn = gen.getSpawn();
-
-					for(Chunk i : w.getLoadedChunks())
-					{
-						i.unload(true, true);
-					}
-
-					w.save();
-
-					if(r != null)
-					{
-						SkyMaster.putCT(w, gen.getCt());
-						r.run(spawn);
-					}
-				}
-			});
 
 			return w;
 		}
@@ -390,9 +413,13 @@ public class SkyMaster
 	{
 		for(VirtualIsland i : virtualIslands.v())
 		{
+			D.as("SkyMaster").l("Saving " + i.getWorld().getName());
 			i.saveAll();
+			D.as("SkyMaster").l("Unloading " + i.getWorld().getName());
 			i.unload();
 		}
+
+		virtualIslands.clear();
 	}
 
 	public static double getIslandsCount()
@@ -443,5 +470,19 @@ public class SkyMaster
 		new File("skydata/deletions/" + island.getId().toString()).mkdirs();
 		SkyMaster.getStorageEngine().removeIsland(island);
 		VIO.delete(new File(SkyMaster.worldName(island.getId())));
+	}
+
+	public static String getVoltageSummary()
+	{
+		double max = 0;
+		double use = 0;
+
+		for(VirtualIsland i : virtualIslands.v())
+		{
+			max += i.getTotalVolts();
+			use += i.getUsedVolts();
+		}
+
+		return C.WHITE + F.f(use, 0) + " / " + F.f(max, 0) + C.GRAY + " (" + F.time(Voltage.getMilliseconds(use), 2) + ")";
 	}
 }

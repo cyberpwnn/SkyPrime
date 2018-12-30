@@ -5,11 +5,11 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import com.volmit.phantom.json.JSONArray;
+import com.volmit.phantom.json.JSONObject;
+import com.volmit.phantom.lang.GList;
+import com.volmit.phantom.math.M;
 import com.volmit.skyprime.Config;
-import com.volmit.volume.lang.collections.GList;
-import com.volmit.volume.lang.json.JSONArray;
-import com.volmit.volume.lang.json.JSONObject;
-import com.volmit.volume.math.M;
 
 public class Island
 {
@@ -17,6 +17,8 @@ public class Island
 	private UUID id;
 	private long started;
 	private double value;
+	private double level;
+	private double minsize;
 	private double weightEntities;
 	private double weightTiles;
 	private boolean needsRescan;
@@ -24,6 +26,7 @@ public class Island
 	private int cDespawnArrow;
 	private int cDespawnItem;
 	private double cMergeItem;
+	private boolean cPublicPickup;
 	private double cMergeXp;
 	private int cHopperRate;
 	private int cHopperAmount;
@@ -40,6 +43,7 @@ public class Island
 	private double spawnyy;
 	private double spawnpp;
 	private int maxSize;
+	private boolean competitive;
 	private GList<UUID> admins;
 	private GList<UUID> members;
 
@@ -47,25 +51,29 @@ public class Island
 	{
 		spawny = -10;
 		warpy = -10;
+		competitive = false;
 		cDespawnArrow = 20;
 		cDespawnItem = 1200;
 		cMergeItem = 1.5;
 		cMergeXp = 2.5;
+		minsize = 3D;
 		cHopperAmount = 16;
 		visibility = Visibility.PRIVATE;
 		cHopperRate = 5;
 		this.owner = owner;
 		this.id = id;
 		started = M.ms();
+		cPublicPickup = false;
 		value = 0D;
 		weightEntities = 55;
 		weightTiles = 45;
 		needsRescan = true;
 		lastValueCalculation = M.ms();
 		lastSave = M.ms();
-		maxSize = Config.SIZE_DEFAULT;
+		maxSize = Config.SIZE_DEFAULT_BARRIER;
 		admins = new GList<>();
 		members = new GList<>();
+		level = 0D;
 	}
 
 	public Island(JSONObject o)
@@ -76,8 +84,10 @@ public class Island
 		lastValueCalculation = o.has("last-value") ? o.getLong("last-value") : M.ms();
 		weightEntities = o.has("weight-entities") ? o.getDouble("weight-entities") : 70D;
 		weightTiles = o.has("weight-tiles") ? o.getDouble("weight-tiles") : 30D;
+		minsize = o.has("min-size") ? o.getDouble("min-size") : 3D;
 		needsRescan = o.has("needs-rescan") ? o.getBoolean("needs-rescan") : true;
 		value = o.getDouble("value");
+		value = o.has("level") ? o.getDouble("level") : 0D;
 		started = o.getLong("started");
 		cHopperRate = o.has("config-hopper-rate") ? o.getInt("config-hopper-rate") : 5;
 		cHopperAmount = o.has("config-hopper-amount") ? o.getInt("config-hopper-amount") : 4;
@@ -85,8 +95,10 @@ public class Island
 		cDespawnItem = o.has("config-despawn-item") ? o.getInt("config-despawn-item") : 1200;
 		cMergeItem = o.has("config-merge-item") ? o.getInt("config-merge-item") : 1.5;
 		cMergeXp = o.has("config-merge-xp") ? o.getInt("config-merge-xp") : 2.5;
+		cPublicPickup = o.has("config-pickup") ? o.getBoolean("config-pickup") : false;
+		competitive = o.has("competitive") ? o.getBoolean("competitive") : false;
 		visibility = o.has("visibility") ? Visibility.values()[o.getInt("visibility")] : Visibility.PRIVATE;
-		maxSize = o.has("maxsize") ? o.getInt("maxsize") : Config.SIZE_DEFAULT;
+		maxSize = o.has("maxsize") ? o.getInt("maxsize") : Config.SIZE_DEFAULT_BARRIER;
 		spawnx = o.has("sx") ? o.getDouble("sx") : 0;
 		spawny = o.has("sy") ? o.getDouble("sy") : -10;
 		spawnz = o.has("sz") ? o.getDouble("sz") : 0;
@@ -107,6 +119,7 @@ public class Island
 
 		j.put("id", getId().toString());
 		j.put("owner", getOwner().toString());
+		j.put("level", level);
 		j.put("value", value);
 		j.put("started", started);
 		j.put("needs-rescan", needsRescan);
@@ -119,6 +132,7 @@ public class Island
 		j.put("config-despawn-item", cDespawnItem);
 		j.put("config-merge-item", cMergeItem);
 		j.put("config-merge-xp", cMergeXp);
+		j.put("config-pickup", cPublicPickup);
 		j.put("last-save", lastSave);
 		j.put("visibility", visibility.ordinal());
 		j.put("maxsize", maxSize);
@@ -134,8 +148,35 @@ public class Island
 		j.put("wpp", warppp);
 		j.put("members", idx(members));
 		j.put("admins", idx(admins));
+		j.put("competitive", competitive);
+		j.put("min-size", minsize);
 
 		return j;
+	}
+
+	public double getMinsize()
+	{
+		return minsize;
+	}
+
+	public boolean isCompetitive()
+	{
+		return competitive;
+	}
+
+	public void setCompetitive(boolean competitive)
+	{
+		this.competitive = competitive;
+	}
+
+	public void setAdmins(GList<UUID> admins)
+	{
+		this.admins = admins;
+	}
+
+	public void setMembers(GList<UUID> members)
+	{
+		this.members = members;
 	}
 
 	public GList<UUID> getAdmins()
@@ -274,7 +315,7 @@ public class Island
 
 	public int getMaxSize()
 	{
-		return Math.max(Config.SIZE_DEFAULT, maxSize);
+		return Math.max(Config.SIZE_DEFAULT_BARRIER, maxSize);
 	}
 
 	public void setMaxSize(int maxSize)
@@ -455,6 +496,11 @@ public class Island
 		return cMergeItem;
 	}
 
+	public void setcPublicPickup(boolean cPublicPickup)
+	{
+		this.cPublicPickup = cPublicPickup;
+	}
+
 	public void setcMergeItem(double cMergeItem)
 	{
 		this.cMergeItem = cMergeItem;
@@ -480,6 +526,11 @@ public class Island
 		this.cHopperRate = cHopperRate;
 	}
 
+	public boolean iscPublicPickup()
+	{
+		return cPublicPickup;
+	}
+
 	public int getcHopperAmount()
 	{
 		return cHopperAmount;
@@ -490,4 +541,18 @@ public class Island
 		this.cHopperAmount = cHopperAmount;
 	}
 
+	public double getLevel()
+	{
+		return level;
+	}
+
+	public void setLevel(double level)
+	{
+		this.level = level;
+	}
+
+	public void setMinsize(double minsize)
+	{
+		this.minsize = minsize;
+	}
 }

@@ -158,6 +158,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>com.volmit</groupId>
+      <artifactId>Phantom</artifactId>
+      <version>head</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>spigot.org</groupId>
       <artifactId>spigot-1.12.2</artifactId>
       <version>1.12.2</version>

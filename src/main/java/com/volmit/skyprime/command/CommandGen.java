@@ -1,16 +1,16 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.phantom.lang.Callback;
+import com.volmit.phantom.lang.F;
+import com.volmit.phantom.lang.FinalInteger;
+import com.volmit.phantom.lang.Profiler;
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
+import com.volmit.phantom.plugin.SR;
+import com.volmit.phantom.text.C;
 import com.volmit.skyprime.gen.IslandGenerator;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.task.SR;
-import com.volmit.volume.bukkit.util.text.C;
-import com.volmit.volume.lang.collections.Callback;
-import com.volmit.volume.lang.collections.FinalInteger;
-import com.volmit.volume.lang.format.F;
-import com.volmit.volume.math.Profiler;
 
-public class CommandGen extends PawnCommand
+public class CommandGen extends PhantomCommand
 {
 	public CommandGen()
 	{
@@ -18,7 +18,7 @@ public class CommandGen extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(!sender.hasPermission("sky.gentest"))
 		{

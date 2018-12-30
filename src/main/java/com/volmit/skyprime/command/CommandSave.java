@@ -2,13 +2,13 @@ package com.volmit.skyprime.command;
 
 import java.util.concurrent.TimeUnit;
 
+import com.volmit.phantom.lang.F;
+import com.volmit.phantom.math.M;
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
 import com.volmit.skyprime.SkyMaster;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.lang.format.F;
-import com.volmit.volume.math.M;
 
-public class CommandSave extends PawnCommand
+public class CommandSave extends PhantomCommand
 {
 	public CommandSave()
 	{
@@ -16,7 +16,7 @@ public class CommandSave extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

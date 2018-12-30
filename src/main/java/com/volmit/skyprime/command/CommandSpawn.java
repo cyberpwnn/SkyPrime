@@ -2,11 +2,11 @@ package com.volmit.skyprime.command;
 
 import org.bukkit.Bukkit;
 
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
 import com.volmit.skyprime.SkyMaster;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
 
-public class CommandSpawn extends PawnCommand
+public class CommandSpawn extends PhantomCommand
 {
 	public CommandSpawn()
 	{
@@ -14,7 +14,7 @@ public class CommandSpawn extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

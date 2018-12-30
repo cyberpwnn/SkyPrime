@@ -12,20 +12,20 @@ import org.bukkit.material.Stairs;
 import org.bukkit.material.Wood;
 import org.bukkit.util.Vector;
 
-import com.volmit.volume.bukkit.U;
-import com.volmit.volume.bukkit.nms.NMSSVC;
-import com.volmit.volume.bukkit.nms.adapter.ChunkTracker;
-import com.volmit.volume.bukkit.task.A;
-import com.volmit.volume.bukkit.task.S;
-import com.volmit.volume.bukkit.util.world.Direction;
-import com.volmit.volume.bukkit.util.world.MaterialBlock;
-import com.volmit.volume.lang.collections.Callback;
-import com.volmit.volume.lang.collections.GList;
-import com.volmit.volume.lang.collections.GMap;
-import com.volmit.volume.lang.collections.GSet;
-import com.volmit.volume.math.Average;
-import com.volmit.volume.math.M;
-import com.volmit.volume.math.noise.SimplexOctaveGenerator;
+import com.volmit.phantom.lang.Callback;
+import com.volmit.phantom.lang.GList;
+import com.volmit.phantom.lang.GMap;
+import com.volmit.phantom.lang.GSet;
+import com.volmit.phantom.math.Average;
+import com.volmit.phantom.math.M;
+import com.volmit.phantom.math.SimplexOctaveGenerator;
+import com.volmit.phantom.nms.ChunkTracker;
+import com.volmit.phantom.plugin.A;
+import com.volmit.phantom.plugin.S;
+import com.volmit.phantom.plugin.SVC;
+import com.volmit.phantom.services.NMSSVC;
+import com.volmit.phantom.util.Direction;
+import com.volmit.phantom.util.MaterialBlock;
 
 public class IslandGenerator
 {
@@ -44,6 +44,7 @@ public class IslandGenerator
 	private double at;
 	private double steps;
 	private double tsteps;
+	private double furthest;
 	private String status;
 	private Location spawn;
 	private ChunkTracker ct;
@@ -67,6 +68,7 @@ public class IslandGenerator
 		at = 0;
 		steps = 0;
 		tsteps = 8;
+		furthest = 2;
 		status = "Idle";
 		validSpawns = new GList<Location>();
 	}
@@ -108,16 +110,26 @@ public class IslandGenerator
 				vv = round(vv);
 				rset("Realizing");
 				GMap<Vector, MaterialBlock> mv = materialize(vv);
-				spawn = validSpawns.pickRandom();
+				spawn = validSpawns.isEmpty() ? center.clone() : validSpawns.pickRandom();
 				ct = new ChunkTracker();
 				rset("Building");
-				total += mv.size();
+				total += mv.size() * 2;
 				GSet<Location> gc = new GSet<Location>();
 				boolean chested = false;
 
 				for(Vector i : mv.k())
 				{
 					gc.add(center.clone().add(i));
+
+					if(i.getX() > furthest)
+					{
+						furthest = i.getX();
+					}
+
+					if(i.getZ() > furthest)
+					{
+						furthest = i.getZ();
+					}
 				}
 
 				new S()
@@ -149,7 +161,7 @@ public class IslandGenerator
 										at++;
 										ct.hit(center.clone().add(i));
 										Location lxx = center.clone().add(i);
-										U.getService(NMSSVC.class).setBlock(lxx, mv.get(i));
+										SVC.get(NMSSVC.class).setBlock(lxx, mv.get(i));
 
 										if(!chested && mv.get(i).getMaterial().equals(Material.LOG) || mv.get(i).getMaterial().equals(Material.LOG_2))
 										{
@@ -205,6 +217,46 @@ public class IslandGenerator
 		};
 	}
 
+	public double getTotal()
+	{
+		return total;
+	}
+
+	public double getAt()
+	{
+		return at;
+	}
+
+	public double getSteps()
+	{
+		return steps;
+	}
+
+	public double getTsteps()
+	{
+		return tsteps;
+	}
+
+	public double getFurthest()
+	{
+		return furthest;
+	}
+
+	public String getStatus()
+	{
+		return status;
+	}
+
+	public Location getChestAt()
+	{
+		return chestAt;
+	}
+
+	public GList<Location> getValidSpawns()
+	{
+		return validSpawns;
+	}
+
 	public ChunkTracker getCt()
 	{
 		return ct;
@@ -258,15 +310,25 @@ public class IslandGenerator
 	{
 		GMap<Vector, MaterialBlock> mat = new GMap<Vector, MaterialBlock>();
 		GMap<Vector, Integer> heightmap = getHeightmap(v);
-		total += v.size() * 2;
+		total += v.size() * 3;
 		boolean treeyet = false;
-		int shrubs = (int) (((radiusBlocks * 0.75) * Math.random()) + 1);
+		int shrubs = (int) (((radiusBlocks * 0.35) * Math.random()) + 1);
 
 		Average ax = new Average(8);
 		Average az = new Average(8);
 
 		for(Vector i : v)
 		{
+			if(i.getX() > furthest)
+			{
+				furthest = i.getX();
+			}
+
+			if(i.getZ() > furthest)
+			{
+				furthest = i.getZ();
+			}
+
 			ax.put(i.getX());
 			az.put(i.getZ());
 			at++;
@@ -338,7 +400,7 @@ public class IslandGenerator
 
 					int h = 8;
 
-					GSet<Vector> vl = warpSphereTree(4);
+					GSet<Vector> vl = warpSphereTree(2);
 					total += vl.size() * 3;
 					vl = flatten(vl);
 
@@ -452,6 +514,16 @@ public class IslandGenerator
 			else
 			{
 				mat.put(i, new MaterialBlock(M.r(0.009) ? Material.COAL_ORE : M.r(0.003) ? Material.IRON_ORE : M.r(0.004) ? Material.BONE_BLOCK : M.r(0.15) ? Material.MOSSY_COBBLESTONE : M.r(0.35) ? Material.COBBLESTONE : Material.STONE));
+			}
+
+			if(i.getX() > furthest)
+			{
+				furthest = i.getX();
+			}
+
+			if(i.getZ() > furthest)
+			{
+				furthest = i.getZ();
 			}
 		}
 

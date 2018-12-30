@@ -1,58 +1,64 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
+import com.volmit.phantom.plugin.Scaffold.Command;
+import com.volmit.phantom.text.C;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.VirtualIsland;
-import com.volmit.volume.bukkit.command.Command;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.util.text.C;
 
-public class CommandSkyPrime extends PawnCommand
+public class CommandSkyPrime extends PhantomCommand
 {
 	@Command
 	private CommandReload reload;
 
 	@Command
+	private CommandGen gen;
+
+	@Command("Island")
 	private CommandSetSpawn setspawn;
 
-	@Command
+	@Command("Island")
 	private CommandSpawn spawn;
 
-	@Command
+	@Command("Island")
 	private CommandWarp warp;
 
-	@Command
+	@Command("Island")
 	private CommandSetWarp setwarp;
 
-	@Command
+	@Command("Island")
 	private CommandVoltage voltage;
 
-	@Command
+	@Command("Island")
 	private CommandValue value;
 
-	@Command
+	@Command("Island")
 	private CommandSave save;
 
-	@Command
+	@Command("Island")
 	private CommandReboot reboot;
 
-	@Command
+	@Command("Island")
 	private CommandConfig config;
 
-	@Command
+	@Command("Island")
 	private CommandDelete delete;
 
-	@Command
+	@Command("Island")
 	private CommandCreate create;
 
-	@Command
+	@Command("Island")
 	private CommandRecreate recreate;
 
-	@Command
+	@Command("Island")
 	private CommandVisit visit;
 
-	@Command
-	private CommandGen gen;
+	@Command("Members")
+	private CommandMembers members;
+
+	@Command("Admin")
+	private CommandStatus stats;
 
 	public CommandSkyPrime()
 	{
@@ -60,7 +66,7 @@ public class CommandSkyPrime extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(sender.isPlayer())
 		{

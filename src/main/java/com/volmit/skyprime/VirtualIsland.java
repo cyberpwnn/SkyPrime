@@ -33,25 +33,28 @@ import org.bukkit.inventory.ItemStack;
 import org.spigotmc.SpigotWorldConfig;
 import org.spigotmc.TickLimiter;
 
+import com.volmit.phantom.lang.D;
+import com.volmit.phantom.lang.F;
+import com.volmit.phantom.lang.FinalDouble;
+import com.volmit.phantom.lang.GList;
+import com.volmit.phantom.lang.GMap;
+import com.volmit.phantom.lang.Profiler;
+import com.volmit.phantom.lang.VIO;
+import com.volmit.phantom.math.M;
+import com.volmit.phantom.plugin.Phantom;
+import com.volmit.phantom.plugin.PhantomPlugin;
+import com.volmit.phantom.plugin.PhantomSender;
+import com.volmit.phantom.plugin.S;
+import com.volmit.phantom.util.Cuboid;
+import com.volmit.phantom.util.Cuboid.CuboidDirection;
+import com.volmit.phantom.util.ParticleEffect;
+import com.volmit.phantom.util.W;
 import com.volmit.skyprime.nms.NMSX;
 import com.volmit.skyprime.nms.SkyThread;
 import com.volmit.skyprime.nms.SpecializedTickLimiter;
 import com.volmit.skyprime.nms.TicklistTrimmer;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.Visibility;
-import com.volmit.volume.bukkit.command.VolumeSender;
-import com.volmit.volume.bukkit.task.S;
-import com.volmit.volume.bukkit.util.particle.ParticleEffect;
-import com.volmit.volume.bukkit.util.world.Cuboid;
-import com.volmit.volume.bukkit.util.world.Cuboid.CuboidDirection;
-import com.volmit.volume.bukkit.util.world.W;
-import com.volmit.volume.lang.collections.FinalDouble;
-import com.volmit.volume.lang.collections.GList;
-import com.volmit.volume.lang.collections.GMap;
-import com.volmit.volume.lang.format.F;
-import com.volmit.volume.lang.io.VIO;
-import com.volmit.volume.math.M;
-import com.volmit.volume.math.Profiler;
 
 public class VirtualIsland implements Listener
 {
@@ -224,12 +227,14 @@ public class VirtualIsland implements Listener
 		return 1D - ((double) trimmer.getDelay() / 36D);
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void on(BlockFormEvent e)
 	{
 		if(e.getBlock().getWorld().equals(world) && e.getNewState().getType().equals(Material.COBBLESTONE))
 		{
 			e.getNewState().setType(generatesCobble());
+			island.setLevel(island.getLevel() + getValue(e.getNewState().getType(), e.getNewState().getData().getData()));
 		}
 	}
 
@@ -247,6 +252,7 @@ public class VirtualIsland implements Listener
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void on(BlockBreakEvent e)
 	{
@@ -259,19 +265,22 @@ public class VirtualIsland implements Listener
 		{
 			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
 			e.setCancelled(true);
+			return;
 		}
+
+		island.setLevel(island.getLevel() - getValue(e.getBlock().getType(), e.getBlock().getData()));
 
 		modified();
 	}
 
 	private boolean canBuild(Player player)
 	{
-		if(player.getUniqueId().equals(island.getOwner()) || player.hasPermission("sky.bypass"))
+		if(player.getUniqueId().equals(island.getOwner()) || isMember(player))
 		{
 			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	private void denyBuild(Location add)
@@ -301,6 +310,7 @@ public class VirtualIsland implements Listener
 		drawPower("physics", 0.009D);
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void on(BlockPlaceEvent e)
 	{
@@ -313,8 +323,10 @@ public class VirtualIsland implements Listener
 		{
 			e.setCancelled(true);
 			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
+			return;
 		}
 
+		island.setLevel(island.getLevel() + getValue(e.getBlock().getType(), e.getBlock().getData()));
 		drawPower("physics", 1D);
 		modified();
 	}
@@ -323,8 +335,20 @@ public class VirtualIsland implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onlp(BlockBreakEvent e)
 	{
+		if(e.isCancelled())
+		{
+			return;
+		}
+
 		if(!e.getBlock().getWorld().equals(world))
 		{
+			return;
+		}
+
+		if(!canBuild(e.getPlayer()))
+		{
+			e.setCancelled(true);
+			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
 			return;
 		}
 
@@ -365,6 +389,7 @@ public class VirtualIsland implements Listener
 					public void run()
 					{
 						e.getBlock().setType(generatesCobble());
+						island.setLevel(island.getLevel() + getValue(e.getBlock().getType(), e.getBlock().getData()));
 					}
 				};
 
@@ -386,6 +411,16 @@ public class VirtualIsland implements Listener
 				return;
 			}
 
+			if(e.getPlayer() instanceof Player)
+			{
+				if(!canBuild((Player) e.getView().getPlayer()))
+				{
+					e.setCancelled(true);
+					denyBuild(((BlockState) e.getInventory().getHolder()).getLocation().getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
+					return;
+				}
+			}
+
 			modified();
 		}
 	}
@@ -400,7 +435,7 @@ public class VirtualIsland implements Listener
 			return Material.DIAMOND_ORE;
 		}
 
-		else if(M.r(0.89D / div))
+		else if(M.r(2.89D / div))
 		{
 			return Material.GOLD_ORE;
 		}
@@ -415,7 +450,7 @@ public class VirtualIsland implements Listener
 			return Material.IRON_ORE;
 		}
 
-		else if(M.r(1.02D / div))
+		else if(M.r(1.56D / div))
 		{
 			return Material.LAPIS_ORE;
 		}
@@ -425,12 +460,12 @@ public class VirtualIsland implements Listener
 			return Material.QUARTZ_ORE;
 		}
 
-		else if(M.r(6.28D / div))
+		else if(M.r(0.98D / div))
 		{
 			return Material.REDSTONE_ORE;
 		}
 
-		else if(M.r(8.99D / div))
+		else if(M.r(6.99D / div))
 		{
 			return Material.COAL_ORE;
 		}
@@ -505,13 +540,13 @@ public class VirtualIsland implements Listener
 
 	private void updateSize()
 	{
-		double ib = Math.pow(island.getValue(), Config.FRACTAL_VALUE) / 20 / Config.DIVISOR_VALUE;
+		double ib = Math.pow(Math.max(island.getLevel(), island.getValue()), Config.FRACTAL_VALUE) / 5 / Config.DIVISOR_VALUE;
 		double bonus = ib;
 		world.getWorldBorder().setCenter(0, 0);
 		world.getWorldBorder().setWarningDistance(10);
 		world.getWorldBorder().setWarningTime(30);
 		world.getWorldBorder().setDamageAmount(0.5);
-		world.getWorldBorder().setSize(Math.min(26 + bonus, getMaxIslandSize()), Config.ANIMATION_SIZE);
+		world.getWorldBorder().setSize(Math.min((2 * island.getMinsize()) + bonus, getMaxIslandSize()), Config.ANIMATION_SIZE);
 	}
 
 	public void delete()
@@ -579,7 +614,7 @@ public class VirtualIsland implements Listener
 		saveAll();
 	}
 
-	public void saveConfig(VolumeSender s)
+	public void saveConfig(PhantomSender s)
 	{
 		Island is = island;
 		if(is.getcMergeItem() > 8)
@@ -653,6 +688,31 @@ public class VirtualIsland implements Listener
 
 	public void unload()
 	{
+		if(Phantom.isMainThread())
+		{
+			try
+			{
+				releaseWorld(world);
+			}
+
+			catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | NoSuchFieldException e)
+			{
+				e.printStackTrace();
+			}
+
+			SkyMaster.unloadWorld(world, true);
+			SkyMaster.remove(island);
+			t.interrupt();
+		}
+
+		else
+		{
+			D.as("SkyPrime").w("Not unloading " + world.getName() + ". Cant while async.");
+		}
+	}
+
+	public void unloadFuckingNow()
+	{
 		try
 		{
 			releaseWorld(world);
@@ -663,7 +723,7 @@ public class VirtualIsland implements Listener
 			e.printStackTrace();
 		}
 
-		SkyMaster.unloadWorld(world, true);
+		SkyMaster.unloadWorldRightFuckingNow(world, true);
 		SkyMaster.remove(island);
 		t.interrupt();
 	}
@@ -1023,6 +1083,11 @@ public class VirtualIsland implements Listener
 		}
 	}
 
+	public boolean isMember(Player p)
+	{
+		return island.getMembers().contains(p.getUniqueId());
+	}
+
 	private void tweakIsland(Island is, World world) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException
 	{
 		SpigotWorldConfig wc = getSpigotConfig(world);
@@ -1055,7 +1120,7 @@ public class VirtualIsland implements Listener
 		ft.setAccessible(true);
 		fe.set(theWorld, eTick);
 		ft.set(theWorld, tTick);
-		Bukkit.getPluginManager().registerEvents(this, SkyPrime.vpi);
+		Bukkit.getPluginManager().registerEvents(this, PhantomPlugin.plugin);
 	}
 
 	private void releaseWorld(World w) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException

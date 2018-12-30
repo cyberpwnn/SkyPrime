@@ -7,7 +7,7 @@ import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.volmit.volume.lang.collections.GList;
+import com.volmit.phantom.lang.GList;
 
 public class Config
 {
@@ -15,7 +15,7 @@ public class Config
 	public static double VOLTAGE_MAX_MILLISECONDS = 45D;
 
 	@Key("virtual-islands.size.default")
-	public static int SIZE_DEFAULT = 80;
+	public static int SIZE_DEFAULT_BARRIER = 80;
 
 	@Key("virtual-islands.size.value-propagation.exponent")
 	public static double FRACTAL_VALUE = 0.65;
@@ -24,7 +24,7 @@ public class Config
 	public static double DIVISOR_VALUE = 3.5D;
 
 	@Key("virtual-islands.size.animation-time")
-	public static int ANIMATION_SIZE = 6;
+	public static int ANIMATION_SIZE = 1;
 
 	@Key("virtual-islands.size.ranks")
 	public static GList<String> SIZE_RANKS = new GList<String>().qadd("a=128").qadd("b=192").qadd("c=256").qadd("d=320").qadd("e=384");
@@ -33,7 +33,37 @@ public class Config
 	public static int IDLE_TICKS = 600;
 
 	@Key("virtual-islands.sequences.startup.spinup-threshold-ticks")
-	public static int SPINUP_TIME = 70;
+	public static int SPINUP_TIME = 5;
+
+	@Key("virtual-islands.generation.island-size-default")
+	public static int ISLAND_SIZE = 8;
+
+	@Key("virtual-islands.generation.island-size-small")
+	public static int ISLAND_SIZE_SMALL = 5;
+
+	@Key("virtual-islands.generation.island-size-big")
+	public static int ISLAND_SIZE_BIG = 24;
+
+	@Key("competitive.generation.island-size")
+	public static int ISLAND_COMP_SIZE = 3;
+
+	@Key("competitive.seasons.season-length-days")
+	public static int SEASON_DAYS = 60;
+
+	@Key("competitive.seasons.season-first-day")
+	public static int SEASON_DAYS_EPOCH = 17897;
+
+	@Key("competitive.voltage.overvoltage")
+	public static double COMP_OVERVOLT = 15D;
+
+	@Key("competitive.voltage.bonus-voltage-cap-boost")
+	public static double BONUS_CAP_BOOST = 0.5D;
+
+	@Key("competitive.seasons.barriers.start-size")
+	public static double SEASON_BARRIER_START = 48;
+
+	@Key("competitive.seasons.barriers.end-size")
+	public static double SEASON_BARRIER_END = 256;
 
 	@Key("virtual-islands.sequences.startup.voltage-draw")
 	public static double STARTUP_VOLTAGE = 250D;
@@ -57,10 +87,10 @@ public class Config
 	public static double PHYSICS_GEAR_RATIO = 0.75;
 
 	@Key("virtual-islands.voltage.island.max-time")
-	public static double VOLTAGE_MAX_MILLISECONDS_PER_ISLAND = 10D;
+	public static double VOLTAGE_MAX_MILLISECONDS_PER_ISLAND = 1D;
 
 	@Key("virtual-islands.voltage.island.max-base-voltage")
-	public static double VOLTAGE_BASE_VOLTAGE_MAX = 50D;
+	public static double VOLTAGE_BASE_VOLTAGE_MAX = 30D;
 
 	@Key("virtual-islands.voltage.island.min-base-voltage")
 	public static double VOLTAGE_BASE_VOLTAGE_MIN = 10D;
@@ -73,7 +103,7 @@ public class Config
 
 	public static void save() throws IllegalArgumentException, IllegalAccessException, IOException
 	{
-		peel().save(SkyPrime.vpi.getDataFile("config.yml"));
+		peel().save(SkyPrime.instance.getDataFile("config.yml"));
 	}
 
 	public static void load() throws IllegalArgumentException, IllegalAccessException, IOException
@@ -83,7 +113,7 @@ public class Config
 
 		try
 		{
-			dc.load(SkyPrime.vpi.getDataFile("config.yml"));
+			dc.load(SkyPrime.instance.getDataFile("config.yml"));
 		}
 
 		catch(Throwable e)

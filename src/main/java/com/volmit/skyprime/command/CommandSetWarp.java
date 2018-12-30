@@ -1,10 +1,10 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.phantom.plugin.PhantomCommand;
+import com.volmit.phantom.plugin.PhantomSender;
 import com.volmit.skyprime.SkyMaster;
-import com.volmit.volume.bukkit.command.PawnCommand;
-import com.volmit.volume.bukkit.command.VolumeSender;
 
-public class CommandSetWarp extends PawnCommand
+public class CommandSetWarp extends PhantomCommand
 {
 	public CommandSetWarp()
 	{
@@ -12,7 +12,7 @@ public class CommandSetWarp extends PawnCommand
 	}
 
 	@Override
-	public boolean handle(VolumeSender sender, String[] args)
+	public boolean handle(PhantomSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

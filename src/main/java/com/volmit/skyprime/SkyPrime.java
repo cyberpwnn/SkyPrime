@@ -2,18 +2,24 @@ package com.volmit.skyprime;
 
 import java.io.File;
 
+import com.volmit.phantom.lang.D;
+import com.volmit.phantom.plugin.Module;
+import com.volmit.phantom.plugin.SR;
+import com.volmit.phantom.plugin.Scaffold.Command;
+import com.volmit.phantom.plugin.Scaffold.Instance;
+import com.volmit.phantom.plugin.Scaffold.ModuleInfo;
+import com.volmit.phantom.plugin.Scaffold.Start;
+import com.volmit.phantom.plugin.Scaffold.Stop;
+import com.volmit.phantom.text.C;
 import com.volmit.skyprime.command.CommandSkyPrime;
 import com.volmit.skyprime.storage.FileStorageEngine;
-import com.volmit.volume.bukkit.VolumePlugin;
-import com.volmit.volume.bukkit.command.Command;
-import com.volmit.volume.bukkit.command.CommandTag;
-import com.volmit.volume.bukkit.pawn.Start;
-import com.volmit.volume.bukkit.pawn.Stop;
-import com.volmit.volume.bukkit.task.SR;
 
-@CommandTag("&8[&bSKY&8]&7: ")
-public class SkyPrime extends VolumePlugin
+@ModuleInfo(name = "SkyPrime", version = "1.2.11", author = "cyberpwn", color = C.AQUA)
+public class SkyPrime extends Module
 {
+	@Instance
+	public static SkyPrime instance;
+
 	@Command
 	private CommandSkyPrime commandsp;
 
@@ -36,6 +42,7 @@ public class SkyPrime extends VolumePlugin
 	@Stop
 	public void stop()
 	{
+		D.as("SkyPrime").l("Unloading Virtual Islands");
 		SkyMaster.saveAllWorlds();
 	}
 }
