@@ -140,11 +140,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>spigot.org</groupId>
-			<artifactId>spigot-1.12.2</artifactId>
-			<scope>system</scope>
-			<systemPath>${libs}/spigot-1.12.2.jar</systemPath>
+			<groupId>org.spigot</groupId>
+			<artifactId>spigot-literal</artifactId>
 			<version>1.12.2</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.volmit</groupId>
