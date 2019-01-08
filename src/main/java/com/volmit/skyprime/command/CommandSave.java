@@ -3,9 +3,9 @@ package com.volmit.skyprime.command;
 import java.util.concurrent.TimeUnit;
 
 import com.volmit.phantom.lang.F;
-import com.volmit.phantom.math.M;
 import com.volmit.phantom.plugin.PhantomCommand;
 import com.volmit.phantom.plugin.PhantomSender;
+import com.volmit.phantom.time.M;
 import com.volmit.skyprime.SkyMaster;
 
 public class CommandSave extends PhantomCommand

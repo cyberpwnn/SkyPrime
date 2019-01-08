@@ -9,7 +9,7 @@ import org.bukkit.craftbukkit.v1_12_R1.util.HashTreeSet;
 import com.volmit.phantom.lang.GList;
 import com.volmit.phantom.lang.GMap;
 import com.volmit.phantom.lang.V;
-import com.volmit.phantom.math.M;
+import com.volmit.phantom.time.M;
 import com.volmit.skyprime.Config;
 import com.volmit.skyprime.VirtualIsland;
 

@@ -40,11 +40,11 @@ import com.volmit.phantom.lang.GList;
 import com.volmit.phantom.lang.GMap;
 import com.volmit.phantom.lang.Profiler;
 import com.volmit.phantom.lang.VIO;
-import com.volmit.phantom.math.M;
 import com.volmit.phantom.plugin.Phantom;
 import com.volmit.phantom.plugin.PhantomPlugin;
 import com.volmit.phantom.plugin.PhantomSender;
 import com.volmit.phantom.plugin.S;
+import com.volmit.phantom.time.M;
 import com.volmit.phantom.util.Cuboid;
 import com.volmit.phantom.util.Cuboid.CuboidDirection;
 import com.volmit.phantom.util.ParticleEffect;
@@ -1159,5 +1159,4 @@ public class VirtualIsland implements Listener
 
 		return null;
 	}
-
 }

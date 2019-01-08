@@ -6,7 +6,7 @@ import com.volmit.phantom.plugin.Scaffold.Permission;
 public class PermissionAdmin extends PhantomPermission
 {
 	@Permission
-	public static PermissionReload reload;
+	public PermissionReload reload;
 
 	@Override
 	public String getNode()

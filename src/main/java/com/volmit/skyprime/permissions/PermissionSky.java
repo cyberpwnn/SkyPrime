@@ -6,7 +6,7 @@ import com.volmit.phantom.plugin.Scaffold.Permission;
 public class PermissionSky extends PhantomPermission
 {
 	@Permission
-	public static PermissionAdmin admin;
+	public PermissionAdmin admin;
 
 	@Override
 	public String getNode()
