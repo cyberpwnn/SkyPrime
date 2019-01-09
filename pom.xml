@@ -148,7 +148,7 @@
 		<dependency>
 			<groupId>com.volmit</groupId>
 			<artifactId>Phantom</artifactId>
-			<version>head</version>
+			<version>3.1.30</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
