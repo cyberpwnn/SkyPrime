@@ -2,21 +2,21 @@ package com.volmit.skyprime;
 
 import java.io.File;
 
-import com.volmit.phantom.lang.D;
-import com.volmit.phantom.plugin.Module;
-import com.volmit.phantom.plugin.SR;
-import com.volmit.phantom.plugin.Scaffold.Command;
-import com.volmit.phantom.plugin.Scaffold.Instance;
-import com.volmit.phantom.plugin.Scaffold.ModuleInfo;
-import com.volmit.phantom.plugin.Scaffold.Permission;
-import com.volmit.phantom.plugin.Scaffold.Start;
-import com.volmit.phantom.plugin.Scaffold.Stop;
-import com.volmit.phantom.text.C;
+import com.volmit.phantom.api.lang.D;
+import com.volmit.phantom.api.module.Color;
+import com.volmit.phantom.api.module.Command;
+import com.volmit.phantom.api.module.Instance;
+import com.volmit.phantom.api.module.Module;
+import com.volmit.phantom.api.module.Permission;
+import com.volmit.phantom.api.module.Start;
+import com.volmit.phantom.api.module.Stop;
+import com.volmit.phantom.api.sheduler.SR;
+import com.volmit.phantom.util.text.C;
 import com.volmit.skyprime.command.CommandSkyPrime;
 import com.volmit.skyprime.permissions.PermissionSky;
 import com.volmit.skyprime.storage.FileStorageEngine;
 
-@ModuleInfo(name = "SkyPrime", version = "1.2.11", author = "cyberpwn", color = C.AQUA)
+@Color(C.AQUA)
 public class SkyPrime extends Module
 {
 	@Permission

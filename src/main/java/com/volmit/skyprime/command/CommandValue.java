@@ -1,9 +1,9 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.phantom.lang.F;
-import com.volmit.phantom.plugin.PhantomCommand;
-import com.volmit.phantom.plugin.PhantomSender;
-import com.volmit.phantom.text.C;
+import com.volmit.phantom.api.command.PhantomSender;
+import com.volmit.phantom.api.lang.F;
+import com.volmit.phantom.imp.command.PhantomCommand;
+import com.volmit.phantom.util.text.C;
 import com.volmit.skyprime.SkyMaster;
 
 public class CommandValue extends PhantomCommand

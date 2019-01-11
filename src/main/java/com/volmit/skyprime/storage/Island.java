@@ -5,10 +5,10 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.volmit.phantom.json.JSONArray;
-import com.volmit.phantom.json.JSONObject;
-import com.volmit.phantom.lang.GList;
-import com.volmit.phantom.time.M;
+import com.volmit.phantom.api.lang.GList;
+import com.volmit.phantom.api.lang.json.JSONArray;
+import com.volmit.phantom.api.lang.json.JSONObject;
+import com.volmit.phantom.api.math.M;
 import com.volmit.skyprime.Config;
 
 public class Island

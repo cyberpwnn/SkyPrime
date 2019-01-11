@@ -6,10 +6,10 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.util.HashTreeSet;
 
-import com.volmit.phantom.lang.GList;
-import com.volmit.phantom.lang.GMap;
-import com.volmit.phantom.lang.V;
-import com.volmit.phantom.time.M;
+import com.volmit.phantom.api.lang.GList;
+import com.volmit.phantom.api.lang.GMap;
+import com.volmit.phantom.api.lang.V;
+import com.volmit.phantom.api.math.M;
 import com.volmit.skyprime.Config;
 import com.volmit.skyprime.VirtualIsland;
 

@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.volmit.phantom.plugin.A;
-import com.volmit.phantom.plugin.PhantomCommand;
-import com.volmit.phantom.plugin.PhantomSender;
-import com.volmit.phantom.plugin.S;
-import com.volmit.phantom.plugin.SVC;
-import com.volmit.phantom.services.MojangProfileSVC;
+import com.volmit.phantom.api.command.PhantomSender;
+import com.volmit.phantom.api.service.SVC;
+import com.volmit.phantom.api.sheduler.A;
+import com.volmit.phantom.api.sheduler.S;
+import com.volmit.phantom.imp.command.PhantomCommand;
+import com.volmit.phantom.lib.service.MojangProfileSVC;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 

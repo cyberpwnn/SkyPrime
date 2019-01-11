@@ -12,20 +12,20 @@ import org.bukkit.material.Stairs;
 import org.bukkit.material.Wood;
 import org.bukkit.util.Vector;
 
-import com.volmit.phantom.lang.Callback;
-import com.volmit.phantom.lang.GList;
-import com.volmit.phantom.lang.GMap;
-import com.volmit.phantom.lang.GSet;
-import com.volmit.phantom.math.Average;
-import com.volmit.phantom.math.SimplexOctaveGenerator;
-import com.volmit.phantom.nms.ChunkTracker;
-import com.volmit.phantom.plugin.A;
-import com.volmit.phantom.plugin.S;
-import com.volmit.phantom.plugin.SVC;
-import com.volmit.phantom.services.NMSSVC;
-import com.volmit.phantom.time.M;
-import com.volmit.phantom.util.Direction;
-import com.volmit.phantom.util.MaterialBlock;
+import com.volmit.phantom.api.lang.Callback;
+import com.volmit.phantom.api.lang.GList;
+import com.volmit.phantom.api.lang.GMap;
+import com.volmit.phantom.api.lang.GSet;
+import com.volmit.phantom.api.math.Average;
+import com.volmit.phantom.api.math.M;
+import com.volmit.phantom.api.noise.SimplexOctaveGenerator;
+import com.volmit.phantom.api.service.SVC;
+import com.volmit.phantom.api.sheduler.A;
+import com.volmit.phantom.api.sheduler.S;
+import com.volmit.phantom.imp.nms.ChunkTracker;
+import com.volmit.phantom.lib.service.NMSSVC;
+import com.volmit.phantom.util.world.Direction;
+import com.volmit.phantom.util.world.MaterialBlock;
 
 public class IslandGenerator
 {

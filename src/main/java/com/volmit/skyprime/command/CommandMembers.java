@@ -2,11 +2,11 @@ package com.volmit.skyprime.command;
 
 import java.util.UUID;
 
-import com.volmit.phantom.plugin.PhantomCommand;
-import com.volmit.phantom.plugin.PhantomSender;
-import com.volmit.phantom.plugin.SVC;
-import com.volmit.phantom.plugin.Scaffold.Command;
-import com.volmit.phantom.services.MojangProfileSVC;
+import com.volmit.phantom.api.command.PhantomSender;
+import com.volmit.phantom.api.module.Command;
+import com.volmit.phantom.api.service.SVC;
+import com.volmit.phantom.imp.command.PhantomCommand;
+import com.volmit.phantom.lib.service.MojangProfileSVC;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 

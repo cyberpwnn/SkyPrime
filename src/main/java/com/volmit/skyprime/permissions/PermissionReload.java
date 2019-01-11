@@ -1,6 +1,6 @@
 package com.volmit.skyprime.permissions;
 
-import com.volmit.phantom.plugin.PhantomPermission;
+import com.volmit.phantom.api.command.PhantomPermission;
 
 public class PermissionReload extends PhantomPermission
 {

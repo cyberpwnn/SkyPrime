@@ -1,13 +1,13 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.phantom.lang.Callback;
-import com.volmit.phantom.lang.F;
-import com.volmit.phantom.lang.FinalInteger;
-import com.volmit.phantom.lang.Profiler;
-import com.volmit.phantom.plugin.PhantomCommand;
-import com.volmit.phantom.plugin.PhantomSender;
-import com.volmit.phantom.plugin.SR;
-import com.volmit.phantom.text.C;
+import com.volmit.phantom.api.command.PhantomSender;
+import com.volmit.phantom.api.lang.Callback;
+import com.volmit.phantom.api.lang.F;
+import com.volmit.phantom.api.lang.FinalInteger;
+import com.volmit.phantom.api.lang.Profiler;
+import com.volmit.phantom.api.sheduler.SR;
+import com.volmit.phantom.imp.command.PhantomCommand;
+import com.volmit.phantom.util.text.C;
 import com.volmit.skyprime.gen.IslandGenerator;
 
 public class CommandGen extends PhantomCommand

@@ -2,9 +2,9 @@ package com.volmit.skyprime.command;
 
 import org.bukkit.Bukkit;
 
-import com.volmit.phantom.plugin.PhantomCommand;
-import com.volmit.phantom.plugin.PhantomSender;
-import com.volmit.phantom.plugin.S;
+import com.volmit.phantom.api.command.PhantomSender;
+import com.volmit.phantom.api.sheduler.S;
+import com.volmit.phantom.imp.command.PhantomCommand;
 import com.volmit.skyprime.SkyMaster;
 
 public class CommandReboot extends PhantomCommand

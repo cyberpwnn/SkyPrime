@@ -7,7 +7,7 @@ import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.volmit.phantom.lang.GList;
+import com.volmit.phantom.api.lang.GList;
 
 public class Config
 {

@@ -6,6 +6,11 @@
 	<artifactId>SkyPrime</artifactId>
 	<version>1.0</version>
 	<name>SkyPrime</name>
+	<developers>
+		<developer>
+			<name>cyberpwn</name>
+		</developer>
+	</developers>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -148,7 +153,7 @@
 		<dependency>
 			<groupId>com.volmit</groupId>
 			<artifactId>Phantom</artifactId>
-			<version>3.1.30</version>
+			<version>3.2.13</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
