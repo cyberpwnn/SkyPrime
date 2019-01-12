@@ -1,7 +1,7 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.phantom.api.command.PhantomCommand;
 import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.imp.command.PhantomCommand;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.Visibility;

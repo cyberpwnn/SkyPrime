@@ -22,8 +22,8 @@ import com.volmit.phantom.api.noise.SimplexOctaveGenerator;
 import com.volmit.phantom.api.service.SVC;
 import com.volmit.phantom.api.sheduler.A;
 import com.volmit.phantom.api.sheduler.S;
-import com.volmit.phantom.imp.nms.ChunkTracker;
 import com.volmit.phantom.lib.service.NMSSVC;
+import com.volmit.phantom.util.nms.ChunkTracker;
 import com.volmit.phantom.util.world.Direction;
 import com.volmit.phantom.util.world.MaterialBlock;
 

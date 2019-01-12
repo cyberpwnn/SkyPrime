@@ -1,8 +1,8 @@
 package com.volmit.skyprime.command;
 
+import com.volmit.phantom.api.command.PhantomCommand;
 import com.volmit.phantom.api.command.PhantomSender;
 import com.volmit.phantom.api.module.Command;
-import com.volmit.phantom.imp.command.PhantomCommand;
 import com.volmit.phantom.util.text.C;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.VirtualIsland;

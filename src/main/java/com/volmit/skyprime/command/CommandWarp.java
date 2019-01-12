@@ -2,8 +2,8 @@ package com.volmit.skyprime.command;
 
 import org.bukkit.Bukkit;
 
+import com.volmit.phantom.api.command.PhantomCommand;
 import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.imp.command.PhantomCommand;
 import com.volmit.skyprime.SkyMaster;
 
 public class CommandWarp extends PhantomCommand
