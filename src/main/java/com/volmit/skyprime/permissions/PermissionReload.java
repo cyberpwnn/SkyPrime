@@ -1,8 +1,8 @@
 package com.volmit.skyprime.permissions;
 
-import com.volmit.phantom.api.command.PhantomPermission;
+import mortar.bukkit.command.MortarPermission;
 
-public class PermissionReload extends PhantomPermission
+public class PermissionReload extends MortarPermission
 {
 	@Override
 	public String getNode()

@@ -2,8 +2,8 @@ package com.volmit.skyprime.nms;
 
 import org.spigotmc.TickLimiter;
 
-import com.volmit.phantom.api.math.Average;
-import com.volmit.phantom.api.math.M;
+import mortar.compute.math.Average;
+import mortar.compute.math.M;
 
 public class SpecializedTickLimiter extends TickLimiter // heh
 {

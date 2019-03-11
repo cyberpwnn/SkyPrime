@@ -139,12 +139,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.bukkit.craftbukkit</groupId>
-			<artifactId>craftbukkit12</artifactId>
-			<version>1.12.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.spigot</groupId>
 			<artifactId>spigot-literal</artifactId>
 			<version>1.12.2</version>
@@ -152,8 +146,8 @@
 		</dependency>
 		<dependency>
 			<groupId>com.volmit</groupId>
-			<artifactId>Phantom</artifactId>
-			<version>3.2.15</version>
+			<artifactId>Mortar</artifactId>
+			<version>1.0.17</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

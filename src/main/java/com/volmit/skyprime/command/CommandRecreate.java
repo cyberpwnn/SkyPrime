@@ -2,12 +2,13 @@ package com.volmit.skyprime.command;
 
 import org.bukkit.Bukkit;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.api.sheduler.S;
 import com.volmit.skyprime.SkyMaster;
 
-public class CommandRecreate extends PhantomCommand
+import mortar.api.sched.S;
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+
+public class CommandRecreate extends MortarCommand
 {
 	public CommandRecreate()
 	{
@@ -15,7 +16,7 @@ public class CommandRecreate extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

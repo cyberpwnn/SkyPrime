@@ -1,11 +1,12 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.SkyPrime;
 
-public class CommandReload extends PhantomCommand
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+
+public class CommandReload extends MortarCommand
 {
 	public CommandReload()
 	{
@@ -14,7 +15,7 @@ public class CommandReload extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		sender.sendMessage("Reloaded Configs.");
 		SkyMaster.loadConfig();

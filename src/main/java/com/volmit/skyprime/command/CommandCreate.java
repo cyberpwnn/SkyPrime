@@ -2,13 +2,13 @@ package com.volmit.skyprime.command;
 
 import org.bukkit.Location;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.api.lang.Callback;
 import com.volmit.skyprime.Config;
 import com.volmit.skyprime.SkyMaster;
 
-public class CommandCreate extends PhantomCommand
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+
+public class CommandCreate extends MortarCommand
 {
 	public CommandCreate()
 	{
@@ -16,7 +16,7 @@ public class CommandCreate extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(SkyMaster.hasIsland(sender.player()))
 		{

@@ -1,10 +1,11 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
 import com.volmit.skyprime.SkyMaster;
 
-public class CommandDelete extends PhantomCommand
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+
+public class CommandDelete extends MortarCommand
 {
 	public CommandDelete()
 	{
@@ -12,7 +13,7 @@ public class CommandDelete extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

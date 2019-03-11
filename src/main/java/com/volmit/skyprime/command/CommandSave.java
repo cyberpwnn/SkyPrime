@@ -2,13 +2,14 @@ package com.volmit.skyprime.command;
 
 import java.util.concurrent.TimeUnit;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.api.lang.F;
-import com.volmit.phantom.api.math.M;
 import com.volmit.skyprime.SkyMaster;
 
-public class CommandSave extends PhantomCommand
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+import mortar.compute.math.M;
+import mortar.logic.format.F;
+
+public class CommandSave extends MortarCommand
 {
 	public CommandSave()
 	{
@@ -16,7 +17,7 @@ public class CommandSave extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

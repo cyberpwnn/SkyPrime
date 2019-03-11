@@ -5,16 +5,17 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
 import com.volmit.phantom.api.service.SVC;
-import com.volmit.phantom.api.sheduler.A;
-import com.volmit.phantom.api.sheduler.S;
 import com.volmit.phantom.lib.service.MojangProfileSVC;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 
-public class CommandAddMember extends PhantomCommand
+import mortar.api.sched.A;
+import mortar.api.sched.S;
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+
+public class CommandAddMember extends MortarCommand
 {
 	public CommandAddMember()
 	{
@@ -22,7 +23,7 @@ public class CommandAddMember extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

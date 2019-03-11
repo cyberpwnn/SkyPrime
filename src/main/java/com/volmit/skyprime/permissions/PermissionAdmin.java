@@ -1,9 +1,9 @@
 package com.volmit.skyprime.permissions;
 
-import com.volmit.phantom.api.command.PhantomPermission;
-import com.volmit.phantom.api.module.Permission;
+import mortar.bukkit.command.MortarPermission;
+import mortar.bukkit.command.Permission;
 
-public class PermissionAdmin extends PhantomPermission
+public class PermissionAdmin extends MortarPermission
 {
 	@Permission
 	public PermissionReload reload;

@@ -1,15 +1,16 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.api.lang.F;
-import com.volmit.phantom.util.text.C;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.VirtualIsland;
 import com.volmit.skyprime.Voltage;
 import com.volmit.skyprime.storage.Island;
 
-public class CommandVoltage extends PhantomCommand
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+import mortar.logic.format.F;
+import mortar.util.text.C;
+
+public class CommandVoltage extends MortarCommand
 {
 	public CommandVoltage()
 	{
@@ -17,7 +18,7 @@ public class CommandVoltage extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(!SkyMaster.hasIsland(sender.player()))
 		{

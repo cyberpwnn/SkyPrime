@@ -1,12 +1,13 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.util.text.C;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.SkyPrime;
 
-public class CommandStatus extends PhantomCommand
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+import mortar.util.text.C;
+
+public class CommandStatus extends MortarCommand
 {
 	public CommandStatus()
 	{
@@ -15,7 +16,7 @@ public class CommandStatus extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		sender.sendMessage("Loaded Islands: " + C.WHITE + ((int) SkyMaster.getIslandsCount()));
 		sender.sendMessage("Voltage: " + C.WHITE + SkyMaster.getVoltageSummary());

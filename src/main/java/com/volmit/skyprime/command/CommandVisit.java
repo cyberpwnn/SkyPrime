@@ -5,14 +5,15 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.api.sheduler.S;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 import com.volmit.skyprime.storage.Visibility;
 
-public class CommandVisit extends PhantomCommand
+import mortar.api.sched.S;
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+
+public class CommandVisit extends MortarCommand
 {
 	public CommandVisit()
 	{
@@ -20,7 +21,7 @@ public class CommandVisit extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(args.length != 1)
 		{

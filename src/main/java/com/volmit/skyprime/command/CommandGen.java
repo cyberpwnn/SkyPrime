@@ -1,16 +1,16 @@
 package com.volmit.skyprime.command;
 
-import com.volmit.phantom.api.command.PhantomCommand;
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.api.lang.Callback;
-import com.volmit.phantom.api.lang.F;
-import com.volmit.phantom.api.lang.FinalInteger;
-import com.volmit.phantom.api.lang.Profiler;
-import com.volmit.phantom.api.sheduler.SR;
-import com.volmit.phantom.util.text.C;
 import com.volmit.skyprime.gen.IslandGenerator;
 
-public class CommandGen extends PhantomCommand
+import mortar.api.sched.SR;
+import mortar.bukkit.command.MortarCommand;
+import mortar.bukkit.command.MortarSender;
+import mortar.compute.math.Profiler;
+import mortar.lang.collection.FinalInteger;
+import mortar.logic.format.F;
+import mortar.util.text.C;
+
+public class CommandGen extends MortarCommand
 {
 	public CommandGen()
 	{
@@ -18,7 +18,7 @@ public class CommandGen extends PhantomCommand
 	}
 
 	@Override
-	public boolean handle(PhantomSender sender, String[] args)
+	public boolean handle(MortarSender sender, String[] args)
 	{
 		if(!sender.hasPermission("sky.gentest"))
 		{
