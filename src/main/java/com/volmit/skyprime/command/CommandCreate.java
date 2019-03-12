@@ -7,6 +7,7 @@ import com.volmit.skyprime.SkyMaster;
 
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
+import mortar.lang.collection.Callback;
 
 public class CommandCreate extends MortarCommand
 {

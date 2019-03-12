@@ -18,7 +18,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFormEvent;
@@ -33,9 +32,6 @@ import org.bukkit.inventory.ItemStack;
 import org.spigotmc.SpigotWorldConfig;
 import org.spigotmc.TickLimiter;
 
-import com.volmit.phantom.api.command.PhantomSender;
-import com.volmit.phantom.main.Phantom;
-import com.volmit.phantom.main.PhantomPlugin;
 import com.volmit.skyprime.nms.NMSX;
 import com.volmit.skyprime.nms.SkyThread;
 import com.volmit.skyprime.nms.SpecializedTickLimiter;
@@ -48,6 +44,8 @@ import mortar.api.sched.S;
 import mortar.api.world.Cuboid;
 import mortar.api.world.Cuboid.CuboidDirection;
 import mortar.api.world.W;
+import mortar.bukkit.command.MortarSender;
+import mortar.bukkit.plugin.Mortar;
 import mortar.compute.math.M;
 import mortar.compute.math.Profiler;
 import mortar.lang.collection.FinalDouble;
@@ -615,7 +613,7 @@ public class VirtualIsland implements Listener
 		saveAll();
 	}
 
-	public void saveConfig(PhantomSender s)
+	public void saveConfig(MortarSender s)
 	{
 		Island is = island;
 		if(is.getcMergeItem() > 8)
@@ -689,7 +687,7 @@ public class VirtualIsland implements Listener
 
 	public void unload()
 	{
-		if(Phantom.isMainThread())
+		if(Mortar.isMainThread())
 		{
 			try
 			{
@@ -795,7 +793,7 @@ public class VirtualIsland implements Listener
 		c = c.expand(CuboidDirection.East, (int) (world.getWorldBorder().getSize() / 2) + 5);
 		c = c.expand(CuboidDirection.West, (int) (world.getWorldBorder().getSize() / 2) + 5);
 		GList<ChunkSnapshot> snaps = new GList<>();
-		FinalDouble d = new FinalDouble(0);
+		FinalDouble d = new FinalDouble(0D);
 		GList<Location> inventories = new GList<>();
 		int m = 0;
 
@@ -1121,7 +1119,7 @@ public class VirtualIsland implements Listener
 		ft.setAccessible(true);
 		fe.set(theWorld, eTick);
 		ft.set(theWorld, tTick);
-		Bukkit.getPluginManager().registerEvents(this, PhantomPlugin.plugin);
+		SkyPrime.instance.registerListener(this);
 	}
 
 	private void releaseWorld(World w) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException
@@ -1136,7 +1134,7 @@ public class VirtualIsland implements Listener
 		ft.setAccessible(true);
 		fe.set(theWorld, ste);
 		ft.set(theWorld, stt);
-		HandlerList.unregisterAll(this);
+		SkyPrime.instance.unregisterListener(this);
 	}
 
 	private Field deepFindField(Object obj, String fieldName)

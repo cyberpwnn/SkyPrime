@@ -12,10 +12,8 @@ import org.bukkit.material.Stairs;
 import org.bukkit.material.Wood;
 import org.bukkit.util.Vector;
 
-import com.volmit.phantom.api.service.SVC;
-import com.volmit.phantom.lib.service.NMSSVC;
-import com.volmit.phantom.util.nms.ChunkTracker;
-
+import mortar.api.nms.ChunkTracker;
+import mortar.api.nms.NMP;
 import mortar.api.sched.A;
 import mortar.api.sched.S;
 import mortar.api.world.Direction;
@@ -162,7 +160,7 @@ public class IslandGenerator
 										at++;
 										ct.hit(center.clone().add(i));
 										Location lxx = center.clone().add(i);
-										SVC.get(NMSSVC.class).setBlock(lxx, mv.get(i));
+										NMP.host.setBlock(lxx, mv.get(i));
 
 										if(!chested && mv.get(i).getMaterial().equals(Material.LOG) || mv.get(i).getMaterial().equals(Material.LOG_2))
 										{

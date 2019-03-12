@@ -5,8 +5,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import com.volmit.phantom.api.service.SVC;
-import com.volmit.phantom.lib.service.MojangProfileSVC;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 
@@ -14,6 +12,8 @@ import mortar.api.sched.A;
 import mortar.api.sched.S;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
+import mortar.bukkit.plugin.Mortar;
+import mortar.lib.control.MojangProfileController;
 
 public class CommandRemoveMember extends MortarCommand
 {
@@ -45,7 +45,7 @@ public class CommandRemoveMember extends MortarCommand
 				if(p == null)
 				{
 					sender.sendMessage("Please wait, looking up offline player.");
-					id = SVC.get(MojangProfileSVC.class).getOnlineUUID(name);
+					id = Mortar.getController(MojangProfileController.class).getOnlineUUID(name);
 				}
 
 				else
