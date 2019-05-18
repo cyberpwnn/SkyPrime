@@ -36,9 +36,10 @@ public class CommandVisit extends MortarCommand
 
 			if(SkyMaster.hasIsland(uuid))
 			{
-				Island isx = SkyMaster.getIslandConfig(uuid);
+				SkyMaster.ensureIslandLoaded(uuid);
+				Island isx = SkyMaster.getIsland(uuid).getIsland();
 
-				if(isx.getVisibility().equals(Visibility.PUBLIC) || sender.hasPermission("sky.bypass"))
+				if(isx.getVisibility().equals(Visibility.PUBLIC) || sender.hasPermission("sky.bypass") || isx.getMembers().contains(sender.player().getUniqueId()))
 				{
 					SkyMaster.ensureIslandLoaded(uuid);
 					SkyMaster.getIsland(uuid).warp(sender.player());

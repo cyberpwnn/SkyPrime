@@ -31,7 +31,14 @@ public class CommandRemoveMember extends MortarCommand
 			return true;
 		}
 
-		Island is = SkyMaster.getIslandConfig(sender.player());
+		if(!SkyMaster.hasIslandLoaded(sender.player()))
+		{
+			sender.sendMessage("You cant configure your island. It isnt loaded. Use /sky.");
+			return true;
+		}
+
+		Island is = SkyMaster.getIsland(sender.player()).getIsland();
+
 		String name = args[0];
 		Player p = Bukkit.getPlayer(name);
 

@@ -52,6 +52,14 @@ public class SkyPrime extends MortarPlugin
 	@Override
 	public String getTag(String subTag)
 	{
-		return TXT.makeTag(C.GRAY, C.AQUA, C.GRAY, "Sky");
+		if(subTag.isEmpty())
+		{
+			return TXT.makeTag(C.GRAY, C.AQUA, C.GRAY, "Sky");
+		}
+
+		else
+		{
+			return TXT.makeTag(C.GRAY, C.AQUA, C.GRAY, "Sky - " + subTag);
+		}
 	}
 }

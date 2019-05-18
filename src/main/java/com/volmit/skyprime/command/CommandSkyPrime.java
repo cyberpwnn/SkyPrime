@@ -16,54 +16,54 @@ public class CommandSkyPrime extends MortarCommand
 	@Command
 	private CommandGen gen;
 
-	@Command("Island")
+	@Command
 	private CommandSetSpawn setspawn;
 
-	@Command("Island")
+	@Command
 	private CommandSpawn spawn;
 
-	@Command("Island")
+	@Command
 	private CommandWarp warp;
 
-	@Command("Island")
+	@Command
 	private CommandSetWarp setwarp;
 
-	@Command("Island")
+	@Command
 	private CommandVoltage voltage;
 
-	@Command("Island")
+	@Command
 	private CommandValue value;
 
-	@Command("Island")
+	@Command
 	private CommandSave save;
 
-	@Command("Island")
+	@Command
 	private CommandReboot reboot;
 
-	@Command("Island")
+	@Command
 	private CommandConfig config;
 
-	@Command("Island")
+	@Command
 	private CommandDelete delete;
 
-	@Command("Island")
+	@Command
 	private CommandCreate create;
 
-	@Command("Island")
+	@Command
 	private CommandRecreate recreate;
 
-	@Command("Island")
+	@Command
 	private CommandVisit visit;
 
-	@Command("Members")
+	@Command
 	private CommandMembers members;
 
-	@Command("Admin")
+	@Command
 	private CommandStatus stats;
 
 	public CommandSkyPrime()
 	{
-		super("skyprime", "sky", "sp", "sprime");
+		super("skyprime", "sky", "sp", "sprime", "is", "island");
 	}
 
 	@Override
@@ -92,9 +92,11 @@ public class CommandSkyPrime extends MortarCommand
 					sender.sendMessage("/sky setwarp - Set your island public warp");
 					sender.sendMessage("/sky spawn - Teleport to island spawn");
 					sender.sendMessage("/sky setspawn - Set your island spawn");
+					sender.sendMessage("/sky members - View and modify members");
 					sender.sendMessage(C.YELLOW + "/sky reboot - Reboot your island");
 					sender.sendMessage(C.RED + "/sky delete - Delete your island");
 					sender.sendMessage(C.RED + "/sky recreate - Delete and create a new island");
+					sender.sendMessage("/sky visit <player> - Visit another player's island");
 				}
 			}
 

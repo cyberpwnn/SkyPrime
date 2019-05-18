@@ -24,6 +24,7 @@ import org.bukkit.event.block.BlockFormEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
@@ -105,6 +106,11 @@ public class VirtualIsland implements Listener
 
 		if(ticks % 5 == 0)
 		{
+			if(startup <= 0)
+			{
+				modified();
+			}
+
 			if(startup <= 0 && world.getPlayers().isEmpty())
 			{
 				idlecount += 5;
@@ -212,7 +218,7 @@ public class VirtualIsland implements Listener
 
 			for(Player i : world.getPlayers())
 			{
-				if(!i.getUniqueId().equals(island.getOwner()))
+				if(!i.getUniqueId().equals(island.getOwner()) && !island.getMembers().contains(i.getUniqueId()))
 				{
 					i.sendMessage("The island you were in is private.");
 					i.teleport(safe.getSpawnLocation());
@@ -238,8 +244,37 @@ public class VirtualIsland implements Listener
 	}
 
 	@EventHandler
+	public void on(EntityPickupItemEvent e)
+	{
+		if(!e.getEntity().getWorld().equals(world))
+		{
+			return;
+		}
+
+		if(e.getEntity() instanceof Player)
+		{
+			Player p = (Player) e.getEntity();
+
+			if(island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId()))
+			{
+				return;
+			}
+
+			if(!island.iscPublicPickup())
+			{
+				e.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler
 	public void on(ItemMergeEvent e)
 	{
+		if(!e.getEntity().getWorld().equals(world))
+		{
+			return;
+		}
+
 		if(island.getcMergeItem() <= 0)
 		{
 			e.setCancelled(true);

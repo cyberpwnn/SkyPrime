@@ -31,9 +31,16 @@ public class CommandAddMember extends MortarCommand
 			return true;
 		}
 
-		Island is = SkyMaster.getIslandConfig(sender.player());
+		if(!SkyMaster.hasIslandLoaded(sender.player()))
+		{
+			sender.sendMessage("You cant configure your island. It isnt loaded. Use /sky.");
+			return true;
+		}
+
+		Island is = SkyMaster.getIsland(sender.player()).getIsland();
 		String name = args[0];
 		Player p = Bukkit.getPlayer(name);
+		System.out.println(name);
 
 		new A()
 		{
@@ -55,34 +62,49 @@ public class CommandAddMember extends MortarCommand
 
 				UUID idd = id;
 
-				new S()
+				if(idd == null)
 				{
-					@Override
-					public void run()
+					sender.sendMessage("Cannot find " + name);
+				}
+
+				else
+				{
+					new S()
 					{
-						if(is.getMembers().contains(idd))
+						@Override
+						public void run()
 						{
-							sender.sendMessage(name + " is already a member.");
-						}
-
-						else
-						{
-							is.getMembers().add(idd);
-
-							if(!SkyMaster.hasIslandLoaded(sender.player()))
+							System.out.println(idd);
+							if(is.getMembers().contains(idd))
 							{
-								SkyMaster.getStorageEngine().setIsland(is);
+								sender.sendMessage(name + " is already a member.");
+							}
+
+							else if(is.getOwner().equals(idd))
+							{
+								sender.sendMessage(name + " is the owner of this island.");
 							}
 
 							else
 							{
-								SkyMaster.getIsland(sender.player()).saveIsland();
-							}
+								is.getMembers().add(idd);
+								sender.sendMessage(is.getMembers().size() + " members");
 
-							sender.sendMessage(name + " was added to your island members.");
+								if(!SkyMaster.hasIslandLoaded(sender.player()))
+								{
+									SkyMaster.getStorageEngine().setIsland(is);
+								}
+
+								else
+								{
+									SkyMaster.getIsland(sender.player()).saveIsland();
+								}
+
+								sender.sendMessage(name + " was added to your island members.");
+							}
 						}
-					}
-				};
+					};
+				}
 			}
 		};
 

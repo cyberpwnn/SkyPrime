@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.volmit.skyprime.SkyMaster;
 import com.volmit.skyprime.storage.Island;
 
+import mortar.api.sched.J;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
@@ -33,20 +34,20 @@ public class CommandMembers extends MortarCommand
 			return true;
 		}
 
-		Island is = SkyMaster.getIslandConfig(sender.player());
+		if(!SkyMaster.hasIslandLoaded(sender.player()))
+		{
+			sender.sendMessage("You cant configure your island. It isnt loaded. Use /sky.");
+			return true;
+		}
 
+		Island is = SkyMaster.getIsland(sender.player()).getIsland();
+		sender.sendMessage("/sky members add <player>");
+		sender.sendMessage("/sky members remove <player>");
 		sender.sendMessage("Members: " + is.getMembers().size());
 
 		for(UUID i : is.getMembers())
 		{
-			Mortar.getController(MojangProfileController.class).getOnlineNameFor(i);
-		}
-
-		sender.sendMessage("Admins: " + is.getMembers().size());
-
-		for(UUID i : is.getAdmins())
-		{
-			Mortar.getController(MojangProfileController.class).getOnlineNameFor(i);
+			J.a(() -> sender.sendMessage("- " + Mortar.getController(MojangProfileController.class).getOnlineNameFor(i)));
 		}
 
 		return true;
