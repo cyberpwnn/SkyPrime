@@ -1,0 +1,4 @@
+name: ${project.name}
+version: ${project.version}
+depend: [Mortar]
+main: com.volmit.skyprime.SkyPrime
