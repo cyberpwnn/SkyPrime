@@ -139,6 +139,10 @@
 			<id>volmit</id>
 			<url>http://nexus.volmit.com/content/repositories/volmit</url>
 		</repository>
+		<repository>
+			<id>shadowrealm</id>
+			<url>http://nexus.volmit.com/content/repositories/shadowrealm</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -160,4 +164,10 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>shadowrealm</id>
+			<url>http://nexus.volmit.com/content/repositories/shadowrealm</url>
+		</repository>
+	</distributionManagement>
 </project>
