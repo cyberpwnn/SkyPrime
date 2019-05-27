@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.shadowrealm</groupId>
 	<artifactId>SkyPrime</artifactId>
-	<version>1.0</version>
+	<version>production</version>
 	<name>SkyPrime</name>
 	<developers>
 		<developer>
