@@ -146,8 +146,8 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>org.spigot</groupId>
-			<artifactId>spigot-literal</artifactId>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
 			<version>1.12.2</version>
 			<scope>provided</scope>
 		</dependency>
