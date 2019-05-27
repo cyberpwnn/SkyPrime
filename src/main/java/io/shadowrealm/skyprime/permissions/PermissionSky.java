@@ -1,4 +1,4 @@
-package com.volmit.skyprime.permissions;
+package io.shadowrealm.skyprime.permissions;
 
 import mortar.bukkit.command.MortarPermission;
 import mortar.bukkit.command.Permission;

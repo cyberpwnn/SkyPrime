@@ -1,4 +1,4 @@
-package com.volmit.skyprime.nms;
+package io.shadowrealm.skyprime.nms;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

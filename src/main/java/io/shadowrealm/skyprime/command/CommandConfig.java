@@ -1,9 +1,8 @@
-package com.volmit.skyprime.command;
+package io.shadowrealm.skyprime.command;
 
-import com.volmit.skyprime.SkyMaster;
-import com.volmit.skyprime.storage.Island;
-import com.volmit.skyprime.storage.Visibility;
-
+import io.shadowrealm.skyprime.SkyMaster;
+import io.shadowrealm.skyprime.storage.Island;
+import io.shadowrealm.skyprime.storage.Visibility;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
 

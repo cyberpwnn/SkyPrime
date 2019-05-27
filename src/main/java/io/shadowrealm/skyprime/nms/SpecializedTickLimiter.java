@@ -1,4 +1,4 @@
-package com.volmit.skyprime.nms;
+package io.shadowrealm.skyprime.nms;
 
 import org.spigotmc.TickLimiter;
 

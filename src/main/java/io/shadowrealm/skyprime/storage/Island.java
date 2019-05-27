@@ -1,12 +1,11 @@
-package com.volmit.skyprime.storage;
+package io.shadowrealm.skyprime.storage;
 
 import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.volmit.skyprime.Config;
-
+import io.shadowrealm.skyprime.Config;
 import mortar.compute.math.M;
 import mortar.lang.collection.GList;
 import mortar.lang.json.JSONArray;

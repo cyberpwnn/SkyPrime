@@ -1,10 +1,9 @@
-package com.volmit.skyprime.command;
+package io.shadowrealm.skyprime.command;
 
-import com.volmit.skyprime.SkyMaster;
-import com.volmit.skyprime.VirtualIsland;
-import com.volmit.skyprime.Voltage;
-import com.volmit.skyprime.storage.Island;
-
+import io.shadowrealm.skyprime.SkyMaster;
+import io.shadowrealm.skyprime.VirtualIsland;
+import io.shadowrealm.skyprime.Voltage;
+import io.shadowrealm.skyprime.storage.Island;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
 import mortar.logic.format.F;

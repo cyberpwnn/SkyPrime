@@ -1,4 +1,4 @@
-package com.volmit.skyprime.gen;
+package io.shadowrealm.skyprime.gen;
 
 public enum GenStyle
 {

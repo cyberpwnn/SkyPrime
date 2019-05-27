@@ -1,10 +1,9 @@
-package com.volmit.skyprime.command;
+package io.shadowrealm.skyprime.command;
 
 import java.util.UUID;
 
-import com.volmit.skyprime.SkyMaster;
-import com.volmit.skyprime.storage.Island;
-
+import io.shadowrealm.skyprime.SkyMaster;
+import io.shadowrealm.skyprime.storage.Island;
 import mortar.api.sched.J;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.MortarCommand;

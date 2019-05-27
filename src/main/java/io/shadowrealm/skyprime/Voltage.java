@@ -1,4 +1,4 @@
-package com.volmit.skyprime;
+package io.shadowrealm.skyprime;
 
 public class Voltage
 {

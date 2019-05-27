@@ -1,4 +1,4 @@
-package com.volmit.skyprime.nms;
+package io.shadowrealm.skyprime.nms;
 
 import java.util.Iterator;
 
@@ -6,9 +6,8 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.util.HashTreeSet;
 
-import com.volmit.skyprime.Config;
-import com.volmit.skyprime.VirtualIsland;
-
+import io.shadowrealm.skyprime.Config;
+import io.shadowrealm.skyprime.VirtualIsland;
 import mortar.compute.math.M;
 import mortar.lang.collection.GList;
 import mortar.lang.collection.GMap;

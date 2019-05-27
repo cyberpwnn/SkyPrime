@@ -1,7 +1,6 @@
-package com.volmit.skyprime.command;
+package io.shadowrealm.skyprime.command;
 
-import com.volmit.skyprime.gen.IslandGenerator;
-
+import io.shadowrealm.skyprime.gen.IslandGenerator;
 import mortar.api.sched.SR;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;

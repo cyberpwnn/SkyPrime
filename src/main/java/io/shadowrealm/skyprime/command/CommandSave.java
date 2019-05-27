@@ -1,9 +1,8 @@
-package com.volmit.skyprime.command;
+package io.shadowrealm.skyprime.command;
 
 import java.util.concurrent.TimeUnit;
 
-import com.volmit.skyprime.SkyMaster;
-
+import io.shadowrealm.skyprime.SkyMaster;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
 import mortar.compute.math.M;

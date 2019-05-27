@@ -1,4 +1,4 @@
-package com.volmit.skyprime;
+package io.shadowrealm.skyprime;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;

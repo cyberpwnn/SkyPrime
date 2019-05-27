@@ -1,4 +1,4 @@
-package com.volmit.skyprime;
+package io.shadowrealm.skyprime;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,11 +18,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import com.volmit.skyprime.gen.IslandGenerator;
-import com.volmit.skyprime.gen.SkyGen;
-import com.volmit.skyprime.storage.Island;
-import com.volmit.skyprime.storage.StorageEngine;
-
+import io.shadowrealm.skyprime.gen.IslandGenerator;
+import io.shadowrealm.skyprime.gen.SkyGen;
+import io.shadowrealm.skyprime.storage.Island;
+import io.shadowrealm.skyprime.storage.StorageEngine;
 import mortar.api.nms.ChunkTracker;
 import mortar.api.sched.SR;
 import mortar.compute.math.Profiler;

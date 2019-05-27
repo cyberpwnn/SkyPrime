@@ -1,10 +1,9 @@
-package com.volmit.skyprime.command;
+package io.shadowrealm.skyprime.command;
 
 import org.bukkit.Location;
 
-import com.volmit.skyprime.Config;
-import com.volmit.skyprime.SkyMaster;
-
+import io.shadowrealm.skyprime.Config;
+import io.shadowrealm.skyprime.SkyMaster;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
 import mortar.lang.collection.Callback;

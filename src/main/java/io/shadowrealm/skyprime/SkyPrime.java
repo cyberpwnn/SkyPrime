@@ -1,11 +1,10 @@
-package com.volmit.skyprime;
+package io.shadowrealm.skyprime;
 
 import java.io.File;
 
-import com.volmit.skyprime.command.CommandSkyPrime;
-import com.volmit.skyprime.permissions.PermissionSky;
-import com.volmit.skyprime.storage.FileStorageEngine;
-
+import io.shadowrealm.skyprime.command.CommandSkyPrime;
+import io.shadowrealm.skyprime.permissions.PermissionSky;
+import io.shadowrealm.skyprime.storage.FileStorageEngine;
 import mortar.api.sched.SR;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.Permission;

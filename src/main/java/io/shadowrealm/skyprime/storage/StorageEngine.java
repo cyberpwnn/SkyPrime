@@ -1,4 +1,4 @@
-package com.volmit.skyprime.storage;
+package io.shadowrealm.skyprime.storage;
 
 import java.util.UUID;
 
