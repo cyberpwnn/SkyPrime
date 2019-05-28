@@ -102,6 +102,7 @@
 									<shadedPattern>com.volmit.skyprime.volume</shadedPattern>
 								</relocation>
 							</relocations>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
 						</configuration>
 					</plugin>
 					<plugin>
