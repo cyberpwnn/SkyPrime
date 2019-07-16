@@ -3,8 +3,10 @@ package io.shadowrealm.skyprime;
 import java.io.File;
 
 import io.shadowrealm.skyprime.command.CommandSkyPrime;
+import io.shadowrealm.skyprime.dependencies.PlaceholderAPI;
 import io.shadowrealm.skyprime.permissions.PermissionSky;
 import io.shadowrealm.skyprime.storage.FileStorageEngine;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import mortar.api.sched.SR;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.Permission;
@@ -25,9 +27,14 @@ public class SkyPrime extends MortarPlugin
 	@Command
 	private CommandSkyPrime commandsp;
 
+	private PlaceholderAPI papi;
+
 	@Override
 	public void start()
 	{
+		this.papi = new PlaceholderAPI(this);
+		this.papi.register();
+
 		SkyMaster.setStorageEngine(new FileStorageEngine(new File("skydata/islands")));
 		SkyMaster.deleteIslands();
 
