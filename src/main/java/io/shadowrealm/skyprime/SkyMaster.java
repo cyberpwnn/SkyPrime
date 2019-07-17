@@ -226,6 +226,14 @@ public class SkyMaster
 		return engine.getIslandById(id);
 	}
 
+	public static VirtualIsland getPlayerActiveIsland(Player player)
+	{
+		for (VirtualIsland is : virtualIslands.v()) {
+			if (is.getWorld().equals(player.getWorld())) return is;
+		}
+		return getIsland(player);
+	}
+
 	public static VirtualIsland getIsland(Player s)
 	{
 		for(Island i : virtualIslands.k())

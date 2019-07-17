@@ -3,13 +3,14 @@ package io.shadowrealm.skyprime;
 import java.io.File;
 
 import io.shadowrealm.skyprime.command.CommandSkyPrime;
+import io.shadowrealm.skyprime.controller.IslandChatController;
 import io.shadowrealm.skyprime.dependencies.PlaceholderAPI;
 import io.shadowrealm.skyprime.permissions.PermissionSky;
 import io.shadowrealm.skyprime.storage.FileStorageEngine;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import mortar.api.sched.SR;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.Permission;
+import mortar.bukkit.plugin.Control;
 import mortar.bukkit.plugin.Instance;
 import mortar.bukkit.plugin.MortarPlugin;
 import mortar.util.text.C;
@@ -26,6 +27,9 @@ public class SkyPrime extends MortarPlugin
 
 	@Command
 	private CommandSkyPrime commandsp;
+
+	@Control
+	public IslandChatController islandChatController;
 
 	private PlaceholderAPI papi;
 

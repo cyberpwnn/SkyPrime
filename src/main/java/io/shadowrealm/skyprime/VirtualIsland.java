@@ -3,6 +3,8 @@ package io.shadowrealm.skyprime;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -818,6 +820,20 @@ public class VirtualIsland implements Listener
 		}
 
 		return Math.min(use, max);
+	}
+
+	public void sendMessage(String s)
+	{
+		List<UUID> uuids = this.getIsland().getMembers();
+		((GList<UUID>) uuids).addAll(this.getIsland().getAdmins());
+		((GList<UUID>) uuids).add(this.getIsland().getOwner());
+
+		for (UUID u : uuids) {
+			final Player p = Bukkit.getPlayer(u);
+			if (null != p && p.isOnline()) {
+				p.sendMessage(s);
+			}
+		}
 	}
 
 	private void calculateValue()
