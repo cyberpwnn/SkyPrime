@@ -6,6 +6,7 @@ import mortar.bukkit.command.Command;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
 import mortar.util.text.C;
+import org.apache.commons.lang.StringUtils;
 
 public class CommandSkyPrime extends MortarCommand
 {
@@ -65,7 +66,7 @@ public class CommandSkyPrime extends MortarCommand
 
 	public CommandSkyPrime()
 	{
-		super("skyprime", "sky", "sp", "sprime", "is", "island");
+		super("skyprime", "sky", "sp", "sprime", "is", "island", "invite", "kick");
 	}
 
 	@Override
@@ -75,6 +76,17 @@ public class CommandSkyPrime extends MortarCommand
 		{
 			if(SkyMaster.hasIsland(sender.player()))
 			{
+				if (args.length != 0 && (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("kick"))) {
+					if (args.length > 1) {
+						String[] args2 = new String[] { args[1] };
+						if (args[0].equalsIgnoreCase("invite")) return this.members.add.handle(sender, args2);
+						else if (args[0].equalsIgnoreCase("kick")) return this.members.del.handle(sender, args2);
+					} else {
+						sender.sendMessage("Please specify a player name: /sky " + args[0] + " <player>");
+						return true;
+					}
+				}
+
 				SkyMaster.ensureIslandLoaded(sender.player());
 				VirtualIsland is = SkyMaster.getIsland(sender.player());
 
@@ -96,6 +108,8 @@ public class CommandSkyPrime extends MortarCommand
 					sender.sendMessage("/sky spawn - Teleport to island spawn");
 					sender.sendMessage("/sky setspawn - Set your island spawn");
 					sender.sendMessage("/sky members - View and modify members");
+					sender.sendMessage("/sky invite <player> - Invites a player to your island");
+					sender.sendMessage("/sky kick <player> - Removes a player from your island");
 					sender.sendMessage(C.YELLOW + "/sky reboot - Reboot your island");
 					sender.sendMessage(C.RED + "/sky delete - Delete your island");
 					sender.sendMessage(C.RED + "/sky recreate - Delete and create a new island");
