@@ -42,7 +42,7 @@ public class CommandMembers extends MortarCommand
 		Island is = SkyMaster.getIsland(sender.player()).getIsland();
 		sender.sendMessage("/sky members add <player>");
 		sender.sendMessage("/sky members remove <player>");
-		sender.sendMessage("Members: " + is.getMembers().size());
+		sender.sendMessage("Members: " + is.getMembers().size() + " of " + is.getMaximumMembers());
 
 		for(UUID i : is.getMembers())
 		{
