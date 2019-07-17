@@ -1,11 +1,11 @@
 package io.shadowrealm.skyprime.controller;
 
+import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.VirtualIsland;
-import io.shadowrealm.skyprime.dependencies.PlaceholderAPI;
+import me.clip.placeholderapi.PlaceholderAPI;
 import mortar.bukkit.plugin.Controller;
 import mortar.lang.collection.GList;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -25,7 +25,7 @@ public class IslandChatController extends Controller
 
 	public boolean isSubscribed(Player player)
 	{
-		return this.subscribers.contains(player);
+		return Config.CHAT_ENABLE && this.subscribers.contains(player);
 	}
 
 	@Override
@@ -50,10 +50,11 @@ public class IslandChatController extends Controller
 
 	public boolean doChat(Player player, String message)
 	{
+		if (!Config.CHAT_ENABLE) return false;
+
 		final VirtualIsland vi = SkyMaster.getPlayerActiveIsland(player);
 		if (null == vi) return false;
-		message = ChatColor.GOLD + "" + player.getDisplayName() + "" + ChatColor.AQUA + " \u00BB " + ChatColor.YELLOW + "" + message;
-		vi.sendMessage(message);
+		vi.sendMessage(player, PlaceholderAPI.setPlaceholders(player, Config.CHAT_FORMAT_PREFIX) + message);
 		return true;
 	}
 }

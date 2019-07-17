@@ -1,5 +1,6 @@
 package io.shadowrealm.skyprime.command;
 
+import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyPrime;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
@@ -9,12 +10,17 @@ public class CommandSay extends MortarCommand
 {
 	public CommandSay()
 	{
-		super("say", "s", "chat", "send", "talk");
+		super("say", "s", "chat", "send", "talk", "t", "c");
 	}
 
 	@Override
 	public boolean handle(MortarSender sender, String[] args)
 	{
+		if (!Config.CHAT_ENABLE) {
+			sender.sendMessage("IslandChat has been disabled by the server administrator");
+			return true;
+		}
+
 		if (args.length == 0) {
 			final boolean s = SkyPrime.instance.islandChatController.isSubscribed(sender.player());
 			if (s) {

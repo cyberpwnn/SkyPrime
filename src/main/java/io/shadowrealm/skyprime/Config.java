@@ -101,6 +101,12 @@ public class Config
 	@Key("virtual-islands.voltage.island.base-value-threshold")
 	public static double VOLTAGE_MAXOUT_VALUE = 20000D;
 
+	@Key("virtual-islands.chat.enable")
+	public static boolean CHAT_ENABLE = true;
+
+	@Key("virtual-islands.chat.prefix")
+	public static String CHAT_FORMAT_PREFIX = "&6%skyprime_name_self% %player_displayname% &b\u00BB &e";
+
 	@Key("virtual-islands.chat.same-world")
 	public static boolean CHAT_SAME_WORLD = true;
 
