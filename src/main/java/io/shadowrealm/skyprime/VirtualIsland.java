@@ -254,7 +254,7 @@ public class VirtualIsland implements Listener
 		{
 			Player p = (Player) e.getEntity();
 
-			if(island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId()))
+			if(island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId()) || isAdmin(p))
 			{
 				return;
 			}
@@ -306,9 +306,14 @@ public class VirtualIsland implements Listener
 		modified();
 	}
 
+	protected boolean isAdmin(Player player)
+	{
+		return SkyPrime.perm.admin.bypass.has(player) || player.isOp();
+	}
+
 	private boolean canBuild(Player player)
 	{
-		if(player.getUniqueId().equals(island.getOwner()) || isMember(player))
+		if(player.getUniqueId().equals(island.getOwner()) || isMember(player) || isAdmin(player))
 		{
 			return true;
 		}
