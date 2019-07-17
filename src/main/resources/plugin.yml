@@ -1,4 +1,4 @@
 name: ${project.name}
 version: ${project.version}
-depend: [Mortar]
+depend: [Mortar, Vault]
 main: io.shadowrealm.skyprime.SkyPrime
