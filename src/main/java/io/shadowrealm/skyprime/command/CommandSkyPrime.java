@@ -64,6 +64,9 @@ public class CommandSkyPrime extends MortarCommand
 	@Command
 	private CommandSay say;
 
+	@Command
+	private CommandPrivacy privacy;
+
 	public CommandSkyPrime()
 	{
 		super("skyprime", "sky", "sp", "sprime", "is", "island", "invite", "kick");
