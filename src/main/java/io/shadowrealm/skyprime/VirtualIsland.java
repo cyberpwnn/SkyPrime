@@ -29,6 +29,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemMergeEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -470,6 +471,17 @@ public class VirtualIsland implements Listener
 			}
 
 			modified();
+		}
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onPlayerChat(AsyncPlayerChatEvent e)
+	{
+		if (!SkyPrime.instance.islandChatController.isSubscribed(e.getPlayer())) return;
+		if (SkyPrime.instance.islandChatController.doChat(e.getPlayer(), e.getMessage())) {
+			e.setCancelled(true);
+			e.setFormat("");
+			e.setMessage("");
 		}
 	}
 
