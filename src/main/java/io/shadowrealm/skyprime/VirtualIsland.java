@@ -836,7 +836,7 @@ public class VirtualIsland implements Listener
 
 	public void sendMessage(String s)
 	{
-		List<UUID> uuids = this.getIsland().getMembers();
+		List<UUID> uuids = this.getIsland().getMembers().copy();
 		((GList<UUID>) uuids).addAll(this.getIsland().getAdmins());
 		((GList<UUID>) uuids).add(this.getIsland().getOwner());
 
