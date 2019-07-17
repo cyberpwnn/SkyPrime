@@ -101,6 +101,9 @@ public class Config
 	@Key("virtual-islands.voltage.island.base-value-threshold")
 	public static double VOLTAGE_MAXOUT_VALUE = 20000D;
 
+	@Key("virtual-islands.chat.same-world")
+	public static boolean CHAT_SAME_WORLD = true;
+
 	public static void save() throws IllegalArgumentException, IllegalAccessException, IOException
 	{
 		peel().save(SkyPrime.instance.getDataFile("config.yml"));
