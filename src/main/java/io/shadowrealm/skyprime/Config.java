@@ -2,8 +2,10 @@ package io.shadowrealm.skyprime;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 
+import mortar.lang.collection.GMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -109,6 +111,15 @@ public class Config
 
 	@Key("virtual-islands.chat.same-world")
 	public static boolean CHAT_SAME_WORLD = true;
+
+	@Key("virtual-islands.max-members")
+	@Comment("Allows a player a specific amount of players to their island using: skyprime.sky.members.<ID>")
+	public static HashMap<String, Integer> MAX_MEMBERS = new HashMap() {{
+		put("default", 3);
+		put("donor", 5);
+		put("staff", 5);
+		put("admins", 15);
+	}};
 
 	public static void save() throws IllegalArgumentException, IllegalAccessException, IOException
 	{

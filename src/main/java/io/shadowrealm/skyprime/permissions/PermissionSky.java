@@ -3,10 +3,14 @@ package io.shadowrealm.skyprime.permissions;
 import mortar.bukkit.command.MortarPermission;
 import mortar.bukkit.command.Permission;
 
+
 public class PermissionSky extends MortarPermission
 {
 	@Permission
 	public PermissionAdmin admin;
+
+	@Permission
+	public PermissionMembers members;
 
 	@Override
 	public String getNode()

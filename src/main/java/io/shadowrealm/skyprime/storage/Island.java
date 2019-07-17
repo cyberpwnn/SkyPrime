@@ -2,6 +2,9 @@ package io.shadowrealm.skyprime.storage;
 
 import java.util.UUID;
 
+import io.shadowrealm.skyprime.SkyPrime;
+import io.shadowrealm.skyprime.permissions.PermissionSky;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -46,6 +49,8 @@ public class Island
 	private boolean competitive;
 	private GList<UUID> admins;
 	private GList<UUID> members;
+
+	private int maximumMembers = 0;
 
 	public Island(UUID id, UUID owner)
 	{
@@ -152,6 +157,18 @@ public class Island
 		j.put("min-size", minsize);
 
 		return j;
+	}
+
+	public int totalMembers()
+	{
+		return this.members.size() + this.admins.size() + 1;
+	}
+
+	public int getMaximumMembers()
+	{
+		return maximumMembers == 0
+				? maximumMembers = SkyPrime.perm.members.getSize(Bukkit.getOfflinePlayer(this.getOwner()))
+				: maximumMembers;
 	}
 
 	public double getMinsize()

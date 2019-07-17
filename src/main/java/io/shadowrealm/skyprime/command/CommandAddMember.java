@@ -37,6 +37,12 @@ public class CommandAddMember extends MortarCommand
 		}
 
 		Island is = SkyMaster.getIsland(sender.player()).getIsland();
+
+		if (is.getMaximumMembers() <= is.totalMembers()) {
+			sender.sendMessage("&cYou exceeded your limit for " + is.getMaximumMembers() + " maximum members");
+			return true;
+		}
+
 		String name = args[0];
 		Player p = Bukkit.getPlayer(name);
 		System.out.println(name);
