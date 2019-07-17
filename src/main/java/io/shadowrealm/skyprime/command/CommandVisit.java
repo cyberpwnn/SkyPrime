@@ -2,6 +2,8 @@ package io.shadowrealm.skyprime.command;
 
 import java.util.UUID;
 
+import io.shadowrealm.skyprime.SkyPrime;
+import io.shadowrealm.skyprime.VirtualIsland;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
@@ -11,6 +13,7 @@ import io.shadowrealm.skyprime.storage.Visibility;
 import mortar.api.sched.S;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
+import org.bukkit.entity.Player;
 
 public class CommandVisit extends MortarCommand
 {
@@ -36,9 +39,10 @@ public class CommandVisit extends MortarCommand
 			if(SkyMaster.hasIsland(uuid))
 			{
 				SkyMaster.ensureIslandLoaded(uuid);
-				Island isx = SkyMaster.getIsland(uuid).getIsland();
+				final VirtualIsland vi = SkyMaster.getIsland(uuid);
+				Island isx = vi.getIsland();
 
-				if(isx.getVisibility().equals(Visibility.PUBLIC) || sender.hasPermission("sky.bypass") || isx.getMembers().contains(sender.player().getUniqueId()))
+				if (vi.canVisit(sender.player()))
 				{
 					SkyMaster.ensureIslandLoaded(uuid);
 					SkyMaster.getIsland(uuid).warp(sender.player());

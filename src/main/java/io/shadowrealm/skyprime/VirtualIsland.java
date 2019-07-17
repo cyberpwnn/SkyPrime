@@ -321,6 +321,14 @@ public class VirtualIsland implements Listener
 		return false;
 	}
 
+	public boolean canVisit(Player player)
+	{
+		return getIsland().getVisibility().equals(Visibility.PUBLIC) ||
+			SkyPrime.perm.admin.bypass.has(player) ||
+			getIsland().getMembers().contains(player.getUniqueId())
+		;
+	}
+
 	private void denyBuild(Location add)
 	{
 		ParticleEffect.SWEEP_ATTACK.display(1f, 1, add, 32);
