@@ -60,6 +60,9 @@ public class CommandSkyPrime extends MortarCommand
 	@Command
 	private CommandStatus stats;
 
+	@Command
+	private CommandSay say;
+
 	public CommandSkyPrime()
 	{
 		super("skyprime", "sky", "sp", "sprime", "is", "island");
@@ -88,6 +91,7 @@ public class CommandSkyPrime extends MortarCommand
 					sender.sendMessage("/sky config - Configure your island");
 					sender.sendMessage("/sky save - Save your island");
 					sender.sendMessage("/sky warp - Teleport to public warp");
+					sender.sendMessage("/sky chat - Toggle or send messages to IslandChat");
 					sender.sendMessage("/sky setwarp - Set your island public warp");
 					sender.sendMessage("/sky spawn - Teleport to island spawn");
 					sender.sendMessage("/sky setspawn - Set your island spawn");
