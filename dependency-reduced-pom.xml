@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.volmit</groupId>
+  <groupId>io.shadowrealm</groupId>
   <artifactId>SkyPrime</artifactId>
   <name>SkyPrime</name>
-  <version>1.0</version>
+  <version>production</version>
+  <developers>
+    <developer>
+      <name>cyberpwn</name>
+    </developer>
+  </developers>
   <build>
     <resources>
       <resource>
@@ -29,36 +34,42 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <relocations>
-            <relocation>
-              <pattern>com.volmit.volume</pattern>
-              <shadedPattern>com.volmit.skyprime.volume</shadedPattern>
-            </relocation>
-          </relocations>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.2</version>
-        <executions>
-          <execution>
-            <id>runbatchfile</id>
-            <phase>package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <executable>${project.basedir}/scripts/dev.bat</executable>
-          <arguments>${project.basedir}\target\SkyPrime-${project.version}.jar</arguments>
-        </configuration>
       </plugin>
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>ci</id>
+      <properties>
+        <skip.copy>true</skip.copy>
+      </properties>
+    </profile>
+    <profile>
+      <id>development</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.2</version>
+            <executions>
+              <execution>
+                <id>runbatchfile</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <skip>${skip.copy}</skip>
+              <executable>${project.basedir}/scripts/dev.bat</executable>
+              <arguments>${project.basedir}\target\SkyPrime-${project.version}.jar</arguments>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>release</id>
       <build>
@@ -81,6 +92,7 @@
                   <shadedPattern>com.volmit.skyprime.volume</shadedPattern>
                 </relocation>
               </relocations>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
             </configuration>
           </plugin>
           <plugin>
@@ -97,6 +109,7 @@
               </execution>
             </executions>
             <configuration>
+              <skip>${skip.copy}</skip>
               <executable>${project.basedir}/scripts/release.bat</executable>
               <arguments>
                 <argument>${project.basedir}\target\SkyPrime-${project.version}.jar</argument>
@@ -117,8 +130,26 @@
       <id>volmit</id>
       <url>http://nexus.volmit.com/content/repositories/volmit</url>
     </repository>
+    <repository>
+      <id>shadowrealm</id>
+      <url>http://nexus.volmit.com/content/repositories/shadowrealm</url>
+    </repository>
+    <repository>
+      <id>placeholderapi</id>
+      <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+    </repository>
+    <repository>
+      <id>vault-repo</id>
+      <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+    </repository>
   </repositories>
   <dependencies>
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.12.2</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
@@ -126,56 +157,64 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>commons-lang</artifactId>
-          <groupId>commons-lang</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>json-simple</artifactId>
-          <groupId>com.googlecode.json-simple</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.google.guava</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>gson</artifactId>
-          <groupId>com.google.code.gson</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>bungeecord-chat</artifactId>
           <groupId>net.md-5</groupId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.bukkit.craftbukkit</groupId>
-      <artifactId>craftbukkit12</artifactId>
-      <version>1.12.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.volmit</groupId>
-      <artifactId>Phantom</artifactId>
-      <version>head</version>
+      <artifactId>Mortar</artifactId>
+      <version>1.0.66</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>spigot.org</groupId>
-      <artifactId>spigot-1.12.2</artifactId>
-      <version>1.12.2</version>
-      <scope>system</scope>
-      <systemPath>${libs}/spigot-1.12.2.jar</systemPath>
+      <groupId>io.shadowrealm</groupId>
+      <artifactId>Shade</artifactId>
+      <version>production</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>jetty-server</artifactId>
+          <groupId>org.eclipse.jetty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jetty-servlet</artifactId>
+          <groupId>org.eclipse.jetty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jetty-webapp</artifactId>
+          <groupId>org.eclipse.jetty</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>okhttp</artifactId>
+          <groupId>com.squareup.okhttp3</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>JDA</artifactId>
+          <groupId>net.dv8tion</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>me.clip</groupId>
+      <artifactId>placeholderapi</artifactId>
+      <version>2.10.3</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>shadowrealm</id>
+      <url>http://nexus.volmit.com/content/repositories/shadowrealm</url>
+    </repository>
+  </distributionManagement>
   <properties>
-    <libs>${project.basedir}/lib</libs>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <skip.copy>false</skip.copy>
+    <libs>${project.basedir}/lib</libs>
   </properties>
 </project>
 
