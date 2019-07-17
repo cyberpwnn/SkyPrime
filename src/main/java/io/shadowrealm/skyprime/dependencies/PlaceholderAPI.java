@@ -1,6 +1,8 @@
 package io.shadowrealm.skyprime.dependencies;
 
+import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.SkyPrime;
+import io.shadowrealm.skyprime.storage.Island;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
@@ -86,6 +88,16 @@ public class PlaceholderAPI extends PlaceholderExpansion
 		return plugin.getDescription().getVersion();
 	}
 
+	private Island getIsland(Player player, String tag)
+	{
+		if (tag.endsWith("_self")) {
+			return SkyMaster.hasIslandLoaded(player) ? SkyMaster.getIsland(player).getIsland() : SkyMaster.getIslandConfig(player);
+		} else if (tag.endsWith("_current")) {
+			return null; // todo
+		}
+		return null;
+	}
+
 	/**
 	 * This is the method called when a placeholder with our identifier
 	 * is found and needs a value.
@@ -102,6 +114,33 @@ public class PlaceholderAPI extends PlaceholderExpansion
 	@Override
 	public String onPlaceholderRequest(Player player, String s)
 	{
+		final Island i = this.getIsland(player, s);
+		if (null == i) return null;
+
+		if (s.startsWith("level")) {
+			return formatDecimal(i.getLevel() / 20D);
+		} else if (s.startsWith("size_max")) {
+			return formatInt(i.getMaxSize());
+		} else if (s.startsWith("size")) {
+			return formatDecimal(i.getWorldSize());
+		} else if (s.startsWith("members")) {
+			return formatInt(i.getMembers().size() + i.getAdmins().size());
+		} else if (s.startsWith("value")) {
+			return formatDecimal(i.getValue() / 20D);
+		} else if (s.startsWith("id")) {
+			return i.getId().toString();
+		}
+
 		return null;
+	}
+
+	private String formatDecimal(double d)
+	{
+		return String.format("%,.2f", d);
+	}
+
+	private String formatInt(int i)
+	{
+		return String.format("%,d", i);
 	}
 }
