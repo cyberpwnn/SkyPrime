@@ -566,20 +566,13 @@ public class VirtualIsland implements Listener
 		}
 	}
 
-	private int getMaxIslandSize()
-	{
-		return island.getMaxSize();
-	}
-
 	private void updateSize()
 	{
-		double ib = Math.pow(Math.max(island.getLevel(), island.getValue()), Config.FRACTAL_VALUE) / 5 / Config.DIVISOR_VALUE;
-		double bonus = ib;
 		world.getWorldBorder().setCenter(0, 0);
 		world.getWorldBorder().setWarningDistance(10);
 		world.getWorldBorder().setWarningTime(30);
 		world.getWorldBorder().setDamageAmount(0.5);
-		world.getWorldBorder().setSize(Math.min((2 * island.getMinsize()) + bonus, getMaxIslandSize()), Config.ANIMATION_SIZE);
+		world.getWorldBorder().setSize(island.getWorldSize(), Config.ANIMATION_SIZE);
 	}
 
 	public void delete()
