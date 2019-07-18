@@ -2,6 +2,7 @@ package io.shadowrealm.skyprime.dependencies;
 
 import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.SkyPrime;
+import io.shadowrealm.skyprime.VirtualIsland;
 import io.shadowrealm.skyprime.storage.Island;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
@@ -90,12 +91,11 @@ public class PlaceholderAPI extends PlaceholderExpansion
 
 	private Island getIsland(Player player, String tag)
 	{
-		if (tag.endsWith("_self")) {
+		if (!tag.endsWith("_current")) {
 			return SkyMaster.hasIslandLoaded(player) ? SkyMaster.getIsland(player).getIsland() : SkyMaster.getIslandConfig(player);
-		} else if (tag.endsWith("_current")) {
-			return null; // todo
 		}
-		return null;
+		final VirtualIsland is = SkyMaster.getPlayerActiveIsland(player);
+		return is == null ? SkyMaster.getIslandConfig(player) : is.getIsland();
 	}
 
 	/**
