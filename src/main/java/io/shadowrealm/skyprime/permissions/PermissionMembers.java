@@ -23,6 +23,9 @@ public class PermissionMembers extends MortarPermission
 		return "Gives access to all of skyprime";
 	}
 
+	@Permission
+	public PermissionMembersAdd add;
+
 	@Override
 	public boolean isDefault()
 	{

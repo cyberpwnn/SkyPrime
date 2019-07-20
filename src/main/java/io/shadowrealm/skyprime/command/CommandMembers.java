@@ -3,6 +3,7 @@ package io.shadowrealm.skyprime.command;
 import java.util.UUID;
 
 import io.shadowrealm.skyprime.SkyMaster;
+import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.storage.Island;
 import mortar.api.sched.J;
 import mortar.bukkit.command.Command;
@@ -40,7 +41,11 @@ public class CommandMembers extends MortarCommand
 		}
 
 		Island is = SkyMaster.getIsland(sender.player()).getIsland();
-		sender.sendMessage("/sky members add <player>");
+
+		if (SkyPrime.perm.members.add.has(sender))
+			sender.sendMessage("/sky members add <player>");
+		
+		sender.sendMessage("/sky members invite <player>");
 		sender.sendMessage("/sky members remove <player>");
 		sender.sendMessage("Members: " + is.getMembers().size() + " of " + is.getMaximumMembers());
 

@@ -102,10 +102,14 @@ public class CommandAddMember extends MortarCommand
 
 							if (sender.getCommand().equalsIgnoreCase("add"))
 							{
-								is.getMembers().add(idd);
-								sender.sendMessage(is.getMembers().size() + " members");
-								vi.sendMessage(sender.getTag() + p.getName() + " has joined your island.");
-								save(is, sender.player());
+								if (SkyPrime.perm.members.add.has(sender)) {
+									is.getMembers().add(idd);
+									sender.sendMessage(is.getMembers().size() + " members");
+									vi.sendMessage(sender.getTag() + p.getName() + " has joined your island.");
+									save(is, sender.player());
+								} else {
+									sender.sendMessage(C.RED + "You do not have permission to add players");
+								}
 							} else {
 								p.sendMessage(sender.getTag() + "You were invited to join " + C.WHITE + is.getName() + C.GRAY +
 											" You can accept this invitation using " + C.WHITE + "/sky accept " + C.GRAY  +

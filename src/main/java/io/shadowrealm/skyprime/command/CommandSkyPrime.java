@@ -2,6 +2,7 @@ package io.shadowrealm.skyprime.command;
 
 import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyMaster;
+import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.VirtualIsland;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.MortarCommand;
@@ -118,6 +119,10 @@ public class CommandSkyPrime extends MortarCommand
 					sender.sendMessage("/sky spawn - Teleport to island spawn");
 					sender.sendMessage("/sky setspawn - Set your island spawn");
 					sender.sendMessage("/sky members - View and modify members");
+
+					if (SkyPrime.perm.members.add.has(sender))
+						sender.sendMessage("/sky add <player> - Forces a player in your island");
+
 					sender.sendMessage("/sky invite <player> - Invites a player to your island");
 					sender.sendMessage("/sky kick <player> - Removes a player from your island");
 					if (Config.ISLAND_ALLOW_TRANSFER)
