@@ -3,7 +3,7 @@ package io.shadowrealm.skyprime;
 import java.io.File;
 
 import io.shadowrealm.skyprime.command.CommandSkyPrime;
-import io.shadowrealm.skyprime.controller.IslandChatController;
+import io.shadowrealm.skyprime.controller.*;
 import io.shadowrealm.skyprime.dependencies.PlaceholderAPI;
 import io.shadowrealm.skyprime.permissions.PermissionSky;
 import io.shadowrealm.skyprime.storage.FileStorageEngine;
@@ -30,6 +30,9 @@ public class SkyPrime extends MortarPlugin
 
 	@Control
 	public IslandChatController islandChatController;
+
+	@Control
+	public IslandController islandController;
 
 	private PlaceholderAPI papi;
 
