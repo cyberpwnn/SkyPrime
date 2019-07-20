@@ -34,7 +34,7 @@ public class PermissionMembers extends MortarPermission
 
 	public int getSize(OfflinePlayer player)
 	{
-		int s = 0;
+		int s = Config.MAX_MEMBERS.getOrDefault("default", 0);
 		for (Map.Entry<String, Integer> m : Config.MAX_MEMBERS.entrySet()) {
 			if (m.getValue() > s && Vault.getPermission().playerHas(null, player, this.getFullNode() + "." + m.getKey())) {
 				s = m.getValue();
