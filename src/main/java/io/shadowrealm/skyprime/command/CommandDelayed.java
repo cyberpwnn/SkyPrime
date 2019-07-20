@@ -8,7 +8,7 @@ public class CommandDelayed extends MortarCommand
 {
 	public CommandDelayed()
 	{
-		super("confirm", "accept", "deny", "cancel", "can");
+		super("confirm", "accept", "deny", "cancel", "can", "reject");
 	}
 
 	@Override

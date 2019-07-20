@@ -2,6 +2,9 @@ package io.shadowrealm.skyprime.command;
 
 import java.util.UUID;
 
+import io.shadowrealm.skyprime.SkyPrime;
+import io.shadowrealm.skyprime.VirtualIsland;
+import mortar.bukkit.plugin.commands.DelayedCommand;
 import mortar.util.text.C;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,7 +40,8 @@ public class CommandAddMember extends MortarCommand
 			return true;
 		}
 
-		Island is = SkyMaster.getIsland(sender.player()).getIsland();
+		final VirtualIsland vi = SkyMaster.getIsland(sender.player());
+		final Island is = vi.getIsland();
 
 		if (is.getMaximumMembers() < is.totalMembers()) {
 			sender.sendMessage(C.RED + "You exceeded your limit for " + is.getMaximumMembers() + " maximum members");
@@ -46,14 +50,19 @@ public class CommandAddMember extends MortarCommand
 
 		String name = args[0];
 		Player p = Bukkit.getPlayer(name);
-		System.out.println(name);
+		if (p == null || !p.isOnline()) {
+			sender.sendMessage("Cannot find " + name);
+			return true;
+		}
+
+		UUID idd = p.getUniqueId();
 
 		new A()
 		{
 			@Override
 			public void run()
 			{
-				UUID id = null;
+				/*UUID id = null;
 
 				if(p == null)
 				{
@@ -70,50 +79,75 @@ public class CommandAddMember extends MortarCommand
 
 				if(idd == null)
 				{
-					sender.sendMessage("Cannot find " + name);
 				}
 
 				else
-				{
+				{*/
 					new S()
 					{
 						@Override
 						public void run()
 						{
-							System.out.println(idd);
 							if(is.getMembers().contains(idd))
 							{
 								sender.sendMessage(name + " is already a member.");
+								return;
 							}
 
 							else if(is.getOwner().equals(idd))
 							{
 								sender.sendMessage(name + " is the owner of this island.");
+								return;
 							}
 
-							else
+							if (sender.getCommand().equalsIgnoreCase("add"))
 							{
 								is.getMembers().add(idd);
 								sender.sendMessage(is.getMembers().size() + " members");
+								vi.sendMessage(sender.getTag() + p.getName() + " has joined your island.");
+								save(is, sender.player());
+							} else {
+								p.sendMessage(sender.getTag() + "You were invited to join " + C.WHITE + is.getName() + C.GRAY +
+											" You can accept this invitation using " + C.WHITE + "/sky accept " + C.GRAY  +
+											"or reject this request " + C.WHITE + "/sky reject");
+								sender.sendMessage("You have successfully sent an invitation to " + p.getName());
 
-								if(!SkyMaster.hasIslandLoaded(sender.player()))
-								{
-									SkyMaster.getStorageEngine().setIsland(is);
-								}
-
-								else
-								{
-									SkyMaster.getIsland(sender.player()).saveIsland();
-								}
-
-								sender.sendMessage(name + " was added to your island members.");
+								SkyPrime.instance.delayedController.register(
+									new DelayedCommand(
+										"Island invitation",
+										new MortarSender(p, sender.getTag()),
+										() -> {
+											is.getMembers().add(idd);
+											save(is, sender.player());
+											vi.sendMessage(sender.getTag() + p.getName() + " has joined the island!");
+										},
+										() -> {
+											p.sendMessage(sender.getTag() + "Your island invitation has expired");
+											sender.sendMessage(p.getName() + "'s island invitation has expired.");
+										}
+									)
+								);
 							}
 						}
 					};
-				}
+				// }
 			}
 		};
 
 		return true;
 	}
+
+	private void save(Island is, Player p)
+	{
+		if(!SkyMaster.hasIslandLoaded(p))
+		{
+			SkyMaster.getStorageEngine().setIsland(is);
+		}
+
+		else
+		{
+			SkyMaster.getIsland(p).saveIsland();
+		}
+	}
+
 }
