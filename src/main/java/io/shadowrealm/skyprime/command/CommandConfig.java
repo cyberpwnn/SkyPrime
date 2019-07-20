@@ -5,6 +5,13 @@ import io.shadowrealm.skyprime.storage.Island;
 import io.shadowrealm.skyprime.storage.Visibility;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
+import mortar.lang.collection.GList;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandConfig extends MortarCommand
 {
@@ -32,6 +39,7 @@ public class CommandConfig extends MortarCommand
 
 		if(args.length == 0)
 		{
+			sender.sendMessage("name = " + is.getName());
 			sender.sendMessage("public = " + is.getVisibility().equals(Visibility.PUBLIC));
 			sender.sendMessage("despawn.arrow = " + is.getcDespawnArrow());
 			sender.sendMessage("despawn.item = " + is.getcDespawnItem());
@@ -56,6 +64,13 @@ public class CommandConfig extends MortarCommand
 				if(args[0].equalsIgnoreCase("despawn.arrow"))
 				{
 					is.setcDespawnArrow(Integer.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("name"))
+				{
+					GList<String> a = new GList<>(args);
+					a.remove(0);
+					is.setName(a.toString(" "));
 				}
 
 				else if(args[0].equalsIgnoreCase("despawn.item"))
