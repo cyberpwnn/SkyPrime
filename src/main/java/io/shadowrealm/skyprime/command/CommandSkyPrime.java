@@ -71,6 +71,9 @@ public class CommandSkyPrime extends MortarCommand
 	@Command
 	private CommandTransfer transfer;
 
+	@Command
+	private CommandDelayed delayed;
+
 	public CommandSkyPrime()
 	{
 		super("skyprime", "sky", "sp", "sprime", "is", "island", "invite", "kick");

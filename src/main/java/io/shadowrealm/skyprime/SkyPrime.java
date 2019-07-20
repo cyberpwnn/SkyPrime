@@ -13,6 +13,7 @@ import mortar.bukkit.command.Permission;
 import mortar.bukkit.plugin.Control;
 import mortar.bukkit.plugin.Instance;
 import mortar.bukkit.plugin.MortarPlugin;
+import mortar.bukkit.plugin.commands.DelayedController;
 import mortar.util.text.C;
 import mortar.util.text.D;
 import mortar.util.text.TXT;
@@ -27,6 +28,9 @@ public class SkyPrime extends MortarPlugin
 
 	@Command
 	private CommandSkyPrime commandsp;
+
+	@Command
+	public DelayedController delayedController;
 
 	@Control
 	public IslandChatController islandChatController;
