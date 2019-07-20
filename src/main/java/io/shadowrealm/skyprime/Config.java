@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mortar.lang.collection.GMap;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -113,7 +115,7 @@ public class Config
 	public static boolean CHAT_SAME_WORLD = true;
 
 	@Key("virtual-islands.max-members")
-	@Comment("Allows a player a specific amount of players to their island using: skyprime.sky.members.<ID>")
+	//@Comment("Allows a player a specific amount of players to their island using: skyprime.sky.members.<ID>")
 	public static HashMap<String, Integer> MAX_MEMBERS = new HashMap() {{
 		put("default", 3);
 		put("donor", 5);
@@ -195,10 +197,38 @@ public class Config
 				i.set(null, z);
 			}
 
+			else if (v instanceof Map || v instanceof ConfigurationSection) {
+				i.set(null, getConfigSectionValue(v, true));
+			}
+
 			else
 			{
 				i.set(null, v);
 			}
 		}
+	}
+
+
+	/**
+	 * Converts a section to a map.
+	 *
+	 * @param o the base object
+	 * @param deep recursive values
+	 * @return map of config information, null if no data
+	 */
+	public static Map<String, Object> getConfigSectionValue(Object o, boolean deep)
+	{
+		if (o == null) {
+			return null;
+		}
+		Map<String, Object> map;
+		if (o instanceof ConfigurationSection) {
+			map = ((ConfigurationSection) o).getValues(deep);
+		} else if (o instanceof Map) {
+			map = (Map<String, Object>) o;
+		} else {
+			return null;
+		}
+		return map;
 	}
 }
