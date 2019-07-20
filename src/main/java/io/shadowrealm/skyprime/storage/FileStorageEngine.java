@@ -75,7 +75,13 @@ public class FileStorageEngine implements StorageEngine
 	public void removeIsland(Island island)
 	{
 		new File(base, "data-" + island.getId().toString()).delete();
-		new File(base, "owner-" + island.getOwner().toString()).delete();
+		deleteOwnerIsland(island.getOwner());
+	}
+
+	@Override
+	public void deleteOwnerIsland(UUID uuid)
+	{
+		new File(base, "owner-" + uuid.toString()).delete();
 	}
 
 	@Override

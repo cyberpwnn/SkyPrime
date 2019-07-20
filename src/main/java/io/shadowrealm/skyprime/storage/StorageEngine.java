@@ -17,4 +17,6 @@ public interface StorageEngine
 	public void setIsland(Island island);
 
 	public void removeIsland(Island island);
+
+	public void deleteOwnerIsland(UUID uuid);
 }

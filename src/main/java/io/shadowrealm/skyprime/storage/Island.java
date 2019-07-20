@@ -2,6 +2,7 @@ package io.shadowrealm.skyprime.storage;
 
 import java.util.UUID;
 
+import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.permissions.PermissionSky;
 import lombok.Getter;
@@ -595,5 +596,12 @@ public class Island
 	{
 		final double bonus = Math.pow(Math.max(getLevel(), getValue()), Config.FRACTAL_VALUE) / 5 / Config.DIVISOR_VALUE;
 		return Math.min((2 * getMinsize()) + bonus, getMaxSize());
+	}
+
+	public void transferIsland(UUID newOwner)
+	{
+		SkyMaster.getStorageEngine().deleteOwnerIsland(this.owner);
+		this.setOwner(newOwner);
+		SkyMaster.getStorageEngine().setIsland(this);
 	}
 }

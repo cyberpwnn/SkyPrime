@@ -65,7 +65,7 @@ public class CommandTransfer extends MortarCommand
 
 		// TODO confirm here
 
-		is.setOwner(player.getUniqueId());
+		is.transferIsland(player.getUniqueId());
 		sender.sendMessage("You have successfully transferred your island to " + player.getName());
 		((Player) player).sendMessage(sender.getTag() + "You are the new proud owner of: "+ C.WHITE + is.getName());
 
