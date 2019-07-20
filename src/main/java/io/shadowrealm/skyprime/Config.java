@@ -114,8 +114,11 @@ public class Config
 	@Key("virtual-islands.chat.same-world")
 	public static boolean CHAT_SAME_WORLD = true;
 
-	@Key("virtual-islands-allow-transfer")
+	@Key("virtual-islands.config.allow-transfer")
 	public static boolean ISLAND_ALLOW_TRANSFER = true;
+
+	@Key("virtual-islands.config.default-private")
+	public static boolean ISLAND_IS_PRIVATE = true;
 
 	@Key("virtual-islands.max-members")
 	//@Comment("Allows a player a specific amount of players to their island using: skyprime.sky.members.<ID>")
