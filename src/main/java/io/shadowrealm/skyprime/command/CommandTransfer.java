@@ -2,10 +2,12 @@ package io.shadowrealm.skyprime.command;
 
 import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyMaster;
+import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.storage.Island;
 import io.shadowrealm.skyprime.storage.Visibility;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
+import mortar.bukkit.plugin.commands.DelayedCommand;
 import mortar.lang.collection.GList;
 import mortar.util.text.C;
 import org.bukkit.Bukkit;
@@ -63,11 +65,19 @@ public class CommandTransfer extends MortarCommand
 			return true;
 		}
 
-		// TODO confirm here
+		sender.sendMessage("Please confirm your decision to transfer your island. Use /sky confirm or /sky cancel");
 
-		is.transferIsland(player.getUniqueId());
-		sender.sendMessage("You have successfully transferred your island to " + player.getName());
-		((Player) player).sendMessage(sender.getTag() + "You are the new proud owner of: "+ C.WHITE + is.getName());
+		SkyPrime.instance.delayedController.register(
+			new DelayedCommand(
+				"Island transfer",
+				sender,
+				() -> {
+					is.transferIsland(player.getUniqueId());
+					sender.sendMessage("You have successfully transferred your island to " + player.getName());
+					((Player) player).sendMessage(sender.getTag() + "You are the new proud owner of: "+ C.WHITE + is.getName());
+				}
+			)
+		);
 
 		return true;
 	}
