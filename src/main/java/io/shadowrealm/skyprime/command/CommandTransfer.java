@@ -1,5 +1,6 @@
 package io.shadowrealm.skyprime.command;
 
+import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.storage.Island;
 import io.shadowrealm.skyprime.storage.Visibility;
@@ -22,6 +23,11 @@ public class CommandTransfer extends MortarCommand
 	@Override
 	public boolean handle(MortarSender sender, String[] args)
 	{
+		if (!Config.ISLAND_ALLOW_TRANSFER) {
+			sender.sendMessage("Island transfers has been disabled.");
+			return true;
+		}
+
 		if(!SkyMaster.hasIsland(sender.player()))
 		{
 			sender.sendMessage("You cant configure an island you dont have. Use /sky create");

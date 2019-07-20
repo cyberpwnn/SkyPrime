@@ -1,5 +1,6 @@
 package io.shadowrealm.skyprime.command;
 
+import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.VirtualIsland;
 import mortar.bukkit.command.Command;
@@ -116,7 +117,8 @@ public class CommandSkyPrime extends MortarCommand
 					sender.sendMessage("/sky members - View and modify members");
 					sender.sendMessage("/sky invite <player> - Invites a player to your island");
 					sender.sendMessage("/sky kick <player> - Removes a player from your island");
-					sender.sendMessage("/sky transfer <player> - Transfer your island");
+					if (Config.ISLAND_ALLOW_TRANSFER)
+						sender.sendMessage("/sky transfer <player> - Transfer your island");
 					sender.sendMessage(C.YELLOW + "/sky reboot - Reboot your island");
 					sender.sendMessage(C.RED + "/sky delete - Delete your island");
 					sender.sendMessage(C.RED + "/sky recreate - Delete and create a new island");
