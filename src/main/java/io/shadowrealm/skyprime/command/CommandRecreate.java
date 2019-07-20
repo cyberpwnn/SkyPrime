@@ -1,11 +1,15 @@
 package io.shadowrealm.skyprime.command;
 
+import io.shadowrealm.skyprime.SkyPrime;
+import mortar.bukkit.plugin.commands.DelayedCommand;
+import mortar.util.text.C;
 import org.bukkit.Bukkit;
 
 import io.shadowrealm.skyprime.SkyMaster;
 import mortar.api.sched.S;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
+import org.bukkit.entity.Player;
 
 public class CommandRecreate extends MortarCommand
 {
@@ -33,14 +37,26 @@ public class CommandRecreate extends MortarCommand
 			SkyMaster.coldDelete(sender.player());
 		}
 
-		new S(5)
-		{
-			@Override
-			public void run()
-			{
-				Bukkit.dispatchCommand(sender.player(), "sky new");
-			}
-		};
+
+		sender.sendMessage("Please confirm your decision to rebuild your island. Use /sky confirm or /sky cancel");
+
+		SkyPrime.instance.delayedController.register(
+			new DelayedCommand(
+				"Island rebuild",
+				sender,
+				() -> {
+					new S(5)
+					{
+						@Override
+						public void run()
+						{
+							Bukkit.dispatchCommand(sender.player(), "sky new");
+						}
+					};
+				}
+			)
+		);
+
 
 		return true;
 	}
