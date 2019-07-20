@@ -2,6 +2,7 @@ package io.shadowrealm.skyprime.command;
 
 import java.util.UUID;
 
+import mortar.util.text.C;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -38,8 +39,8 @@ public class CommandAddMember extends MortarCommand
 
 		Island is = SkyMaster.getIsland(sender.player()).getIsland();
 
-		if (is.getMaximumMembers() <= is.totalMembers()) {
-			sender.sendMessage("&cYou exceeded your limit for " + is.getMaximumMembers() + " maximum members");
+		if (is.getMaximumMembers() < is.totalMembers()) {
+			sender.sendMessage(C.RED + "You exceeded your limit for " + is.getMaximumMembers() + " maximum members");
 			return true;
 		}
 
