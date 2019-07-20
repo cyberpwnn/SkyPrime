@@ -9,7 +9,12 @@ public class SkyGen extends ChunkGenerator
 {
 	public SkyGen()
 	{
+	}
 
+	@Override
+	public ChunkData generateChunkData(World world, Random random, int x, int z, BiomeGrid biome)
+	{
+		return createChunkData(world);
 	}
 
 	@Override
