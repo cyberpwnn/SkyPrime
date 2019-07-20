@@ -4,8 +4,11 @@ import java.util.UUID;
 
 import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.permissions.PermissionSky;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 
 import io.shadowrealm.skyprime.Config;
@@ -49,6 +52,10 @@ public class Island
 	private boolean competitive;
 	private GList<UUID> admins;
 	private GList<UUID> members;
+
+	@Getter
+	@Setter
+	private String name;
 
 	private int maximumMembers = 0;
 
@@ -116,6 +123,7 @@ public class Island
 		warppp = o.has("wpp") ? o.getDouble("wpp") : 0;
 		admins = o.has("admins") ? idf(o.getJSONArray("admins")) : new GList<>();
 		members = o.has("members") ? idf(o.getJSONArray("members")) : new GList<>();
+		name = o.has("name") ? o.getString("name") : getOwnerPlayer().getName() + "'s Island";
 	}
 
 	public JSONObject toJSON()
@@ -124,6 +132,7 @@ public class Island
 
 		j.put("id", getId().toString());
 		j.put("owner", getOwner().toString());
+		j.put("name", name);
 		j.put("level", level);
 		j.put("value", value);
 		j.put("started", started);
@@ -155,8 +164,17 @@ public class Island
 		j.put("admins", idx(admins));
 		j.put("competitive", competitive);
 		j.put("min-size", minsize);
-
 		return j;
+	}
+
+	public OfflinePlayer getOwnerPlayer()
+	{
+		try {
+			return Bukkit.getOfflinePlayer(this.owner);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
 	}
 
 	public int totalMembers()
