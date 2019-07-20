@@ -8,13 +8,13 @@ public class CommandDelayed extends MortarCommand
 {
 	public CommandDelayed()
 	{
-		super("confirm", "cancel", "can");
+		super("confirm", "accept", "deny", "cancel", "can");
 	}
 
 	@Override
 	public boolean handle(MortarSender sender, String[] args)
 	{
-		if (sender.getCommand().equalsIgnoreCase("confirm")) {
+		if (sender.getCommand().equalsIgnoreCase("confirm") || sender.getCommand().equalsIgnoreCase("accept")) {
 			if (!SkyPrime.instance.delayedController.confirm(sender)) {
 				sender.sendMessage("You don't have any pending confirmations");
 			}
