@@ -129,6 +129,10 @@ public class PlaceholderAPI extends PlaceholderExpansion
 			return formatDecimal(i.getValue() / 20D);
 		} else if (s.startsWith("id")) {
 			return i.getId().toString();
+		} else if (s.startsWith("owner")) {
+			return i.getOwnerPlayer() != null ? i.getOwnerPlayer().getName() : i.getOwner().toString()
+		} else if (s.startsWith("name")) {
+			return i.getName();
 		}
 
 		return null;
