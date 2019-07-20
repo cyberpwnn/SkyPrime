@@ -54,6 +54,9 @@ public class SkyPrime extends MortarPlugin
 			@Override
 			public void run()
 			{
+				delayedController.tick();
+				islandController.tick();
+				islandChatController.tick();
 				SkyMaster.tick();
 			}
 		};
