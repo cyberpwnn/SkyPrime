@@ -6,7 +6,7 @@ import mortar.bukkit.command.MortarSender;
 
 public class CommandDelayed extends MortarCommand
 {
-	public CommandDelayed(String node, String... nodes)
+	public CommandDelayed()
 	{
 		super("confirm", "cancel", "can");
 	}
@@ -14,11 +14,11 @@ public class CommandDelayed extends MortarCommand
 	@Override
 	public boolean handle(MortarSender sender, String[] args)
 	{
-		if (this.getNode().equalsIgnoreCase("confirm")) {
+		if (sender.getCommand().equalsIgnoreCase("confirm")) {
 			if (!SkyPrime.instance.delayedController.confirm(sender)) {
 				sender.sendMessage("You don't have any pending confirmations");
 			}
-		} else if (this.getNode().equalsIgnoreCase("confirm")) {
+		} else {
 			if (!SkyPrime.instance.delayedController.cancel(sender)) {
 				sender.sendMessage("You don't have any pending confirmations");
 			}

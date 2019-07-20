@@ -27,17 +27,6 @@ public class CommandRecreate extends MortarCommand
 			return true;
 		}
 
-		if(SkyMaster.hasIslandLoaded(sender.player()))
-		{
-			SkyMaster.getIsland(sender.player()).delete();
-		}
-
-		else
-		{
-			SkyMaster.coldDelete(sender.player());
-		}
-
-
 		sender.sendMessage("Please confirm your decision to rebuild your island. Use /sky confirm or /sky cancel");
 
 		SkyPrime.instance.delayedController.register(
@@ -45,12 +34,22 @@ public class CommandRecreate extends MortarCommand
 				"Island rebuild",
 				sender,
 				() -> {
+					if(SkyMaster.hasIslandLoaded(sender.player()))
+					{
+						SkyMaster.getIsland(sender.player()).delete();
+					}
+
+					else
+					{
+						SkyMaster.coldDelete(sender.player());
+					}
+
 					new S(5)
 					{
 						@Override
 						public void run()
 						{
-							Bukkit.dispatchCommand(sender.player(), "sky new");
+							Bukkit.dispatchCommand(sender.player(), "skyprime new");
 						}
 					};
 				}

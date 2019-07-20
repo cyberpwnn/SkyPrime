@@ -29,7 +29,7 @@ public class SkyPrime extends MortarPlugin
 	@Command
 	private CommandSkyPrime commandsp;
 
-	@Command
+	@Control
 	public DelayedController delayedController;
 
 	@Control
