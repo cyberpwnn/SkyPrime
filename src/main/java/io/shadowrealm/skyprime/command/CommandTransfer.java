@@ -65,16 +65,31 @@ public class CommandTransfer extends MortarCommand
 			return true;
 		}
 
-		sender.sendMessage("Please confirm your decision to transfer your island. Use /sky confirm or /sky cancel");
+		sender.sendMessage("Please confirm your decision to transfer your island. Use " + C.WHITE + "/sky confirm" + C.GRAY + " or to cancel this transfer, " + C.WHITE + "/sky cancel");
 
 		SkyPrime.instance.delayedController.register(
 			new DelayedCommand(
 				"Island transfer",
 				sender,
 				() -> {
-					is.transferIsland(player.getUniqueId());
-					sender.sendMessage("You have successfully transferred your island to " + player.getName());
-					((Player) player).sendMessage(sender.getTag() + "You are the new proud owner of: "+ C.WHITE + is.getName());
+					SkyPrime.instance.delayedController.register(
+						new DelayedCommand(
+							"Island transfer",
+							new MortarSender((Player) player, sender.getTag()),
+							() -> {
+								is.transferIsland(player.getUniqueId());
+								sender.sendMessage("You have successfully transferred your island to " + player.getName());
+								((Player) player).sendMessage(sender.getTag() + "You are the new proud owner of: "+ C.WHITE + is.getName());
+							},
+							() -> {
+								sender.sendMessage(player.getName() + " cancelled the island trade");
+								((Player) player).sendMessage(sender.getTag() + "The island transfer was cancelled.");
+							}
+						)
+					);
+
+					sender.sendMessage("You sent a request to " + C.WHITE + player.getName() + C.GRAY + " to accept your island transfer");
+					((Player) player).sendMessage(sender.getTag() + C.WHITE + sender.getName() + C.GRAY + " requested to transfer their island " + C.WHITE + is.getName() + C.GRAY + " to you. To accept this transfer, type " + C.WHITE + "/sky accept " + C.GRAY + "or cancel this transfer type " + C.WHITE + "/sky cancel");
 				}
 			)
 		);
