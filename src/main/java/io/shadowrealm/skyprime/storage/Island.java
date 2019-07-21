@@ -2,6 +2,7 @@ package io.shadowrealm.skyprime.storage;
 
 import java.util.UUID;
 
+import io.shadowrealm.skyprime.IslandProtection;
 import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.permissions.PermissionSky;
@@ -55,6 +56,9 @@ public class Island
 	private GList<UUID> members;
 
 	@Getter
+	private IslandProtection protection;
+
+	@Getter
 	@Setter
 	private String name;
 
@@ -87,6 +91,7 @@ public class Island
 		admins = new GList<>();
 		members = new GList<>();
 		level = 0D;
+		this.protection = new IslandProtection(this);
 	}
 
 	public Island(JSONObject o)
@@ -125,6 +130,8 @@ public class Island
 		admins = o.has("admins") ? idf(o.getJSONArray("admins")) : new GList<>();
 		members = o.has("members") ? idf(o.getJSONArray("members")) : new GList<>();
 		name = o.has("name") ? o.getString("name") : getOwnerPlayer().getName() + "'s Island";
+		this.protection = new IslandProtection(this);
+		// todo parse protection
 	}
 
 	public JSONObject toJSON()
