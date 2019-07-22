@@ -35,4 +35,9 @@ public class IslandEvent extends Event implements Cancellable
 	{
 		return l;
 	}
+
+	public static HandlerList getHandlerList()
+	{
+		return l;
+	}
 }

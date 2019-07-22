@@ -1,5 +1,6 @@
 package io.shadowrealm.skyprime.controller;
 
+import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.VirtualIsland;
 import mortar.bukkit.plugin.Controller;
 import org.bukkit.ChatColor;
@@ -38,7 +39,7 @@ public class IslandProtectionController extends Controller implements Listener
 
 	protected VirtualIsland getIsland(Location location)
 	{
-		return null;
+		return SkyMaster.getIsland(location.getWorld());
 	}
 
 	public final String getMessage(String action)
