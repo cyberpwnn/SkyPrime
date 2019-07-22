@@ -1,4 +1,11 @@
 name: ${project.name}
 version: ${project.version}
 depend: [Mortar, Vault]
+softdepend: [PlaceholderAPI]
 main: io.shadowrealm.skyprime.SkyPrime
+authors: [David Tkachuk (LeRoche), VolmitSoftware]
+website: https://volmit.com
+
+commands:
+  sky:
+    aliases: [skyprime, is, island, skeet, sp, sprime]
