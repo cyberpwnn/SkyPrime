@@ -1,5 +1,6 @@
 package io.shadowrealm.skyprime.command;
 
+import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.controller.IslandRankController;
 import mortar.bukkit.command.MortarCommand;
@@ -14,13 +15,23 @@ public class CommandTopIslands extends MortarCommand
 		super("topislands", "tops", "topisland", "tits", "top" ,"ranks");
 	}
 
+	/**
+	 * This code is really gay and hacky
+	 *
+	 * @param sender
+	 *            the volume sender (pre-tagged)
+	 * @param args
+	 *            the arguments after this command node
+	 * @return
+	 * @todo use proper java pagination limit streams/util
+	 */
 	@Override
 	public boolean handle(MortarSender sender, String[] args)
 	{
-		final int resultsPerPage = 2;
+		final int resultsPerPage = Config.RANKS_PERPAGE;
 		final GMap<Integer, IslandRankController.IslandDetails> ranks = SkyPrime.instance.islandRankController.getIslandRanks();
 		final int pages = (int) Math.ceil(ranks.size() / (double) resultsPerPage);
-		int page = 1;
+		int page;
 
 		try {
 			page = Integer.parseInt(args.length != 0 ? args[0] : "1");
@@ -54,11 +65,11 @@ public class CommandTopIslands extends MortarCommand
 
 		sender.sendMessage("-------------------------------");
 
-		int i = 1;
+		int i = 0;
 
 		for (IslandRankController.IslandDetails d : ranks.values()) {
 			++i;
-			if (i / resultsPerPage == page) {
+			if (Math.ceil(i / (double) resultsPerPage) == page) {
 				sender.sendMessage(d.getRank() + " \u00bb " + d.getName());
 			}
 		}

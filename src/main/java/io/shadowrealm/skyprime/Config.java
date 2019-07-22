@@ -120,6 +120,9 @@ public class Config
 	@Key("virtual-islands.config.default-private")
 	public static boolean ISLAND_IS_PRIVATE = true;
 
+	@Key("commands.ranks.island-per-page")
+	public static int RANKS_PERPAGE = 10;
+
 	@Key("virtual-islands.max-members")
 	//@Comment("Allows a player a specific amount of players to their island using: skyprime.sky.members.<ID>")
 	public static HashMap<String, Integer> MAX_MEMBERS = new HashMap() {{
