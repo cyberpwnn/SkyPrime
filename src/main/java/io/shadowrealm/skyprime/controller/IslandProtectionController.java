@@ -15,9 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -219,6 +217,12 @@ public class IslandProtectionController extends Controller implements Listener
 			e.setCancelled(true);
 		}
 
+		// hanging entities
+		else if (e.getEntity() instanceof Hanging && !vi.getIsland().getProtection().canBuild(p)) {
+			p.sendMessage(getMessage("break hanging items"));
+			e.setCancelled(true);
+		}
+
 		// mob damage
 		else if (e.getEntity() instanceof LivingEntity && !vi.getIsland().getProtection().canKill(p)) {
 			p.sendMessage(getMessage("harm mobs"));
@@ -329,6 +333,26 @@ public class IslandProtectionController extends Controller implements Listener
 		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
 		if (null == vi || vi.getIsland().getProtection().canInteractEntity((Player) e.getEntity())) return;
 		e.getEntity().sendMessage(getMessage("ride entities"));
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerTameEntity(EntityTameEvent e)
+	{
+		if (!(e.getOwner() instanceof Player)) return;
+		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canInteractEntity((Player) e.getEntity())) return;
+		e.getEntity().sendMessage(getMessage("tame entities"));
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerBreedEntity(EntityBreedEvent e)
+	{
+		if (!(e.getBreeder() instanceof Player)) return;
+		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canInteractEntity((Player) e.getEntity())) return;
+		e.getEntity().sendMessage(getMessage("breed entities"));
 		e.setCancelled(true);
 	}
 }
