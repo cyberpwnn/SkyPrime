@@ -41,16 +41,23 @@ public class SkyPrime extends MortarPlugin
 	@Control
 	private IslandProtectionController islandProtectionController;
 
+	@Control
+	public IslandRankController islandRankController;
+
 	private PlaceholderAPI papi;
 
 	@Override
 	public void start()
 	{
+		final File storageBin = new File("skydata/islands");
+
 		this.papi = new PlaceholderAPI(this);
 		this.papi.register();
 
-		SkyMaster.setStorageEngine(new FileStorageEngine(new File("skydata/islands")));
+		SkyMaster.setStorageEngine(new FileStorageEngine(storageBin));
 		SkyMaster.deleteIslands();
+
+		islandRankController.setStorage(storageBin);
 
 		new SR(0)
 		{
@@ -60,6 +67,7 @@ public class SkyPrime extends MortarPlugin
 				delayedController.tick();
 				islandController.tick();
 				islandChatController.tick();
+				islandRankController.tick();
 				SkyMaster.tick();
 			}
 		};
