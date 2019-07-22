@@ -13,22 +13,27 @@ public class IslandProtection
 	private Island island;
 
 	/**
-	 * Indicates a public player being able to break or place blocks
+	 * Indicates public players being able to build
+	 *
+	 * Allows players to:
+	 * - Place and break blocks
+	 * - Place and break hanging entities
+	 * - Fill or empty buckets
 	 */
 	@Setter
-	private boolean publicBreak = false;
+	private boolean publicBuild = false;
 
 	/**
 	 * Indicates a player able to interact with blocks
 	 */
 	@Setter
-	private boolean publicInteract = false;
+	private boolean publicInteractBlock = false;
 
 	/**
 	 * Indicates public players able to use blocks: chests, brewing stands, etc
 	 */
 	@Setter
-	private boolean publicUse = false;
+	private boolean publicUseBlock = false;
 
 	/**
 	 * Indicates public players able to PVP
@@ -46,7 +51,7 @@ public class IslandProtection
 	 * Indicates public players able to damage entities
 	 */
 	@Setter
-	private boolean publicDamage = false;
+	private boolean publicInteractEntity = false;
 
 	public IslandProtection(Island i)
 	{
@@ -73,19 +78,19 @@ public class IslandProtection
 		return isMember(p) || isOwner(p) || isAdmin(p);
 	}
 
-	public boolean canBreak(Player p)
+	public boolean canBuild(Player p)
 	{
-		return isAllowed(p) || this.publicBreak;
+		return isAllowed(p) || this.publicBuild;
 	}
 
-	public boolean canInterract(Player p)
+	public boolean canInteractBlock(Player p)
 	{
-		return isAllowed(p) || this.publicInteract;
+		return isAllowed(p) || this.publicInteractBlock;
 	}
 
-	public boolean canUse(Player p)
+	public boolean canUseBlock(Player p)
 	{
-		return isAllowed(p) || this.publicUse;
+		return isAllowed(p) || this.publicUseBlock;
 	}
 
 	public boolean canPVP(Player p)
@@ -98,9 +103,9 @@ public class IslandProtection
 		return isAllowed(p) || this.publicKill;
 	}
 
-	public boolean canDamage(Player p)
+	public boolean canInteractEntity(Player p)
 	{
-		return isAllowed(p) || this.publicDamage;
+		return isAllowed(p) || this.publicInteractEntity;
 	}
 
 	public boolean canPickup(Player p)
