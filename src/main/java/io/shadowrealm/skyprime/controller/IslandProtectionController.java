@@ -2,9 +2,12 @@ package io.shadowrealm.skyprime.controller;
 
 import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.VirtualIsland;
+import mortar.api.fulcrum.util.PlayerBlockEvent;
 import mortar.bukkit.plugin.Controller;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.*;
@@ -19,6 +22,72 @@ import org.bukkit.event.player.*;
 
 public class IslandProtectionController extends Controller implements Listener
 {
+
+	public static final Material[] useableTypes = new Material[] {
+			// chests
+			Material.CHEST,
+			Material.TRAPPED_CHEST,
+			Material.ENDER_CHEST,
+
+			// interactive items
+			Material.FURNACE,
+			Material.BURNING_FURNACE,
+			Material.ANVIL,
+			Material.DISPENSER,
+			Material.DROPPER,
+			Material.HOPPER,
+			Material.COMMAND,
+			Material.ENCHANTMENT_TABLE,
+			Material.WORKBENCH,
+			Material.BREWING_STAND,
+			Material.CAULDRON,
+			Material.JUKEBOX
+	};
+
+	/**
+	 * What items can players interact with
+	 * @todo move to mortar
+	 */
+	public static final Material[] interactiveTypes = new Material[] {
+			// redstone
+			Material.LEVER,
+			Material.STONE_BUTTON,
+			Material.WOOD_BUTTON,
+			Material.IRON_PLATE,
+			Material.GOLD_PLATE,
+			Material.STONE_PLATE,
+			Material.WOOD_PLATE,
+			Material.REDSTONE_COMPARATOR,
+			Material.REDSTONE_COMPARATOR_OFF,
+			Material.REDSTONE_COMPARATOR_ON,
+			Material.DIODE,
+			Material.DIODE_BLOCK_OFF,
+			Material.DIODE_BLOCK_ON,
+			Material.NOTE_BLOCK,
+
+			// doors
+			Material.IRON_TRAPDOOR,
+			Material.ACACIA_DOOR,
+			Material.BIRCH_DOOR,
+			Material.DARK_OAK_DOOR,
+			Material.IRON_DOOR,
+			Material.IRON_DOOR_BLOCK,
+			Material.JUNGLE_DOOR,
+			Material.SPRUCE_DOOR,
+			Material.TRAP_DOOR,
+			Material.WOOD_DOOR,
+			Material.WOODEN_DOOR,
+
+			// gates
+			Material.ACACIA_FENCE_GATE,
+			Material.BIRCH_FENCE_GATE,
+			Material.BIRCH_FENCE_GATE,
+			Material.DARK_OAK_FENCE_GATE,
+			Material.FENCE_GATE,
+			Material.JUNGLE_FENCE_GATE,
+			Material.SPRUCE_FENCE_GATE
+	};
+
 	@Override
 	public void start()
 	{
@@ -100,6 +169,25 @@ public class IslandProtectionController extends Controller implements Listener
 		if (null == vi || vi.getIsland().getProtection().canPickup(e.getPlayer())) return;
 		e.getPlayer().sendMessage(getMessage("pickup arrows"));
 		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerBlockInteract(PlayerInteractEvent e)
+	{
+		boolean canUse = ArrayUtils.contains(interactiveTypes, e.getClickedBlock().getType());
+		boolean canInteract = ArrayUtils.contains(useableTypes, e.getClickedBlock().getType());
+		if (!canUse && !canInteract) return;
+
+		final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
+		if (vi == null) return;
+
+		if (canInteract && !vi.getIsland().getProtection().canInteractBlock(e.getPlayer())) {
+			e.getPlayer().sendMessage(getMessage("interact with blocks"));
+			e.setCancelled(true);
+		} else if (canUse && !vi.getIsland().getProtection().canUseBlock(e.getPlayer())) {
+			e.getPlayer().sendMessage(getMessage("use blocks"));
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler
