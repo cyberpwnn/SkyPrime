@@ -601,7 +601,7 @@ public class Island
 
 	public double getWorldSize()
 	{
-		final double bonus = Math.pow(Math.max(getLevel(), getValue()), Config.FRACTAL_VALUE) / 5 / Config.DIVISOR_VALUE;
+		final double bonus = Math.pow(Math.max(getLevel(), getValue()), Config.FRACTAL_VALUE) / Config.DIVISOR_VALUE;
 		return Math.min((2 * getMinsize()) + bonus, getMaxSize());
 	}
 
