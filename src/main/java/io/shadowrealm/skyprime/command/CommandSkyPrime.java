@@ -7,6 +7,7 @@ import io.shadowrealm.skyprime.VirtualIsland;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
+import mortar.bukkit.plugin.Control;
 import mortar.util.text.C;
 import org.apache.commons.lang.StringUtils;
 
@@ -75,9 +76,12 @@ public class CommandSkyPrime extends MortarCommand
 	@Command
 	private CommandDelayed delayed;
 
+	@Command
+	private CommandTopIslands topIslands;
+
 	public CommandSkyPrime()
 	{
-		super("skyprime", "sky", "sp", "sprime", "is", "island", "invite", "kick");
+		super("skyprime", "sky", "sp", "sprime", "is", "island");
 	}
 
 	@Override
