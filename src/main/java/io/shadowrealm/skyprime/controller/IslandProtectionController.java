@@ -251,13 +251,23 @@ public class IslandProtectionController extends Controller implements Listener
 	}
 
 	@EventHandler
-	public void playerBucketUse(PlayerBucketEvent e)
+	public void playerBucketEmpty(PlayerBucketEmptyEvent e)
 	{
 		final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
 		if (null == vi || vi.getIsland().getProtection().canBuild(e.getPlayer())) return;
 		e.getPlayer().sendMessage(getMessage("use buckets"));
 		e.setCancelled(true);
 	}
+
+	@EventHandler
+	public void playerBucketFill(PlayerBucketFillEvent e)
+	{
+		final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canBuild(e.getPlayer())) return;
+		e.getPlayer().sendMessage(getMessage("use buckets"));
+		e.setCancelled(true);
+	}
+
 
 	@EventHandler
 	public void playerEnterBed(PlayerBedEnterEvent e)
