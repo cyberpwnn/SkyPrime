@@ -21,6 +21,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.spigotmc.event.entity.EntityMountEvent;
 
 public class IslandProtectionController extends Controller implements Listener
 {
@@ -221,6 +222,12 @@ public class IslandProtectionController extends Controller implements Listener
 			p.sendMessage(getMessage("break armour stands"));
 			e.setCancelled(true);
 		}
+
+		// handle vehicles
+		else if (e.getEntity() instanceof Vehicle && !vi.getIsland().getProtection().canBuild(p)) {
+			p.sendMessage(getMessage("break vehicles"));
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler
@@ -265,6 +272,11 @@ public class IslandProtectionController extends Controller implements Listener
 			e.getPlayer().sendMessage(getMessage("interact with entities"));
 			e.setCancelled(true);
 		}
+
+		else if (e.getRightClicked() instanceof Vehicle && !vi.getIsland().getProtection().canInteractEntity(e.getPlayer())) {
+			e.getPlayer().sendMessage(getMessage("interact with vehicles"));
+			e.setCancelled(true);
+		}
 	}
 
 	@EventHandler
@@ -301,6 +313,16 @@ public class IslandProtectionController extends Controller implements Listener
 		final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
 		if (null == vi || vi.getIsland().getProtection().canInteractEntity(e.getPlayer())) return;
 		e.getPlayer().sendMessage(getMessage("shear mobs"));
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerMountEvent(EntityMountEvent e)
+	{
+		if (!(e.getEntity() instanceof Player && e.getMount() instanceof Vehicle)) return;
+		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canInteractEntity((Player) e.getEntity())) return;
+		e.getEntity().sendMessage(getMessage("ride entities"));
 		e.setCancelled(true);
 	}
 }
