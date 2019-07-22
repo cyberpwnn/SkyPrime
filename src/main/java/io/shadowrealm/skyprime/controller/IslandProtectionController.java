@@ -22,6 +22,7 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 public class IslandProtectionController extends Controller implements Listener
@@ -223,12 +224,16 @@ public class IslandProtectionController extends Controller implements Listener
 			p.sendMessage(getMessage("harm mobs"));
 			e.setCancelled(true);
 		}
+	}
 
-		// handle vehicles
-		else if (e.getEntity() instanceof Vehicle && !vi.getIsland().getProtection().canBuild(p)) {
-			p.sendMessage(getMessage("break vehicles"));
-			e.setCancelled(true);
-		}
+	@EventHandler
+	public void playerVehicleDamage(VehicleDamageEvent e)
+	{
+		if (!(e.getAttacker() instanceof Player) || e.getVehicle() instanceof LivingEntity) return;
+		final VirtualIsland vi = this.getIsland(e.getVehicle().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canBuild((Player) e.getAttacker())) return;
+		e.getAttacker().sendMessage(getMessage("break vehicles"));
+		e.setCancelled(true);
 	}
 
 	@EventHandler
