@@ -200,11 +200,11 @@ public class IslandProtectionController extends Controller implements Listener
 	@EventHandler
 	public void playerEntityDamage(EntityDamageByEntityEvent e)
 	{
-		if (!(e.getDamager() instanceof Player)) return;
+		if (!(e.getDamager() instanceof Player || e.getDamager() instanceof Projectile)) return;
 		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
 		if (null == vi) return;
 
-		final Player p = (Player) e.getDamager();
+		final Player p = e.getDamager() instanceof Player ? (Player) e.getDamager() : (Player) ((Projectile) e.getDamager()).getShooter();
 
 		// PVP?
 		// @todo config option to toggle PVP against non-members
