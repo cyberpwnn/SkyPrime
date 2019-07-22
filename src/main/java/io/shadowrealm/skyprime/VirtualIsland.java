@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import io.shadowrealm.skyprime.events.IslandUnloadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -314,14 +315,9 @@ public class VirtualIsland implements Listener
 		return SkyPrime.perm.admin.bypass.has(player) || player.isOp();
 	}
 
-	private boolean canBuild(Player player)
+	public boolean canBuild(Player player)
 	{
-		if(player.getUniqueId().equals(island.getOwner()) || isMember(player) || isAdmin(player))
-		{
-			return true;
-		}
-
-		return false;
+		return player.getUniqueId().equals(island.getOwner()) || isMember(player) || isAdmin(player);
 	}
 
 	public boolean canVisit(Player player)
@@ -396,6 +392,7 @@ public class VirtualIsland implements Listener
 
 		if(!canBuild(e.getPlayer()))
 		{
+			e.getPlayer().sendMessage("No");
 			e.setCancelled(true);
 			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
 			return;
@@ -743,6 +740,8 @@ public class VirtualIsland implements Listener
 	{
 		if(Mortar.isMainThread())
 		{
+			Bukkit.getServer().getPluginManager().callEvent(new IslandUnloadEvent(this, this.island));
+
 			try
 			{
 				releaseWorld(world);
