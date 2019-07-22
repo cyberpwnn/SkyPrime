@@ -17,6 +17,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 
@@ -174,6 +176,8 @@ public class IslandProtectionController extends Controller implements Listener
 	@EventHandler
 	public void playerBlockInteract(PlayerInteractEvent e)
 	{
+		if (e.getClickedBlock() == null || e.getClickedBlock().getType().equals(Material.AIR)) return;
+
 		boolean canUse = ArrayUtils.contains(interactiveTypes, e.getClickedBlock().getType());
 		boolean canInteract = ArrayUtils.contains(useableTypes, e.getClickedBlock().getType());
 		if (!canUse && !canInteract) return;
@@ -212,17 +216,30 @@ public class IslandProtectionController extends Controller implements Listener
 			e.setCancelled(true);
 		}
 
-		// hanging entitiy damage
-		else if (e.getEntity() instanceof Hanging && !vi.getIsland().getProtection().canBuild(p)) {
-			e.getEntity().sendMessage(getMessage("break hanging items"));
-			e.setCancelled(true);
-		}
-
 		// armourstands
 		else if (e.getEntity() instanceof ArmorStand && !vi.getIsland().getProtection().canBuild(p)) {
 			e.getEntity().sendMessage(getMessage("break armour stands"));
 			e.setCancelled(true);
 		}
+	}
+
+	@EventHandler
+	public void playerHangingBreak(HangingBreakByEntityEvent e)
+	{
+		if (!(e.getRemover() instanceof Player)) return;
+		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canBuild((Player) e.getRemover())) return;
+		e.getEntity().sendMessage(getMessage("break hanging items"));
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerHangingPlace(HangingPlaceEvent e)
+	{
+		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canBuild(e.getPlayer())) return;
+		e.getEntity().sendMessage(getMessage("place hanging items"));
+		e.setCancelled(true);
 	}
 
 	@EventHandler
