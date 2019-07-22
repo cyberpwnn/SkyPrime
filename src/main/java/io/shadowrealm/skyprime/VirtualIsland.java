@@ -247,30 +247,6 @@ public class VirtualIsland implements Listener
 	}
 
 	@EventHandler
-	public void on(EntityPickupItemEvent e)
-	{
-		if(!e.getEntity().getWorld().equals(world))
-		{
-			return;
-		}
-
-		if(e.getEntity() instanceof Player)
-		{
-			Player p = (Player) e.getEntity();
-
-			if(island.getMembers().contains(p.getUniqueId()) || island.getOwner().equals(p.getUniqueId()) || isAdmin(p))
-			{
-				return;
-			}
-
-			if(!island.iscPublicPickup())
-			{
-				e.setCancelled(true);
-			}
-		}
-	}
-
-	@EventHandler
 	public void on(ItemMergeEvent e)
 	{
 		if(!e.getEntity().getWorld().equals(world))
@@ -290,34 +266,15 @@ public class VirtualIsland implements Listener
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void on(BlockBreakEvent e)
 	{
 		if(!e.getBlock().getWorld().equals(world))
 		{
 			return;
 		}
-
-		if(!canBuild(e.getPlayer()))
-		{
-			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
-			e.setCancelled(true);
-			return;
-		}
-
 		island.setLevel(island.getLevel() - getValue(e.getBlock().getType(), e.getBlock().getData()));
-
 		modified();
-	}
-
-	protected boolean isAdmin(Player player)
-	{
-		return SkyPrime.perm.admin.bypass.has(player) || player.isOp();
-	}
-
-	public boolean canBuild(Player player)
-	{
-		return player.getUniqueId().equals(island.getOwner()) || isMember(player) || isAdmin(player);
 	}
 
 	public boolean canVisit(Player player)
@@ -356,18 +313,11 @@ public class VirtualIsland implements Listener
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockPlaceEvent e)
 	{
 		if(!e.getBlock().getWorld().equals(world))
 		{
-			return;
-		}
-
-		if(!canBuild(e.getPlayer()))
-		{
-			e.setCancelled(true);
-			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
 			return;
 		}
 
@@ -377,24 +327,11 @@ public class VirtualIsland implements Listener
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onlp(BlockBreakEvent e)
 	{
-		if(e.isCancelled())
-		{
-			return;
-		}
-
 		if(!e.getBlock().getWorld().equals(world))
 		{
-			return;
-		}
-
-		if(!canBuild(e.getPlayer()))
-		{
-			e.getPlayer().sendMessage("No");
-			e.setCancelled(true);
-			denyBuild(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
 			return;
 		}
 
@@ -444,30 +381,6 @@ public class VirtualIsland implements Listener
 					world.dropItemNaturally(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5), i).setPickupDelay(0);
 				}
 			}
-		}
-	}
-
-	@EventHandler
-	public void on(InventoryOpenEvent e)
-	{
-		if(e.getInventory().getHolder() instanceof BlockState)
-		{
-			if(!((BlockState) e.getInventory().getHolder()).getWorld().equals(world))
-			{
-				return;
-			}
-
-			if(e.getPlayer() instanceof Player)
-			{
-				if(!canBuild((Player) e.getView().getPlayer()))
-				{
-					e.setCancelled(true);
-					denyBuild(((BlockState) e.getInventory().getHolder()).getLocation().getBlock().getLocation().clone().add(0.5, 0.5, 0.5));
-					return;
-				}
-			}
-
-			modified();
 		}
 	}
 

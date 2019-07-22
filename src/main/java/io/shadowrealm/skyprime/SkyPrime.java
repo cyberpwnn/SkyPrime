@@ -38,6 +38,9 @@ public class SkyPrime extends MortarPlugin
 	@Control
 	public IslandController islandController;
 
+	@Control
+	private IslandProtectionController islandProtectionController;
+
 	private PlaceholderAPI papi;
 
 	@Override

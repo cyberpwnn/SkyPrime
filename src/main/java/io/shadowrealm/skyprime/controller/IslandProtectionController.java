@@ -5,12 +5,14 @@ import mortar.bukkit.plugin.Controller;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 
 public class IslandProtectionController extends Controller implements Listener
 {
@@ -59,6 +61,32 @@ public class IslandProtectionController extends Controller implements Listener
 		final VirtualIsland vi = this.getIsland(e.getBlock());
 		if (null == vi || vi.getIsland().getProtection().canBreak(e.getPlayer())) return;
 		e.getPlayer().sendMessage(getMessage("place blocks"));
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerInventoryOpen(InventoryOpenEvent e)
+	{
+		if (!(e.getInventory().getHolder() instanceof BlockState)) {
+			return;
+		}
+
+		final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canUse((Player) e.getPlayer())) {
+			if (vi != null) vi.modified();
+			return;
+		}
+		e.getPlayer().sendMessage(getMessage("use blocks"));
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerPickup(EntityPickupItemEvent e)
+	{
+		if (!(e.getEntity() instanceof Player)) return;
+		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canPickup((Player) e.getEntity())) return;
+		e.getEntity().sendMessage(getMessage("pickup items"));
 		e.setCancelled(true);
 	}
 }

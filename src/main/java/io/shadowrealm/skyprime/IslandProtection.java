@@ -103,4 +103,9 @@ public class IslandProtection
 		return isAllowed(p) || this.publicDamage;
 	}
 
+	public boolean canPickup(Player p)
+	{
+		return isAllowed(p) || this.island.iscPublicPickup();
+	}
+
 }
