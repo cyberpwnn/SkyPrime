@@ -206,19 +206,19 @@ public class IslandProtectionController extends Controller implements Listener
 		// PVP?
 		// @todo config option to toggle PVP against non-members
 		if (e.getEntity() instanceof HumanEntity && !vi.getIsland().getProtection().canPVP(p)) {
-			e.getEntity().sendMessage(getMessage("PVP"));
+			p.sendMessage(getMessage("PVP"));
 			e.setCancelled(true);
 		}
 
 		// mob damage
 		else if (e.getEntity() instanceof LivingEntity && !vi.getIsland().getProtection().canKill(p)) {
-			e.getEntity().sendMessage(getMessage("harm mobs"));
+			p.sendMessage(getMessage("harm mobs"));
 			e.setCancelled(true);
 		}
 
 		// armourstands
 		else if (e.getEntity() instanceof ArmorStand && !vi.getIsland().getProtection().canBuild(p)) {
-			e.getEntity().sendMessage(getMessage("break armour stands"));
+			p.sendMessage(getMessage("break armour stands"));
 			e.setCancelled(true);
 		}
 	}
