@@ -20,6 +20,11 @@ public class IslandRankController extends Controller
 	@Setter
 	private File storage;
 
+	private File getCache()
+	{
+		return new File(this.storage, "cache.json");
+	}
+
 	@Getter
 	private int highestRank = 0;
 
@@ -52,10 +57,42 @@ public class IslandRankController extends Controller
 		J.a(() -> recalculateRanks());
 	}
 
+	protected void loadFromCache(File f)
+	{
+		if (!f.exists()) return;
+
+		try {
+			final JSONObject o = new JSONObject(VIO.readAll(f));
+			this.islandRanks = (GMap<Integer, IslandDetails>) o.get("data");
+			this.highestRank = o.getInt("highestRank");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void saveToFile(File f)
+	{
+		try {
+			GMap<String, Object> g = new GMap<>();
+			for (Map.Entry<Integer, IslandDetails> l : this.islandRanks.entrySet()) {
+				g.put(l.getKey().toString(), l.getValue());
+			}
+
+			final JSONObject o = new JSONObject();
+			o.put("calculated", this.lastCalculation);
+			o.put("highestRank", this.highestRank);
+			o.put("data", g);
+
+			VIO.writeAll(f, o);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
 	public int getIslandRank(Island island)
 	{
 		for (IslandDetails id : islandRanks.values()) {
-			if (id.getUuid().equals(island.getId())) return id.getRank();
+			if (id.getUUID().equals(island.getId())) return id.getRank();
 		}
 		this.highestRank++;
 		this.islandRanks.put(this.highestRank, new IslandDetails(island, this.highestRank));
@@ -89,8 +126,6 @@ public class IslandRankController extends Controller
 
 	public void recalculateRanks()
 	{
-		System.out.println("Recalculating ranks");
-
 		final GMap<Integer, IslandDetails> r = new GMap<>();
 		final GMap<UUID, JSONObject> is = this.loadIslandData();
 		int[] i = {0};
@@ -113,19 +148,11 @@ public class IslandRankController extends Controller
 		this.islandRanks = r;
 		this.highestRank = i[0];
 
-		System.out.println(r);
+		this.saveToFile(this.getCache());
 	}
 
-	public static class IslandDetails
+	public static class IslandDetails extends GMap<String, Object>
 	{
-		@Getter
-		private UUID uuid;
-
-		@Getter
-		private String name;
-
-		@Getter
-		private int rank = 0;
 
 		public IslandDetails(Island i, int rank)
 		{
@@ -134,15 +161,30 @@ public class IslandRankController extends Controller
 
 		public IslandDetails(UUID uuid, String name, int rank)
 		{
-			this.uuid = uuid;
-			this.name = name;
-			this.rank = rank;
+			this.put("uuid", uuid);
+			this.put("name", name);
+			this.put("rank", rank);
 		}
 
 		@Override
 		public String toString()
 		{
-			return "{name=" + this.name + ", UUID=" + this.uuid + ", rank=" + this.rank + "}";
+			return "{name=" + this.getName() + ", UUID=" + this.getUUID() + ", rank=" + this.getRank() + "}";
+		}
+
+		public UUID getUUID()
+		{
+			return (UUID) this.get("uuid");
+		}
+
+		public String getName()
+		{
+			return this.get("name").toString();
+		}
+
+		public int getRank()
+		{
+			return (int) this.get("rank");
 		}
 	}
 }
