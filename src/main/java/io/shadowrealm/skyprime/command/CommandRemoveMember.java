@@ -87,6 +87,9 @@ public class CommandRemoveMember extends MortarCommand
 							}
 
 							sender.sendMessage(name + " was removed from your island members.");
+							if (p != null && p.isOnline()) {
+								p.sendMessage(sender.getTag() + "You were removed from " + is.getName());
+							}
 						}
 					}
 				};

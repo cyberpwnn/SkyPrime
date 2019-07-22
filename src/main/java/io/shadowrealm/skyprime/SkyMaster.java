@@ -345,7 +345,7 @@ public class SkyMaster
 			ll.getChunk().load();
 			IslandGenerator gen = new IslandGenerator(ll, (long) (is.isCompetitive() ? 1337 : ((long) (Math.random() * 8423472229940949494l) + (Math.random() * 1999911123999444444L))));
 
-			SkyPrime.instance.islandRankController.createIslandRank(is);
+			//SkyPrime.instance.islandRankController.createIslandRank(is);
 
 			if(is.isCompetitive())
 			{

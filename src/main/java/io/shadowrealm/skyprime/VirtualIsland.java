@@ -753,7 +753,7 @@ public class VirtualIsland implements Listener
 
 	public void sendMessage(Player player, String s)
 	{
-		List<UUID> uuids = this.getIsland().getMembers().copy();
+		List<UUID> uuids = new GList<UUID>(this.getIsland().getMembers().copy());
 		((GList<UUID>) uuids).addAll(this.getIsland().getAdmins());
 		((GList<UUID>) uuids).add(this.getIsland().getOwner());
 
@@ -763,7 +763,8 @@ public class VirtualIsland implements Listener
 			if (Config.CHAT_SAME_WORLD && !p.getWorld().equals(this.getWorld())) continue;
 			p.sendMessage(s);
 		}
-		player.sendMessage(s);
+
+		if (player != null) player.sendMessage(s);
 	}
 
 	private void calculateValue()

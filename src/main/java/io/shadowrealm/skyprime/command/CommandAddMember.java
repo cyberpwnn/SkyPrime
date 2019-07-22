@@ -123,11 +123,11 @@ public class CommandAddMember extends MortarCommand
 										() -> {
 											is.getMembers().add(idd);
 											save(is, sender.player());
-											vi.sendMessage(sender.getTag() + p.getName() + " has joined the island!");
+											vi.sendMessage(p, sender.getTag() + p.getName() + " has joined the island!");
 										},
 										() -> {
 											p.sendMessage(sender.getTag() + "Your island invitation has expired");
-											sender.sendMessage(p.getName() + "'s island invitation has expired.");
+											sender.sendMessage(p.getName() + "'s island invitation has expired or they rejected the invitation");
 										}
 									)
 								);
