@@ -20,6 +20,9 @@ public class IslandRankController extends Controller
 	@Setter
 	private File storage;
 
+	@Getter
+	private boolean locked = false;
+
 	private File getCache()
 	{
 		return new File(this.storage, "cache.json");
@@ -52,7 +55,7 @@ public class IslandRankController extends Controller
 	@Override
 	public void tick()
 	{
-		if (this.lastCalculation != 0 && (this.lastCalculation + this.interval) > System.currentTimeMillis())
+		if (this.lastCalculation != 0 && (this.lastCalculation + this.interval) > System.currentTimeMillis() || this.isLocked())
 			return;
 		J.a(() -> recalculateRanks());
 	}
@@ -126,6 +129,8 @@ public class IslandRankController extends Controller
 
 	public void recalculateRanks()
 	{
+		this.locked = true;
+
 		final GMap<Integer, IslandDetails> r = new GMap<>();
 		final GMap<UUID, JSONObject> is = this.loadIslandData();
 		int[] i = {0};
@@ -147,8 +152,9 @@ public class IslandRankController extends Controller
 
 		this.islandRanks = r;
 		this.highestRank = i[0];
-
+		this.lastCalculation = System.currentTimeMillis();
 		this.saveToFile(this.getCache());
+		this.locked = false;
 	}
 
 	public static class IslandDetails extends GMap<String, Object>
