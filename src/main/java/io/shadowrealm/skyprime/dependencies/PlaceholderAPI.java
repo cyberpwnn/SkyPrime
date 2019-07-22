@@ -133,6 +133,10 @@ public class PlaceholderAPI extends PlaceholderExpansion
 			return i.getOwnerPlayer() != null ? i.getOwnerPlayer().getName() : i.getOwner().toString();
 		} else if (s.startsWith("name")) {
 			return i.getName();
+		} else if (s.startsWith("rank")) {
+			return formatInt(SkyPrime.instance.islandRankController.getIslandRank(i));
+		} else if (s.startsWith("highest_rank")) {
+			return formatInt(SkyPrime.instance.islandRankController.getHighestRank());
 		}
 
 		return null;

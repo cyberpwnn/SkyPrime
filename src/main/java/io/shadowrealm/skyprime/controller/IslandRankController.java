@@ -1,5 +1,6 @@
 package io.shadowrealm.skyprime.controller;
 
+import io.shadowrealm.skyprime.storage.Island;
 import lombok.Getter;
 import lombok.Setter;
 import mortar.api.sched.J;
@@ -22,7 +23,8 @@ public class IslandRankController extends Controller
 	@Getter
 	private int highestRank = 0;
 
-	private GMap<UUID, Integer> islandRanks = new GMap<>();
+	@Getter
+	private GMap<Integer, IslandDetails> islandRanks = new GMap<>();
 
 	@Getter
 	private Long lastCalculation = 0L;
@@ -50,20 +52,20 @@ public class IslandRankController extends Controller
 		J.a(() -> recalculateRanks());
 	}
 
-	public int getIslandRank(UUID uuid)
+	public int getIslandRank(Island island)
 	{
-		if (islandRanks.containsKey(uuid)) {
-			return islandRanks.get(uuid);
+		for (IslandDetails id : islandRanks.values()) {
+			if (id.getUuid().equals(island.getId())) return id.getRank();
 		}
 		this.highestRank++;
-		this.islandRanks.put(uuid, this.highestRank);
+		this.islandRanks.put(this.highestRank, new IslandDetails(island, this.highestRank));
 		return this.highestRank;
 	}
 
-	public void putIslandRank(UUID uuid, int rank)
+	public void createIslandRank(Island island)
 	{
-		if (rank > this.highestRank) this.highestRank = rank;
-		this.islandRanks.put(uuid, rank);
+		this.highestRank++;
+		this.islandRanks.put(this.highestRank, new IslandDetails(island, this.highestRank));
 	}
 
 	private GMap<UUID, JSONObject> loadIslandData()
@@ -89,7 +91,7 @@ public class IslandRankController extends Controller
 	{
 		System.out.println("Recalculating ranks");
 
-		final GMap<UUID, Integer> r = new GMap<>();
+		final GMap<Integer, IslandDetails> r = new GMap<>();
 		final GMap<UUID, JSONObject> is = this.loadIslandData();
 		int[] i = {0};
 
@@ -104,12 +106,43 @@ public class IslandRankController extends Controller
 		}
 
 		for (Map.Entry<UUID, JSONObject> o : is.entrySet()) {
-			r.put(o.getKey(), o.getValue().getInt("_rankIndex"));
+			final IslandDetails id = new IslandDetails(o.getKey(), o.getValue().getString("name"), o.getValue().getInt("_rankIndex"));
+			r.put(id.getRank(), id);
 		}
 
 		this.islandRanks = r;
 		this.highestRank = i[0];
 
 		System.out.println(r);
+	}
+
+	public static class IslandDetails
+	{
+		@Getter
+		private UUID uuid;
+
+		@Getter
+		private String name;
+
+		@Getter
+		private int rank = 0;
+
+		public IslandDetails(Island i, int rank)
+		{
+			this(i.getId(), i.getName(), rank);
+		}
+
+		public IslandDetails(UUID uuid, String name, int rank)
+		{
+			this.uuid = uuid;
+			this.name = name;
+			this.rank = rank;
+		}
+
+		@Override
+		public String toString()
+		{
+			return "{name=" + this.name + ", UUID=" + this.uuid + ", rank=" + this.rank + "}";
+		}
 	}
 }
