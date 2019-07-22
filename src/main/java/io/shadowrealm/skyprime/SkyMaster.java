@@ -42,6 +42,14 @@ public class SkyMaster
 	private static GMap<World, ChunkTracker> ctx = new GMap<>();
 	private static GMap<String, Integer> sizemap = new GMap<>();
 
+	public static VirtualIsland getIsland(World w)
+	{
+		for (VirtualIsland vi : virtualIslands.values()) {
+			if (vi.getWorld().equals(w)) return vi;
+		}
+		return null;
+	}
+
 	public static int getSizeFor(Player p)
 	{
 		int max = Config.SIZE_DEFAULT_BARRIER;
