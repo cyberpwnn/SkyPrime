@@ -17,6 +17,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -211,15 +212,15 @@ public class IslandProtectionController extends Controller implements Listener
 			e.setCancelled(true);
 		}
 
-		// mob damage
-		else if (e.getEntity() instanceof LivingEntity && !vi.getIsland().getProtection().canKill(p)) {
-			p.sendMessage(getMessage("harm mobs"));
-			e.setCancelled(true);
-		}
-
 		// armourstands
 		else if (e.getEntity() instanceof ArmorStand && !vi.getIsland().getProtection().canBuild(p)) {
 			p.sendMessage(getMessage("break armour stands"));
+			e.setCancelled(true);
+		}
+
+		// mob damage
+		else if (e.getEntity() instanceof LivingEntity && !vi.getIsland().getProtection().canKill(p)) {
+			p.sendMessage(getMessage("harm mobs"));
 			e.setCancelled(true);
 		}
 
@@ -236,7 +237,7 @@ public class IslandProtectionController extends Controller implements Listener
 		if (!(e.getRemover() instanceof Player)) return;
 		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
 		if (null == vi || vi.getIsland().getProtection().canBuild((Player) e.getRemover())) return;
-		e.getEntity().sendMessage(getMessage("break hanging items"));
+		e.getRemover().sendMessage(getMessage("break hanging items"));
 		e.setCancelled(true);
 	}
 
@@ -245,7 +246,7 @@ public class IslandProtectionController extends Controller implements Listener
 	{
 		final VirtualIsland vi = this.getIsland(e.getEntity().getLocation());
 		if (null == vi || vi.getIsland().getProtection().canBuild(e.getPlayer())) return;
-		e.getEntity().sendMessage(getMessage("place hanging items"));
+		e.getPlayer().sendMessage(getMessage("place hanging items"));
 		e.setCancelled(true);
 	}
 
