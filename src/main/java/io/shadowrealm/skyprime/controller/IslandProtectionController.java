@@ -177,6 +177,15 @@ public class IslandProtectionController extends Controller implements Listener
 	@EventHandler
 	public void playerBlockInteract(PlayerInteractEvent e)
 	{
+		if (e.getItem() != null && e.getItem().getType().equals(Material.MONSTER_EGG)) {
+			final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
+			if (vi != null && !vi.getIsland().getProtection().canKill(e.getPlayer())) {
+				e.getPlayer().sendMessage(getMessage("spawn entities"));
+				e.setCancelled(true);
+				return;
+			}
+		}
+
 		if (e.getClickedBlock() == null || e.getClickedBlock().getType().equals(Material.AIR)) return;
 
 		boolean canUse = ArrayUtils.contains(interactiveTypes, e.getClickedBlock().getType());
@@ -314,6 +323,15 @@ public class IslandProtectionController extends Controller implements Listener
 		final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
 		if (null == vi || vi.getIsland().getProtection().canUseBlock(e.getPlayer())) return;
 		e.getPlayer().sendMessage(getMessage("use beds"));
+		e.setCancelled(true);
+	}
+
+	@EventHandler
+	public void playerArmorStandFuck(PlayerArmorStandManipulateEvent e)
+	{
+		final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
+		if (null == vi || vi.getIsland().getProtection().canUseBlock(e.getPlayer())) return;
+		e.getPlayer().sendMessage(getMessage("use armorstands"));
 		e.setCancelled(true);
 	}
 
