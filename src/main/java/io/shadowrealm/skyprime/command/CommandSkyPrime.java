@@ -123,6 +123,7 @@ public class CommandSkyPrime extends MortarCommand
 					sender.sendMessage("/sky spawn - Teleport to island spawn");
 					sender.sendMessage("/sky setspawn - Set your island spawn");
 					sender.sendMessage("/sky members - View and modify members");
+					sender.sendMessage("/sky top - Views the top islands");
 
 					if (SkyPrime.perm.members.add.has(sender))
 						sender.sendMessage("/sky add <player> - Forces a player in your island");
