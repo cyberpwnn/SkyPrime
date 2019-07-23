@@ -373,4 +373,13 @@ public class IslandProtectionController extends Controller implements Listener
 		e.getEntity().sendMessage(getMessage("breed entities"));
 		e.setCancelled(true);
 	}
+
+	@EventHandler
+	public void playerTeleport(PlayerTeleportEvent e)
+	{
+		final VirtualIsland vi = this.getIsland(e.getTo());
+		if (null == vi || vi.getIsland().getProtection().canVisit(e.getPlayer())) return;
+		e.getPlayer().sendMessage(ChatColor.RED + "You are not allowed to visit " + vi.getIsland().getName() + " at this time.");
+		e.setCancelled(true);
+	}
 }
