@@ -8,6 +8,8 @@ import mortar.bukkit.plugin.Controller;
 import mortar.lang.collection.GMap;
 import mortar.lang.json.JSONObject;
 import mortar.logic.io.VIO;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 import java.io.File;
 import java.util.List;
@@ -146,7 +148,13 @@ public class IslandRankController extends Controller
 		}
 
 		for (Map.Entry<UUID, JSONObject> o : is.entrySet()) {
-			final IslandDetails id = new IslandDetails(o.getKey(), o.getValue().getString("name"), o.getValue().getInt("_rankIndex"));
+			String name = o.getValue().has("name") ? o.getValue().getString("name") : null;
+			if (name == null && o.getValue().has("owner")) {
+				OfflinePlayer peepee = Bukkit.getOfflinePlayer(UUID.fromString(o.getValue().getString("owner")));
+				if (peepee != null && peepee.getName() != null) name = peepee.getName() + "'s Island";
+			}
+			if (name == null) name = o.getKey().toString();
+			final IslandDetails id = new IslandDetails(o.getKey(), name, o.getValue().getInt("_rankIndex"));
 			r.put(id.getRank(), id);
 		}
 

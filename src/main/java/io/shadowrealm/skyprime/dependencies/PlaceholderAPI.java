@@ -93,9 +93,10 @@ public class PlaceholderAPI extends PlaceholderExpansion
 	{
 		final Island def = SkyMaster.hasIsland(player) ? SkyMaster.getIslandConfig(player) : null;
 		if (!tag.endsWith("_current")) {
-			return SkyMaster.hasIslandLoaded(player) ? SkyMaster.getIsland(player).getIsland() : def;
+			final VirtualIsland is = SkyMaster.getIsland(player.getWorld());
+			return is == null ? def : is.getIsland();
 		}
-		return SkyMaster.hasIslandLoaded(player) ? SkyMaster.getPlayerActiveIsland(player).getIsland() : def;
+		return def;
 	}
 
 	/**
@@ -115,7 +116,7 @@ public class PlaceholderAPI extends PlaceholderExpansion
 	public String onPlaceholderRequest(Player player, String s)
 	{
 		final Island i = this.getIsland(player, s);
-		if (null == i) return null;
+		if (null == i) return "";
 
 		if (s.startsWith("level")) {
 			return formatDecimal(i.getLevel() / 20D);
