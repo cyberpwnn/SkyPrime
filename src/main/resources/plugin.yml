@@ -1,7 +1,7 @@
 name: ${project.name}
 version: ${project.version}
 depend: [Mortar, Vault]
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, LeaderHeads]
 main: io.shadowrealm.skyprime.SkyPrime
 authors: [David Tkachuk (LeRoche), VolmitSoftware]
 website: https://volmit.com
