@@ -177,10 +177,14 @@ public class IslandProtectionController extends Controller implements Listener
 	@EventHandler
 	public void playerBlockInteract(PlayerInteractEvent e)
 	{
-		if (e.getItem() != null && e.getItem().getType().equals(Material.MONSTER_EGG)) {
+		if (e.getItem() != null) {
 			final VirtualIsland vi = this.getIsland(e.getPlayer().getLocation());
-			if (vi != null && !vi.getIsland().getProtection().canKill(e.getPlayer())) {
+			if (vi != null && e.getItem().getType().equals(Material.MONSTER_EGG) && !vi.getIsland().getProtection().canKill(e.getPlayer())) {
 				e.getPlayer().sendMessage(getMessage("spawn entities"));
+				e.setCancelled(true);
+				return;
+			} else if (vi != null && e.getItem().getType().equals(Material.ARMOR_STAND) && !vi.getIsland().getProtection().canBuild(e.getPlayer())) {
+				e.getPlayer().sendMessage(getMessage("build armorstands"));
 				e.setCancelled(true);
 				return;
 			}
@@ -213,7 +217,7 @@ public class IslandProtectionController extends Controller implements Listener
 
 		final Player p = e.getDamager() instanceof Player ? (Player) e.getDamager() : (Player) ((Projectile) e.getDamager()).getShooter();
 
-		// PVP?
+		// PVP
 		// @todo config option to toggle PVP against non-members
 		if (e.getEntity() instanceof HumanEntity && !vi.getIsland().getProtection().canPVP(p)) {
 			p.sendMessage(getMessage("PVP"));
