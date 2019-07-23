@@ -48,6 +48,12 @@ public class CommandConfig extends MortarCommand
 			sender.sendMessage("hopper.rate = " + is.getcHopperRate());
 			sender.sendMessage("hopper.amount = " + is.getcHopperAmount());
 			sender.sendMessage("public.pickup = " + is.iscPublicPickup());
+			sender.sendMessage("public.build = " + is.getProtection().isPublicBuild());
+			sender.sendMessage("public.block.interact= " + is.getProtection().isPublicInteractBlock());
+			sender.sendMessage("public.block.use = " + is.getProtection().isPublicUseBlock());
+			sender.sendMessage("public.pvp = " + is.getProtection().isPublicPVP());
+			sender.sendMessage("public.mob.kill = " + is.getProtection().isPublicKill());
+			sender.sendMessage("public.mob.interact = " + is.getProtection().isPublicInteractEntity());
 		}
 
 		else if(args.length == 1)
@@ -81,6 +87,36 @@ public class CommandConfig extends MortarCommand
 				else if(args[0].equalsIgnoreCase("public.pickup"))
 				{
 					is.setcPublicPickup(Boolean.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public.build"))
+				{
+					is.getProtection().setPublicBuild(Boolean.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public.block.interact"))
+				{
+					is.getProtection().setPublicInteractBlock(Boolean.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public.block.use"))
+				{
+					is.getProtection().setPublicUseBlock(Boolean.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public.pvp"))
+				{
+					is.getProtection().setPublicPVP(Boolean.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public.mob.kill"))
+				{
+					is.getProtection().setPublicKill(Boolean.valueOf(args[1]));
+				}
+
+				else if(args[0].equalsIgnoreCase("public.mob.interact"))
+				{
+					is.getProtection().setPublicInteractEntity(Boolean.valueOf(args[1]));
 				}
 
 				else if(args[0].equalsIgnoreCase("merge.xp"))

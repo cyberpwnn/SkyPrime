@@ -130,8 +130,9 @@ public class Island
 		admins = o.has("admins") ? idf(o.getJSONArray("admins")) : new GList<>();
 		members = o.has("members") ? idf(o.getJSONArray("members")) : new GList<>();
 		name = o.has("name") ? o.getString("name") : getOwnerPlayer().getName() + "'s Island";
+
 		this.protection = new IslandProtection(this);
-		// todo parse protection
+		if (o.has("protection")) this.protection.fromJSON(o.getJSONObject("protection"));
 	}
 
 	public JSONObject toJSON()
@@ -157,6 +158,9 @@ public class Island
 		j.put("config-pickup", cPublicPickup);
 		j.put("last-save", lastSave);
 		j.put("visibility", visibility.ordinal());
+
+		j.put("protection", getProtection().toJSON());
+
 		j.put("maxsize", maxSize);
 		j.put("sx", spawnx);
 		j.put("sy", spawny);
