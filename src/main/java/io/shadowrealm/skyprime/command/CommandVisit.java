@@ -42,7 +42,7 @@ public class CommandVisit extends MortarCommand
 				final VirtualIsland vi = SkyMaster.getIsland(uuid);
 				Island isx = vi.getIsland();
 
-				if (vi.canVisit(sender.player()))
+				if (isx.getProtection().canVisit(sender.player()))
 				{
 					SkyMaster.ensureIslandLoaded(uuid);
 					SkyMaster.getIsland(uuid).warp(sender.player());

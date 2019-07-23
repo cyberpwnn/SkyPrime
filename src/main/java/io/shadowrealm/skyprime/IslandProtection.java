@@ -1,6 +1,7 @@
 package io.shadowrealm.skyprime;
 
 import io.shadowrealm.skyprime.storage.Island;
+import io.shadowrealm.skyprime.storage.Visibility;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.entity.Player;
@@ -111,6 +112,11 @@ public class IslandProtection
 	public boolean canPickup(Player p)
 	{
 		return isAllowed(p) || this.island.iscPublicPickup();
+	}
+
+	public boolean canVisit(Player player)
+	{
+		return isAllowed(player) || this.getIsland().getVisibility().equals(Visibility.PUBLIC);
 	}
 
 }

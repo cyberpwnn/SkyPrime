@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import io.shadowrealm.skyprime.events.IslandUnloadEvent;
+import mortar.util.text.C;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -192,16 +193,16 @@ public class VirtualIsland implements Listener
 
 	private void updateVisitors()
 	{
+		World safe = Bukkit.getWorld("world");
+
+		if(safe == null)
+		{
+			System.out.println("Cannot unload a null world (or safe world 'world' is null)");
+			return;
+		}
+
 		if(startup > 5)
 		{
-			World safe = Bukkit.getWorld("world");
-
-			if(safe == null)
-			{
-				System.out.println("Cannot unload a null world (or safe world 'world' is null)");
-				return;
-			}
-
 			for(Player i : world.getPlayers())
 			{
 				i.sendMessage("Island is still booting up.");
@@ -209,23 +210,12 @@ public class VirtualIsland implements Listener
 			}
 		}
 
-		if(island.getVisibility().equals(Visibility.PRIVATE))
+		for(Player i : world.getPlayers())
 		{
-			World safe = Bukkit.getWorld("world");
-
-			if(safe == null)
+			if (!getIsland().getProtection().canVisit(i))
 			{
-				System.out.println("Cannot unload a null world (or safe world 'world' is null)");
-				return;
-			}
-
-			for(Player i : world.getPlayers())
-			{
-				if(!i.getUniqueId().equals(island.getOwner()) && !island.getMembers().contains(i.getUniqueId()))
-				{
-					i.sendMessage("The island you were in is private.");
-					i.teleport(safe.getSpawnLocation());
-				}
+				i.sendMessage(C.RED + "The island you were in is private.");
+				i.teleport(safe.getSpawnLocation());
 			}
 		}
 	}
@@ -275,19 +265,6 @@ public class VirtualIsland implements Listener
 		}
 		island.setLevel(island.getLevel() - getValue(e.getBlock().getType(), e.getBlock().getData()));
 		modified();
-	}
-
-	public boolean canVisit(Player player)
-	{
-		return getIsland().getVisibility().equals(Visibility.PUBLIC) ||
-			SkyPrime.perm.admin.bypass.has(player) ||
-			getIsland().getMembers().contains(player.getUniqueId())
-		;
-	}
-
-	private void denyBuild(Location add)
-	{
-		ParticleEffect.SWEEP_ATTACK.display(1f, 1, add, 32);
 	}
 
 	@EventHandler
