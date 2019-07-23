@@ -61,7 +61,7 @@ public class CommandConfig extends MortarCommand
 			sender.sendMessage("/sky config <key> <value>");
 		}
 
-		else if(args.length == 2)
+		else if(args.length > 1)
 		{
 			boolean s = true;
 
@@ -76,7 +76,8 @@ public class CommandConfig extends MortarCommand
 				{
 					GList<String> a = new GList<>(args);
 					a.remove(0);
-					is.setName(a.toString(" "));
+					args[1] = a.toString(" ");
+					is.setName(args[1]);
 				}
 
 				else if(args[0].equalsIgnoreCase("despawn.item"))

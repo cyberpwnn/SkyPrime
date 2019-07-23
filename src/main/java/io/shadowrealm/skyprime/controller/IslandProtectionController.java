@@ -233,7 +233,7 @@ public class IslandProtectionController extends Controller implements Listener
 		}
 
 		// mob damage
-		else if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof Player) !vi.getIsland().getProtection().canKill(p)) {
+		else if (e.getEntity() instanceof LivingEntity && !(e.getEntity() instanceof Player) && !vi.getIsland().getProtection().canKill(p)) {
 			p.sendMessage(getMessage("harm mobs"));
 			e.setCancelled(true);
 		}
