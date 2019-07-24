@@ -92,7 +92,7 @@ public class PlaceholderAPI extends PlaceholderExpansion
 	private Island getIsland(Player player, String tag)
 	{
 		final Island def = SkyMaster.hasIsland(player) ? SkyMaster.getIslandConfig(player) : null;
-		if (!tag.endsWith("_current")) {
+		if (tag.endsWith("_current")) {
 			final VirtualIsland is = SkyMaster.getIsland(player.getWorld());
 			return is == null ? def : is.getIsland();
 		}
