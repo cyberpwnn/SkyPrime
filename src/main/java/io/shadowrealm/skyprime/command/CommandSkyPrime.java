@@ -1,13 +1,13 @@
 package io.shadowrealm.skyprime.command;
 
-import io.shadowrealm.skyprime.Config;
-import io.shadowrealm.skyprime.SkyMaster;
-import io.shadowrealm.skyprime.SkyPrime;
-import io.shadowrealm.skyprime.VirtualIsland;
+import io.shadowrealm.skyprime.*;
+import io.shadowrealm.skyprime.storage.Island;
+import mortar.api.config.Comment;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.MortarCommand;
 import mortar.bukkit.command.MortarSender;
 import mortar.bukkit.plugin.Control;
+import mortar.logic.format.F;
 import mortar.util.text.C;
 import org.apache.commons.lang.StringUtils;
 
@@ -79,6 +79,9 @@ public class CommandSkyPrime extends MortarCommand
 	@Command
 	private CommandTopIslands topIslands;
 
+	@Command
+	private CommandHelp help;
+
 	public CommandSkyPrime()
 	{
 		super("skyprime", "sky", "sp", "sprime", "is", "island");
@@ -104,39 +107,45 @@ public class CommandSkyPrime extends MortarCommand
 
 				SkyMaster.ensureIslandLoaded(sender.player());
 				VirtualIsland is = SkyMaster.getIsland(sender.player());
+				final Island i = is.getIsland();
 
 				if(!is.getWorld().equals(sender.player().getWorld()))
 				{
 					sender.sendMessage("Loading your island.");
 					SkyMaster.getIsland(sender.player()).spawn(sender.player());
+					return true;
 				}
 
-				else
-				{
-					sender.sendMessage("/sky value - Check your island value");
-					sender.sendMessage("/sky voltage - Check your island voltage");
-					sender.sendMessage("/sky config - Configure your island");
-					sender.sendMessage("/sky save - Save your island");
-					sender.sendMessage("/sky warp - Teleport to public warp");
-					sender.sendMessage("/sky chat - Toggle or send messages to IslandChat");
-					sender.sendMessage("/sky setwarp - Set your island public warp");
-					sender.sendMessage("/sky spawn - Teleport to island spawn");
-					sender.sendMessage("/sky setspawn - Set your island spawn");
-					sender.sendMessage("/sky members - View and modify members");
-					sender.sendMessage("/sky top - Views the top islands");
+				int width = 50 - is.getIsland().getName().length();
+				final String div = C.DARK_AQUA + F.repeat("=", width/2);
 
-					if (SkyPrime.perm.members.add.has(sender))
-						sender.sendMessage("/sky add <player> - Forces a player in your island");
+				sender.setTag("");
+				String speed = (is.getPhysicsSpeed() > 0.75 ? C.GREEN : (is.getPhysicsSpeed() > 0.30 ? C.YELLOW : C.RED)) + F.pc(is.getPhysicsSpeed());
 
-					sender.sendMessage("/sky invite <player> - Invites a player to your island");
-					sender.sendMessage("/sky kick <player> - Removes a player from your island");
-					if (Config.ISLAND_ALLOW_TRANSFER)
-						sender.sendMessage("/sky transfer <player> - Transfer your island");
-					sender.sendMessage(C.YELLOW + "/sky reboot - Reboot your island");
-					sender.sendMessage(C.RED + "/sky delete - Delete your island");
-					sender.sendMessage(C.RED + "/sky recreate - Delete and create a new island");
-					sender.sendMessage("/sky visit <player> - Visit another player's island");
-				}
+				sender.sendMessage(new String[] {
+					div + "[ " + C.AQUA + i.getName() + " " + C.DARK_AQUA + "]" + div,
+					" &3Members: &f" + (i.totalMembers()) + " / " + i.getMaximumMembers() +
+							"  &3Size: &f" + Math.round(i.getWorldSize()) + " / " + i.getMaxSize() +
+							"  &3Level: &f" + Math.round(i.getLevel()) +
+							"  &3Value: &f" + Math.round(i.getValue()) + "  " +
+							(!i.getProtection().isPublicVisibility() ? C.GREEN + "(PRIVATE)" : C.RED + "(PUBLIC)"),
+					" &3Public Rules: " +
+							(i.getProtection().isPublicPickup() ? C.RED + "Pickup  " : "") +
+							(i.getProtection().isPublicPVP() ? C.RED + "PVP  " : "") +
+							(i.getProtection().isPublicKill() ? C.RED + "Kill  " : "") +
+							(i.getProtection().isPublicBuild() ? C.RED + "Build  " : "") +
+							(i.getProtection().isPublicUseBlock() ? C.RED + "Use  " : "") +
+							(i.getProtection().isPublicInteractBlock() ? C.RED + "Interact  " : "") +
+							(i.getProtection().isPublicInteractEntity() ? C.RED + "Mob Interact  " : "")
+						,
+						" &3Physics Speed: " + speed +  "  &3Voltage &f"  +
+								F.pc(is.getUsedVolts() / Voltage.getTotalIslandVoltage(i.getValue()), 0) + " &b-> " +
+								"&f" + F.f(is.getUsedVolts(), 0) + "V &bof &f" + F.f(is.getTotalVolts(), 0) + "V &b(+" + F.f(is.getBonusVolts(), 0) + "V bonus)",
+						" &7Change Settings: &b/sky config",
+						" &7IslandChat: &b/sky chat [optional message]",
+						" &7Top Islands: &b/sky top",
+						" &7SkyPrime Commands: &b/sky help"
+				});
 			}
 
 			else
