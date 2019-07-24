@@ -34,12 +34,10 @@ public class Island
 	private int cDespawnArrow;
 	private int cDespawnItem;
 	private double cMergeItem;
-	private boolean cPublicPickup;
 	private double cMergeXp;
 	private int cHopperRate;
 	private int cHopperAmount;
 	private long lastSave;
-	private Visibility visibility;
 	private double warpx;
 	private double warpy;
 	private double warpz;
@@ -75,12 +73,10 @@ public class Island
 		cMergeXp = 2.5;
 		minsize = 3D;
 		cHopperAmount = 16;
-		visibility = Visibility.PRIVATE;
 		cHopperRate = 5;
 		this.owner = owner;
 		this.id = id;
 		started = M.ms();
-		cPublicPickup = false;
 		value = 0D;
 		weightEntities = 55;
 		weightTiles = 45;
@@ -113,9 +109,7 @@ public class Island
 		cDespawnItem = o.has("config-despawn-item") ? o.getInt("config-despawn-item") : 1200;
 		cMergeItem = o.has("config-merge-item") ? o.getInt("config-merge-item") : 1.5;
 		cMergeXp = o.has("config-merge-xp") ? o.getInt("config-merge-xp") : 2.5;
-		cPublicPickup = o.has("config-pickup") ? o.getBoolean("config-pickup") : false;
 		competitive = o.has("competitive") ? o.getBoolean("competitive") : false;
-		visibility = o.has("visibility") ? Visibility.values()[o.getInt("visibility")] : Visibility.PRIVATE;
 		maxSize = o.has("maxsize") ? o.getInt("maxsize") : Config.SIZE_DEFAULT_BARRIER;
 		spawnx = o.has("sx") ? o.getDouble("sx") : 0;
 		spawny = o.has("sy") ? o.getDouble("sy") : -10;
@@ -155,12 +149,8 @@ public class Island
 		j.put("config-despawn-item", cDespawnItem);
 		j.put("config-merge-item", cMergeItem);
 		j.put("config-merge-xp", cMergeXp);
-		j.put("config-pickup", cPublicPickup);
 		j.put("last-save", lastSave);
-		j.put("visibility", visibility.ordinal());
-
 		j.put("protection", getProtection().toJSON());
-
 		j.put("maxsize", maxSize);
 		j.put("sx", spawnx);
 		j.put("sy", spawny);
@@ -408,16 +398,6 @@ public class Island
 		warppp = l.getPitch();
 	}
 
-	public Visibility getVisibility()
-	{
-		return visibility;
-	}
-
-	public void setVisibility(Visibility visibility)
-	{
-		this.visibility = visibility;
-	}
-
 	public long getLastValueCalculation()
 	{
 		return lastValueCalculation;
@@ -543,11 +523,6 @@ public class Island
 		return cMergeItem;
 	}
 
-	public void setcPublicPickup(boolean cPublicPickup)
-	{
-		this.cPublicPickup = cPublicPickup;
-	}
-
 	public void setcMergeItem(double cMergeItem)
 	{
 		this.cMergeItem = cMergeItem;
@@ -571,11 +546,6 @@ public class Island
 	public void setcHopperRate(int cHopperRate)
 	{
 		this.cHopperRate = cHopperRate;
-	}
-
-	public boolean iscPublicPickup()
-	{
-		return cPublicPickup;
 	}
 
 	public int getcHopperAmount()

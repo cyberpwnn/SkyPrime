@@ -121,6 +121,10 @@ public class Config
 	@Comment("Default island public protection")
 	public static boolean ISLAND_PROTECTION_PUBLIC = true;
 
+	@Key("virtual-islands.config.protection.pickup")
+	@Comment("Default island public pickup protection")
+	public static boolean ISLAND_PROTECTION_PICKUP = true;
+
 	@Key("virtual-islands.config.protection.build")
 	@Comment("Default island build protection")
 	public static boolean ISLAND_PROTECTION_BUILD = false;

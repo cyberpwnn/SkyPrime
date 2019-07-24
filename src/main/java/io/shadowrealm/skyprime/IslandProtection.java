@@ -14,6 +14,14 @@ public class IslandProtection
 	@Setter
 	private Island island;
 
+	@Getter
+	@Setter
+	private Visibility visibility = Config.ISLAND_PROTECTION_PUBLIC ? Visibility.PUBLIC : Visibility.PRIVATE;
+
+	@Getter
+	@Setter
+	private boolean publicPickup = Config.ISLAND_PROTECTION_PICKUP;
+
 	/**
 	 * Indicates public players being able to build
 	 *
@@ -69,6 +77,8 @@ public class IslandProtection
 	public JSONObject toJSON()
 	{
 		final JSONObject o = new JSONObject();
+		o.put("public", this.isPublicVisibility());
+		o.put("public-pickup", this.isPublicPickup());
 		o.put("public-build", this.publicBuild);
 		o.put("public-interact-block", this.publicInteractBlock);
 		o.put("public-use-block", this.publicUseBlock);
@@ -80,6 +90,9 @@ public class IslandProtection
 
 	public void fromJSON(JSONObject o)
 	{
+		this.setPublicVisbility(o.has("public") && o.getBoolean("public"));
+		this.setPublicPickup(o.has("public-pickup") && o.getBoolean("public-pickup"));
+
 		this.publicBuild = o.has("public-build") && o.getBoolean("public-build");
 		this.publicInteractBlock = o.has("public-interact-build") && o.getBoolean("public-interact-build");
 		this.publicUseBlock = o.has("public-use-build") && o.getBoolean("public-use-build");
@@ -140,12 +153,22 @@ public class IslandProtection
 
 	public boolean canPickup(Player p)
 	{
-		return isAllowed(p) || this.island.iscPublicPickup();
+		return isAllowed(p) || this.publicPickup;
 	}
 
 	public boolean canVisit(Player player)
 	{
-		return isAllowed(player) || this.getIsland().getVisibility().equals(Visibility.PUBLIC);
+		return isAllowed(player) || this.isPublicVisibility();
+	}
+
+	public void setPublicVisbility(boolean p)
+	{
+		this.visibility = p ? Visibility.PUBLIC : Visibility.PRIVATE;
+	}
+
+	public boolean isPublicVisibility()
+	{
+		return this.getVisibility().equals(Visibility.PUBLIC);
 	}
 
 }

@@ -40,14 +40,14 @@ public class CommandConfig extends MortarCommand
 		if(args.length == 0)
 		{
 			sender.sendMessage("name = " + is.getName());
-			sender.sendMessage("public = " + is.getVisibility().equals(Visibility.PUBLIC));
+			sender.sendMessage("public = " + is.getProtection().isPublicVisibility());
 			sender.sendMessage("despawn.arrow = " + is.getcDespawnArrow());
 			sender.sendMessage("despawn.item = " + is.getcDespawnItem());
 			sender.sendMessage("merge.xp = " + is.getcMergeXp());
 			sender.sendMessage("merge.item = " + is.getcMergeItem());
 			sender.sendMessage("hopper.rate = " + is.getcHopperRate());
 			sender.sendMessage("hopper.amount = " + is.getcHopperAmount());
-			sender.sendMessage("public.pickup = " + is.iscPublicPickup());
+			sender.sendMessage("public.pickup = " + is.getProtection().isPublicPickup());
 			sender.sendMessage("public.build = " + is.getProtection().isPublicBuild());
 			sender.sendMessage("public.block.interact= " + is.getProtection().isPublicInteractBlock());
 			sender.sendMessage("public.block.use = " + is.getProtection().isPublicUseBlock());
@@ -87,7 +87,7 @@ public class CommandConfig extends MortarCommand
 
 				else if(args[0].equalsIgnoreCase("public.pickup"))
 				{
-					is.setcPublicPickup(Boolean.valueOf(args[1]));
+					is.getProtection().setPublicPickup(Boolean.valueOf(args[1]));
 				}
 
 				else if(args[0].equalsIgnoreCase("public.build"))
@@ -142,7 +142,7 @@ public class CommandConfig extends MortarCommand
 
 				else if(args[0].equalsIgnoreCase("public"))
 				{
-					is.setVisibility(Boolean.valueOf(args[1]) ? Visibility.PUBLIC : Visibility.PRIVATE);
+					is.getProtection().setPublicVisbility(Boolean.valueOf(args[1]));
 				}
 
 				else

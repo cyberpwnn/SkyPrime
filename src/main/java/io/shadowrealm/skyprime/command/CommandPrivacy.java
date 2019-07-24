@@ -30,8 +30,8 @@ public class CommandPrivacy extends MortarCommand
 
 		try {
 			Island is = SkyMaster.getIsland(sender.player()).getIsland();
-			is.setVisibility(is.getVisibility().equals(Visibility.PRIVATE) ? Visibility.PUBLIC : Visibility.PRIVATE);
-			sender.sendMessage("Changed your island's privacy to " + is.getVisibility().toString().toLowerCase());
+			is.getProtection().setPublicVisbility(! is.getProtection().isPublicVisibility());
+			sender.sendMessage("Changed your island's privacy to " + is.getProtection().getVisibility().toString().toLowerCase());
 			SkyMaster.getIsland(sender.player()).saveConfig(sender);
 		} catch (Exception ex) {
 			sender.sendMessage("&cInternal error has occurred. Please panic.");

@@ -52,7 +52,7 @@ public class CommandVisit extends MortarCommand
 						@Override
 						public void run()
 						{
-							if(isx.getVisibility().equals(Visibility.PUBLIC))
+							if(isx.getProtection().isPublicVisibility())
 							{
 								sender.sendMessage("Welcome to " + args[0] + "'s Island!");
 							}
