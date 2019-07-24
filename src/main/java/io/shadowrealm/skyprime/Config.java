@@ -117,14 +117,39 @@ public class Config
 	@Key("virtual-islands.config.allow-transfer")
 	public static boolean ISLAND_ALLOW_TRANSFER = true;
 
-	@Key("virtual-islands.config.default-private")
-	public static boolean ISLAND_IS_PRIVATE = true;
+	@Key("virtual-islands.config.protection.public")
+	@Comment("Default island public protection")
+	public static boolean ISLAND_PROTECTION_PUBLIC = true;
+
+	@Key("virtual-islands.config.protection.build")
+	@Comment("Default island build protection")
+	public static boolean ISLAND_PROTECTION_BUILD = false;
+
+	@Key("virtual-islands.config.protection.block-interact")
+	@Comment("Default island block interaction protection")
+	public static boolean ISLAND_PROTECTION_BLOCK_INTERACT = false;
+
+	@Key("virtual-islands.config.protection.block-use")
+	@Comment("Default island block use protection")
+	public static boolean ISLAND_PROTECTION_BLOCK_USE = false;
+
+	@Key("virtual-islands.config.protection.pvp")
+	@Comment("Default island pvp protection")
+	public static boolean ISLAND_PROTECTION_PVP = false;
+
+	@Key("virtual-islands.config.protection.mob-kill")
+	@Comment("Default island mob kill protection")
+	public static boolean ISLAND_PROTECTION_MOB_KILL = false;
+
+	@Key("virtual-islands.config.protection.mob-interact")
+	@Comment("Default island mob interaction protection")
+	public static boolean ISLAND_PROTECTION_MOB_INTERACT = false;
 
 	@Key("commands.ranks.island-per-page")
 	public static int RANKS_PERPAGE = 10;
 
 	@Key("virtual-islands.max-members")
-	//@Comment("Allows a player a specific amount of players to their island using: skyprime.sky.members.<ID>")
+	@Comment("Allows a player a specific amount of players to their island using: skyprime.sky.members.<ID>")
 	public static HashMap<String, Integer> MAX_MEMBERS = new HashMap() {{
 		put("default", 3);
 		put("donor", 5);

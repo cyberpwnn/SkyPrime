@@ -311,7 +311,7 @@ public class SkyMaster
 			stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0.07, 0), 0, 500, 20);
 			WorldCreator wc = new WorldCreator(worldName(island));
 			Island is = new Island(island, stream.getUniqueId());
-			is.setVisibility(Config.ISLAND_IS_PRIVATE ? Visibility.PRIVATE : Visibility.PUBLIC);
+			is.setVisibility(Config.ISLAND_PROTECTION_PUBLIC ? Visibility.PRIVATE : Visibility.PUBLIC);
 			is.setName(stream.getName() + "'s Island");
 			is.setCompetitive(competitive);
 			wc.environment(is.isCompetitive() ? Environment.NETHER : Environment.NORMAL);

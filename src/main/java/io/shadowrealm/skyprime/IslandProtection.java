@@ -24,42 +24,42 @@ public class IslandProtection
 	 */
 	@Setter
 	@Getter
-	private boolean publicBuild = false;
+	private boolean publicBuild = Config.ISLAND_PROTECTION_BUILD;
 
 	/**
 	 * Indicates a player able to interact with blocks
 	 */
 	@Setter
 	@Getter
-	private boolean publicInteractBlock = false;
+	private boolean publicInteractBlock = Config.ISLAND_PROTECTION_BLOCK_INTERACT;
 
 	/**
 	 * Indicates public players able to use blocks: chests, brewing stands, etc
 	 */
 	@Setter
 	@Getter
-	private boolean publicUseBlock = false;
+	private boolean publicUseBlock = Config.ISLAND_PROTECTION_BLOCK_USE;
 
 	/**
 	 * Indicates public players able to PVP
 	 */
 	@Setter
 	@Getter
-	private boolean publicPVP = false;
+	private boolean publicPVP = Config.ISLAND_PROTECTION_PVP;
 
 	/**
 	 * Indicates public players able to kill entities
 	 */
 	@Setter
 	@Getter
-	private boolean publicKill = false;
+	private boolean publicKill = Config.ISLAND_PROTECTION_MOB_KILL;
 
 	/**
 	 * Indicates public players able to damage entities
 	 */
 	@Setter
 	@Getter
-	private boolean publicInteractEntity = false;
+	private boolean publicInteractEntity = Config.ISLAND_PROTECTION_MOB_INTERACT;
 
 	public IslandProtection(Island i)
 	{
