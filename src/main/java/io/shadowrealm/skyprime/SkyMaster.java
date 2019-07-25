@@ -395,7 +395,7 @@ public class SkyMaster
 						stream.sendTitle("", C.AQUA + "" + C.BOLD + "Done", 0, 5, 20);
 						cancel();
 						r.run(gen.getSpawn());
-						is.setMinsize(gen.getFurthest());
+						//is.setMinsize(gen.getFurthest());
 					}
 				}
 			};

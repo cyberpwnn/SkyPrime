@@ -110,7 +110,7 @@ public class Island
 		cMergeItem = o.has("config-merge-item") ? o.getInt("config-merge-item") : 1.5;
 		cMergeXp = o.has("config-merge-xp") ? o.getInt("config-merge-xp") : 2.5;
 		competitive = o.has("competitive") ? o.getBoolean("competitive") : false;
-		maxSize = o.has("maxsize") ? o.getInt("maxsize") : Config.SIZE_DEFAULT_BARRIER;
+		maxSize = o.has("maxsize") ? o.getInt("maxsize") : Config.SIZE_MAXIMUM;
 		spawnx = o.has("sx") ? o.getDouble("sx") : 0;
 		spawny = o.has("sy") ? o.getDouble("sy") : -10;
 		spawnz = o.has("sz") ? o.getDouble("sz") : 0;
@@ -352,7 +352,7 @@ public class Island
 
 	public int getMaxSize()
 	{
-		return Math.max(Config.SIZE_DEFAULT_BARRIER, maxSize);
+		return Math.max(Config.SIZE_MAXIMUM, maxSize);
 	}
 
 	public void setMaxSize(int maxSize)
@@ -576,7 +576,7 @@ public class Island
 	public double getWorldSize()
 	{
 		final double bonus = Math.pow(Math.max(getLevel(), getValue()), Config.FRACTAL_VALUE) / Config.DIVISOR_VALUE;
-		return Math.min((2 * getMinsize()) + bonus, getMaxSize());
+		return Math.min(getMinsize() + bonus, getMaxSize());
 	}
 
 	public void transferIsland(UUID newOwner)

@@ -509,9 +509,9 @@ public class VirtualIsland implements Listener
 				if(island.getOwner().equals(p.getUniqueId()))
 				{
 					int s = SkyMaster.getSizeFor(p);
-					if(island.getMaxSize() != s)
+					if(island.getMinsize() != s)
 					{
-						island.setMaxSize(s);
+						island.setMinsize(s);
 						saveIsland();
 					}
 				}

@@ -21,6 +21,9 @@ public class Config
 	@Key("virtual-islands.size.default")
 	public static int SIZE_DEFAULT_BARRIER = 80;
 
+	@Key("virtual-islands.size.maximum")
+	public static int SIZE_MAXIMUM = 1000;
+
 	@Key("virtual-islands.size.value-propagation.exponent")
 	public static double FRACTAL_VALUE = 0.65;
 
