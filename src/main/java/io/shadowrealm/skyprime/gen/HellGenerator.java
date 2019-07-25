@@ -16,6 +16,8 @@ public class HellGenerator extends IslandGenerator
 	public HellGenerator(Location center, long seed)
 	{
 		super(center, seed);
+		this.setSquashTop(1.80);
+		this.setSquashBottom(1.15);
 	}
 
 	public GMap<Vector, MaterialBlock> materialize(GSet<Vector> v)
@@ -23,8 +25,6 @@ public class HellGenerator extends IslandGenerator
 		GMap<Vector, MaterialBlock> mat = new GMap<Vector, MaterialBlock>();
 		GMap<Vector, Integer> heightmap = getHeightmap(v);
 		total += v.size() * 3;
-		boolean treeyet = false;
-		int shrubs = (int) (((radiusBlocks * 0.35) * Math.random()) + 1);
 
 		Average ax = new Average(8);
 		Average az = new Average(8);
