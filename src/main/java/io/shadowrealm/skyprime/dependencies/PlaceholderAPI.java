@@ -1,5 +1,6 @@
 package io.shadowrealm.skyprime.dependencies;
 
+import io.shadowrealm.skyprime.Config;
 import io.shadowrealm.skyprime.SkyMaster;
 import io.shadowrealm.skyprime.SkyPrime;
 import io.shadowrealm.skyprime.VirtualIsland;
@@ -119,7 +120,7 @@ public class PlaceholderAPI extends PlaceholderExpansion
 		if (null == i) return "";
 
 		if (s.startsWith("level")) {
-			return formatDecimal(i.getLevel() / 20D);
+			return formatDecimal(i.getLevel() / Config.LEVEL_DIVISOR);
 		} else if (s.startsWith("size_max")) {
 			return formatInt(i.getMaxSize());
 		} else if (s.startsWith("size")) {
@@ -127,7 +128,7 @@ public class PlaceholderAPI extends PlaceholderExpansion
 		} else if (s.startsWith("members")) {
 			return formatInt(i.getMembers().size() + i.getAdmins().size());
 		} else if (s.startsWith("value")) {
-			return formatDecimal(i.getValue() / 20D);
+			return formatDecimal(i.getValue() / Config.VALUE_DIVISOR);
 		} else if (s.startsWith("id")) {
 			return i.getId().toString();
 		} else if (s.startsWith("owner")) {

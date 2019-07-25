@@ -28,10 +28,10 @@ import mortar.util.text.D;
 
 public class SkyMaster
 {
-	private static StorageEngine engine;
-	private static GMap<Island, VirtualIsland> virtualIslands = new GMap<>();
-	private static FileConfiguration fc;
-	private static GMap<World, ChunkTracker> ctx = new GMap<>();
+	public static StorageEngine engine;
+	public static GMap<Island, VirtualIsland> virtualIslands = new GMap<>();
+	public static FileConfiguration fc;
+	public static GMap<World, ChunkTracker> ctx = new GMap<>();
 
 	public static VirtualIsland getIsland(World w)
 	{

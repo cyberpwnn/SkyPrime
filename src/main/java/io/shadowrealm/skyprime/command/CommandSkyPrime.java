@@ -126,8 +126,8 @@ public class CommandSkyPrime extends MortarCommand
 					div + "[ " + C.AQUA + i.getName() + " " + C.DARK_AQUA + "]" + div,
 					" &3Members: &f" + (i.totalMembers()) + " / " + i.getMaximumMembers() +
 							"  &3Size: &f" + Math.round(i.getWorldSize()) + " / " + i.getMaxSize() +
-							"  &3Level: &f" + Math.round(i.getLevel()) +
-							"  &3Value: &f" + Math.round(i.getValue()) + "  " +
+							"  &3Level: &f" + Math.round(i.getLevel() / Config.LEVEL_DIVISOR) +
+							"  &3Value: &f" + Math.round(i.getValue() / Config.VALUE_DIVISOR) + "  " +
 							(!i.getProtection().isPublicVisibility() ? C.GREEN + "(PRIVATE)" : C.RED + "(PUBLIC)"),
 					" &3Public Rules: " +
 							(i.getProtection().isPublicPickup() ? C.RED + "Pickup  " : "") +

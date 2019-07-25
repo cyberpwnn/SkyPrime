@@ -15,6 +15,13 @@ import mortar.lang.collection.GList;
 
 public class Config
 {
+
+	@Key("virtual-islands.worth.value.divisor")
+	public static double VALUE_DIVISOR = 20;
+
+	@Key("virtual-islands.worth.level.divisor")
+	public static double LEVEL_DIVISOR = 20;
+
 	@Key("virtual-islands.voltage.max-server-time")
 	public static double VOLTAGE_MAX_MILLISECONDS = 45D;
 
