@@ -33,62 +33,62 @@ public class IslandGenerator
 
 	@Getter
 	@Setter
-	private int octaves;
+	protected int octaves;
 
 	@Getter
-	private Location center;
-
-	@Getter
-	@Setter
-	private long seed;
-
+	protected Location center;
 
 	@Getter
 	@Setter
-	private int radiusBlocks;
+	protected long seed;
+
 
 	@Getter
 	@Setter
-	private double divisor;
+	protected int radiusBlocks;
 
 	@Getter
 	@Setter
-	private double dimension;
+	protected double divisor;
 
 	@Getter
 	@Setter
-	private double noise;
+	protected double dimension;
 
 	@Getter
 	@Setter
-	private double amplifier;
+	protected double noise;
 
 	@Getter
 	@Setter
-	private double frequency;
+	protected double amplifier;
 
 	@Getter
 	@Setter
-	private double squashTop;
+	protected double frequency;
 
 	@Getter
 	@Setter
-	private double squashBottom;
+	protected double squashTop;
 
-	private double total;
-	private double at;
-	private double steps;
-	private double tsteps;
-	private double furthest;
+	@Getter
+	@Setter
+	protected double squashBottom;
+
+	protected double total;
+	protected double at;
+	protected double steps;
+	protected double tsteps;
+	protected double furthest;
 
 	@Setter
 	@Getter
-	private String status;
+	protected String status;
 
-	private Location spawn;
-	private ChunkTracker ct;
-	private Location chestAt;
-	private GList<Location> validSpawns;
+	protected Location spawn;
+	protected ChunkTracker ct;
+	protected Location chestAt;
+	protected GList<Location> validSpawns;
 
 	public IslandGenerator(Location center, long seed)
 	{
