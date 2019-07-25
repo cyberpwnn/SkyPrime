@@ -16,6 +16,9 @@ import mortar.lang.collection.GList;
 public class Config
 {
 
+	@Key("virtual-islands.worlds.hell")
+	public static boolean WORLD_HELL = true;
+
 	@Key("virtual-islands.worth.value.divisor")
 	public static double VALUE_DIVISOR = 20;
 

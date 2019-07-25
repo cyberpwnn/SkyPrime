@@ -138,7 +138,12 @@ public class IslandBuilder implements Listener
 				{
 					stream.sendTitle("", C.AQUA + "" + C.BOLD + "Done", 0, 5, 20);
 					cancel();
-					createHell(is, gen.getSpawn());
+
+					if (Config.WORLD_HELL) {
+						createHell(is, gen.getSpawn());
+					} else {
+						r.run(gen.getSpawn());
+					}
 				}
 			}
 		};
@@ -177,7 +182,7 @@ public class IslandBuilder implements Listener
 		w.getWorldBorder().setSize(is.isCompetitive() ? 10 : 300);
 		stream.sendTitle("", C.AQUA + "" + C.BOLD + "Generating: " + C.RESET + C.GRAY + F.pc(0.11, 0), 0, 100, 20);
 		ll.getChunk().load();
-		IslandGenerator gen = new IslandGenerator(ll, (long) (is.isCompetitive() ? 1337 : ((long) (Math.random() * 8423472229940949494l) + (Math.random() * 1999911123999444444L))));
+		IslandGenerator gen = new HellGenerator(ll, (long) (is.isCompetitive() ? 1337 : ((long) (Math.random() * 8423472229940949494l) + (Math.random() * 1999911123999444444L))));
 
 		if(is.isCompetitive())
 		{
