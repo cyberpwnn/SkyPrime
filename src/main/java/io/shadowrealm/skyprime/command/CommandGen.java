@@ -87,7 +87,7 @@ public class CommandGen extends MortarCommand
 				{
 					if(vi.get() == 0)
 					{
-						sender.player().sendTitle("", C.AQUA + "" + C.BOLD + g.setStatus() + ": " + C.RESET + C.GRAY + F.pc(g.getProgress(), 0), 0, 5, 20);
+						sender.player().sendTitle("", C.AQUA + "" + C.BOLD + g.getStatus() + ": " + C.RESET + C.GRAY + F.pc(g.getProgress(), 0), 0, 5, 20);
 					}
 
 					else

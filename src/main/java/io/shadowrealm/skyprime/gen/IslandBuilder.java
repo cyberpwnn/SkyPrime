@@ -89,8 +89,6 @@ public class IslandBuilder implements Listener
 		ll.getChunk().load();
 		IslandGenerator gen = new IslandGenerator(ll, (long) (is.isCompetitive() ? 1337 : ((long) (Math.random() * 8423472229940949494l) + (Math.random() * 1999911123999444444L))));
 
-		//SkyPrime.instance.islandRankController.createIslandRank(is);
-
 		if(is.isCompetitive())
 		{
 			gen.setSquashTop(1.4);
@@ -133,7 +131,7 @@ public class IslandBuilder implements Listener
 			{
 				if(vi.get() == 0)
 				{
-					stream.sendTitle("", C.AQUA + "" + C.BOLD + gen.setStatus() + ": " + C.RESET + C.GRAY + F.pc(gen.getProgress(), 0), 0, 5, 20);
+					stream.sendTitle("", C.AQUA + "" + C.BOLD + gen.getStatus() + ": " + C.RESET + C.GRAY + F.pc(gen.getProgress(), 0), 0, 5, 20);
 				}
 
 				else

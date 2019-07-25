@@ -1,5 +1,7 @@
 package io.shadowrealm.skyprime.gen;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,23 +30,61 @@ import mortar.lang.collection.GSet;
 
 public class IslandGenerator
 {
+
+	@Getter
+	@Setter
 	private int octaves;
+
+	@Getter
 	private Location center;
+
+	@Getter
+	@Setter
 	private long seed;
+
+
+	@Getter
+	@Setter
 	private int radiusBlocks;
+
+	@Getter
+	@Setter
 	private double divisor;
+
+	@Getter
+	@Setter
 	private double dimension;
+
+	@Getter
+	@Setter
 	private double noise;
+
+	@Getter
+	@Setter
 	private double amplifier;
+
+	@Getter
+	@Setter
 	private double frequency;
+
+	@Getter
+	@Setter
 	private double squashTop;
+
+	@Getter
+	@Setter
 	private double squashBottom;
+
 	private double total;
 	private double at;
 	private double steps;
 	private double tsteps;
 	private double furthest;
+
+	@Setter
+	@Getter
 	private String status;
+
 	private Location spawn;
 	private ChunkTracker ct;
 	private Location chestAt;
@@ -769,120 +809,5 @@ public class IslandGenerator
 		}
 
 		return v;
-	}
-
-	public double getDimension()
-	{
-		return dimension;
-	}
-
-	public void setDimension(double dimension)
-	{
-		this.dimension = dimension;
-	}
-
-	public double getNoise()
-	{
-		return noise;
-	}
-
-	public void setNoise(double noise)
-	{
-		this.noise = noise;
-	}
-
-	public int getOctaves()
-	{
-		return octaves;
-	}
-
-	public void setOctaves(int octaves)
-	{
-		this.octaves = octaves;
-	}
-
-	public Location getCenter()
-	{
-		return center;
-	}
-
-	public void setCenter(Location center)
-	{
-		this.center = center;
-	}
-
-	public long getSeed()
-	{
-		return seed;
-	}
-
-	public void setSeed(long seed)
-	{
-		this.seed = seed;
-	}
-
-	public int getRadiusBlocks()
-	{
-		return radiusBlocks;
-	}
-
-	public void setRadiusBlocks(int radiusBlocks)
-	{
-		this.radiusBlocks = radiusBlocks;
-	}
-
-	public double getDivisor()
-	{
-		return divisor;
-	}
-
-	public void setDivisor(double divisor)
-	{
-		this.divisor = divisor;
-	}
-
-	public double getAmplifier()
-	{
-		return amplifier;
-	}
-
-	public void setAmplifier(double amplifier)
-	{
-		this.amplifier = amplifier;
-	}
-
-	public double getFrequency()
-	{
-		return frequency;
-	}
-
-	public void setFrequency(double frequency)
-	{
-		this.frequency = frequency;
-	}
-
-	public double getSquashTop()
-	{
-		return squashTop;
-	}
-
-	public void setSquashTop(double squashTop)
-	{
-		this.squashTop = squashTop;
-	}
-
-	public double getSquashBottom()
-	{
-		return squashBottom;
-	}
-
-	public void setSquashBottom(double squashBottom)
-	{
-		this.squashBottom = squashBottom;
-	}
-
-	public String setStatus()
-	{
-		return status;
 	}
 }
