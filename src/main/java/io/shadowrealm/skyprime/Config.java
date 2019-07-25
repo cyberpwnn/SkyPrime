@@ -31,7 +31,13 @@ public class Config
 	public static int ANIMATION_SIZE = 1;
 
 	@Key("virtual-islands.size.ranks")
-	public static GList<String> SIZE_RANKS = new GList<String>().qadd("a=128").qadd("b=192").qadd("c=256").qadd("d=320").qadd("e=384");
+	public static HashMap<String, Integer> SIZE_RANKS = new HashMap() {{
+		put("a", 128);
+		put("b", 192);
+		put("c", 256);
+		put("d", 320);
+		put("e", 384);
+	}};
 
 	@Key("virtual-islands.sequences.shutdown.idle-threshold-ticks")
 	public static int IDLE_TICKS = 600;

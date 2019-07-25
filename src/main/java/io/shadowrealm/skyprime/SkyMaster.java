@@ -40,7 +40,6 @@ public class SkyMaster
 	private static GMap<Island, VirtualIsland> virtualIslands = new GMap<>();
 	private static FileConfiguration fc;
 	private static GMap<World, ChunkTracker> ctx = new GMap<>();
-	private static GMap<String, Integer> sizemap = new GMap<>();
 
 	public static VirtualIsland getIsland(World w)
 	{
@@ -54,11 +53,11 @@ public class SkyMaster
 	{
 		int max = Config.SIZE_DEFAULT_BARRIER;
 
-		for(String i : sizemap.k())
+		for(String i : Config.SIZE_RANKS.keySet())
 		{
-			if(p.hasPermission("sky.size." + i.toLowerCase()) && sizemap.get(i) > max)
+			if(p.hasPermission("sky.size." + i.toLowerCase()) && Config.SIZE_RANKS.get(i) > max)
 			{
-				max = sizemap.get(i);
+				max = Config.SIZE_RANKS.get(i);
 			}
 		}
 
