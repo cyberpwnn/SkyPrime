@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -374,49 +375,10 @@ public class VirtualIsland implements Listener
 
 	private Material generatesCobble()
 	{
-		double div = 470;
 		drawPower("physics", 3D);
-
-		if(M.r(0.82D / div))
-		{
-			return Material.DIAMOND_ORE;
+		for (Map.Entry<Material, Double> m : Config.MECHANIC_GENERATOR_TYPES.entrySet()) {
+			if (M.r(m.getValue())) return m.getKey();
 		}
-
-		else if(M.r(2.89D / div))
-		{
-			return Material.GOLD_ORE;
-		}
-
-		else if(M.r(0.74D / div))
-		{
-			return Material.EMERALD_ORE;
-		}
-
-		else if(M.r(4.59D / div))
-		{
-			return Material.IRON_ORE;
-		}
-
-		else if(M.r(1.56D / div))
-		{
-			return Material.LAPIS_ORE;
-		}
-
-		else if(M.r(2.32D / div))
-		{
-			return Material.QUARTZ_ORE;
-		}
-
-		else if(M.r(0.98D / div))
-		{
-			return Material.REDSTONE_ORE;
-		}
-
-		else if(M.r(6.99D / div))
-		{
-			return Material.COAL_ORE;
-		}
-
 		return Material.STONE;
 	}
 
