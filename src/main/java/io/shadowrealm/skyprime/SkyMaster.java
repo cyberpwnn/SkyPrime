@@ -99,6 +99,8 @@ public class SkyMaster
 
 	public static void tick()
 	{
+		getStorageEngine().cleanup();
+
 		for(VirtualIsland i : virtualIslands.v())
 		{
 			i.tick();

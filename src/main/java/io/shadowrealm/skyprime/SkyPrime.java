@@ -84,6 +84,7 @@ public class SkyPrime extends MortarPlugin
 	{
 		D.as("SkyPrime").l("Unloading Virtual Islands");
 		SkyMaster.saveAllWorlds();
+		SkyMaster.getStorageEngine().shutdown();
 	}
 
 	@Override

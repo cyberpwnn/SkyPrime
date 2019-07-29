@@ -4,6 +4,11 @@ import java.util.UUID;
 
 public interface StorageEngine
 {
+
+	void cleanup();
+
+	void shutdown();
+
 	public Island getIslandByOwner(UUID player);
 
 	public Island getIslandById(UUID id);
