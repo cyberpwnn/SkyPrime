@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import mortar.lang.collection.GMap;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -180,6 +181,22 @@ public class Config
 		put("admins", 15);
 	}};
 
+	@Key("mechanics.generator.materials")
+	private static HashMap<String, Double> MECHANIC_GENERATOR_TYPES_RAW = new HashMap() {{
+		put("DIAMOND_ORE", 0.15d);
+		put("EMERALD_ORE", 0.25d);
+		put("GOLD_ORE", 0.35d);
+		put("IRON_ORE", 1.25d);
+		put("LAPIS_ORE", 3.25d);
+		put("QUARTZ_ORE", 4.55d);
+		put("REDSTONE_ORE", 8.90d);
+		put("COAL_ORE", 9.15d);
+		put("STONE", 10.0d);
+		put("COBBLE_STONE", 64d);
+	}};
+
+	public static HashMap<Material, Double> MECHANIC_GENERATOR_TYPES = new HashMap();
+
 	public static void save() throws IllegalArgumentException, IllegalAccessException, IOException
 	{
 		peel().save(SkyPrime.instance.getDataFile("config.yml"));
@@ -207,6 +224,7 @@ public class Config
 
 		stick(fc);
 		save();
+		parse();
 	}
 
 	public static FileConfiguration peel() throws IllegalArgumentException, IllegalAccessException
@@ -261,6 +279,22 @@ public class Config
 			else
 			{
 				i.set(null, v);
+			}
+		}
+	}
+
+	public static void parse()
+	{
+		for (Map.Entry<String, Double> m : MECHANIC_GENERATOR_TYPES_RAW.entrySet()) {
+			try {
+				Material a = Material.valueOf(m.getKey().trim().toUpperCase());
+				if (null != a && !a.equals(Material.AIR)) {
+					MECHANIC_GENERATOR_TYPES.put(
+						a, m.getValue() / 100d
+					);
+				}
+			} catch (Exception ex) {
+
 			}
 		}
 	}
