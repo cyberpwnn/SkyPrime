@@ -3,12 +3,13 @@ package io.shadowrealm.skyprime;
 import java.io.File;
 
 import io.shadowrealm.skyprime.command.CommandSkyPrime;
-import io.shadowrealm.skyprime.controller.*;
-import io.shadowrealm.skyprime.dependencies.LeaderHeads;
+import io.shadowrealm.skyprime.controller.IslandChatController;
+import io.shadowrealm.skyprime.controller.IslandController;
+import io.shadowrealm.skyprime.controller.IslandProtectionController;
+import io.shadowrealm.skyprime.controller.IslandRankController;
 import io.shadowrealm.skyprime.dependencies.PlaceholderAPI;
 import io.shadowrealm.skyprime.permissions.PermissionSky;
 import io.shadowrealm.skyprime.storage.FileStorageEngine;
-import lombok.Getter;
 import mortar.api.sched.SR;
 import mortar.bukkit.command.Command;
 import mortar.bukkit.command.Permission;
@@ -19,8 +20,6 @@ import mortar.bukkit.plugin.commands.DelayedController;
 import mortar.util.text.C;
 import mortar.util.text.D;
 import mortar.util.text.TXT;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 public class SkyPrime extends MortarPlugin
 {
@@ -49,9 +48,6 @@ public class SkyPrime extends MortarPlugin
 	public IslandRankController islandRankController;
 
 	private PlaceholderAPI papi;
-
-	@Getter
-	private LeaderHeads leaderHeads;
 
 	@Override
 	public void start()
@@ -105,10 +101,5 @@ public class SkyPrime extends MortarPlugin
 	{
 		this.papi = new PlaceholderAPI(this);
 		this.papi.register();
-
-		Plugin p = Bukkit.getPluginManager().getPlugin("LeaderHeads");
-		if (p != null && p instanceof me.robin.leaderheads.LeaderHeads) {
-			this.leaderHeads = new LeaderHeads(this);
-		}
 	}
 }

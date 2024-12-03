@@ -137,16 +137,8 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
-			<id>volmit</id>
-			<url>http://nexus.volmit.com/content/repositories/volmit</url>
-		</repository>
-		<repository>
-			<id>thirdparty</id>
-			<url>http://nexus.volmit.com/content/repositories/thirdparty/</url>
-		</repository>
-		<repository>
-			<id>shadowrealm</id>
-			<url>http://nexus.volmit.com/content/repositories/shadowrealm</url>
+			<id>bcn</id>
+			<url>http://bytecode.ninja/repository/bcn/</url>
 		</repository>
 		<repository>
 			<id>placeholderapi</id>
@@ -160,7 +152,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
+			<artifactId>spigot-full</artifactId>
 			<version>1.12.2</version>
 			<scope>provided</scope>
 		</dependency>
@@ -173,14 +165,8 @@
 		<dependency>
 			<groupId>com.volmit</groupId>
 			<artifactId>Mortar</artifactId>
-			<version>1.0.70</version>
+			<version>1.0.75</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.shadowrealm</groupId>
-			<artifactId>Shade</artifactId>
-			<scope>provided</scope>
-			<version>production</version>
 		</dependency>
 		<dependency>
 			<groupId>me.clip</groupId>
@@ -200,17 +186,11 @@
 			<version>1.18.8</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>me.robin</groupId>
-			<artifactId>leaderheads</artifactId>
-			<version>3.1.8.3</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>
-			<id>shadowrealm</id>
-			<url>http://nexus.volmit.com/content/repositories/shadowrealm</url>
+			<id>bcn</id>
+			<url>http://bytecode.ninja/repository/bcn/</url>
 		</repository>
 	</distributionManagement>
 </project>
